@@ -40,17 +40,17 @@ namespace KomiBot.Services
             return _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
-        public async Task MessageReceivedAsync(SocketMessage rawMessage)
+        public Task MessageReceivedAsync(SocketMessage rawMessage)
         {
-            if (!(rawMessage is SocketUserMessage message)) return;
-            if (message.Source != MessageSource.User) return;
+            if (!(rawMessage is SocketUserMessage message)) return Task.CompletedTask;
+            if (message.Source != MessageSource.User) return Task.CompletedTask;
 
             var argPos = 0;
             if (!(message.HasStringPrefix("k!", ref argPos) ||
-                  message.HasMentionPrefix(_discord.CurrentUser, ref argPos))) return;
+                  message.HasMentionPrefix(_discord.CurrentUser, ref argPos))) return Task.CompletedTask;
 
             var context = new SocketCommandContext(_discord, message);
-            await _commands.ExecuteAsync(context, argPos, _services);
+            return _commands.ExecuteAsync(context, argPos, _services);
         }
     }
 }

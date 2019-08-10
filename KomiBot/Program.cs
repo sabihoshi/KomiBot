@@ -27,7 +27,7 @@ namespace KomiBot
 
         private Task LogAsync(LogMessage message)
         {
-            Console.WriteLine(message.Message);
+            Console.WriteLine(message.ToString());
             return Task.CompletedTask;
         }
 
