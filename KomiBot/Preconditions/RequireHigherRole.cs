@@ -5,11 +5,11 @@ using Discord.WebSocket;
 
 namespace KomiBot.Preconditions
 {
-    public class RequireHierarchyAttribute : ParameterPreconditionAttribute
+    public class RequireHigherRole : ParameterPreconditionAttribute
     {
         private readonly string _command;
 
-        public RequireHierarchyAttribute(string command = null)
+        public RequireHigherRole(string command = null)
         {
             _command = command;
         }
