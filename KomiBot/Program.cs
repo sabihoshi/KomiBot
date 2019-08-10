@@ -20,8 +20,8 @@ namespace KomiBot
             return new ServiceCollection()
                   .AddSingleton<DiscordSocketClient>()
                   .AddSingleton<CommandService>()
-                  .AddSingleton<ApplicationService>()
                   .AddSingleton<CommandHandlingService>()
+                  .AddSingleton<ApplicationService>()
                   .BuildServiceProvider();
         }
 
