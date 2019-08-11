@@ -40,9 +40,12 @@ namespace KomiBot.Preconditions
             if (guildUser.Hierarchy < targetUser.Hierarchy)
                 return PreconditionResult.FromError($"You cannot {_command ?? parameter.Command.Name} this user.");
 
-            var currentUser = await context.Guild.GetCurrentUserAsync().ConfigureAwait(false) as SocketGuildUser;
+            var bot = await context.Guild.GetCurrentUserAsync().ConfigureAwait(false) as SocketGuildUser;
 
-            if (currentUser?.Hierarchy < targetUser.Hierarchy)
+            if (targetUser == bot)
+                return PreconditionResult.FromError($"You cannot {_command ?? parameter.Command.Name} the bot.");
+
+            if (bot?.Hierarchy < targetUser.Hierarchy)
                 return PreconditionResult.FromError("The bot's role is lower than the targeted user.");
 
             return PreconditionResult.FromSuccess();

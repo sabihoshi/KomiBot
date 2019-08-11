@@ -32,7 +32,13 @@ namespace KomiBot.Services
             if (result.IsSuccess)
                 return Task.CompletedTask;
 
-            return context.Channel.SendMessageAsync($"error: {result}");
+            // return CommandFailedAsync(context, result);
+            return Task.CompletedTask;
+        }
+
+        public Task CommandFailedAsync(ICommandContext context, IResult result)
+        {
+            return context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
         }
 
         public Task InitializeAsync()
@@ -40,17 +46,22 @@ namespace KomiBot.Services
             return _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
-        public Task MessageReceivedAsync(SocketMessage rawMessage)
+        public async Task MessageReceivedAsync(SocketMessage rawMessage)
         {
-            if (!(rawMessage is SocketUserMessage message)) return Task.CompletedTask;
-            if (message.Source != MessageSource.User) return Task.CompletedTask;
+            if (!(rawMessage is SocketUserMessage message)) return;
+            if (message.Source != MessageSource.User) return;
 
             var argPos = 0;
             if (!(message.HasStringPrefix("k!", ref argPos) ||
-                  message.HasMentionPrefix(_discord.CurrentUser, ref argPos))) return Task.CompletedTask;
+                  message.HasMentionPrefix(_discord.CurrentUser, ref argPos))) return;
 
             var context = new SocketCommandContext(_discord, message);
-            return _commands.ExecuteAsync(context, argPos, _services);
+            var result = await _commands.ExecuteAsync(context, argPos, _services);
+
+            if (!result.IsSuccess)
+            {
+                await CommandFailedAsync(context, result).ConfigureAwait(false);
+            }
         }
     }
 }
