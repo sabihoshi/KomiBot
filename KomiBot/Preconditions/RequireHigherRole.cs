@@ -2,14 +2,15 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
+using JetBrains.Annotations;
 
 namespace KomiBot.Preconditions
 {
     public class RequireHigherRole : ParameterPreconditionAttribute
     {
-        private readonly string _command;
+        private readonly string? _command;
 
-        public RequireHigherRole(string command = null)
+        public RequireHigherRole(string? command = null)
         {
             _command = command;
         }
@@ -21,18 +22,12 @@ namespace KomiBot.Preconditions
             if (!(context.User is SocketGuildUser guildUser))
                 return PreconditionResult.FromError("This command cannot be used outside of a guild.");
 
-            SocketGuildUser targetUser;
-            switch (value)
+            var targetUser = value switch
             {
-                case SocketGuildUser targetGuildUser:
-                    targetUser = targetGuildUser;
-                    break;
-                case ulong userId:
-                    targetUser = await context.Guild.GetUserAsync(userId).ConfigureAwait(false) as SocketGuildUser;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                SocketGuildUser t => t,
+                ulong userId => await context.Guild.GetUserAsync(userId).ConfigureAwait(false) as SocketGuildUser,
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
             if (targetUser == null)
                 return PreconditionResult.FromError("User not found.");

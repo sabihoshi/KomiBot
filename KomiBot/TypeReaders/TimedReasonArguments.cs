@@ -8,6 +8,6 @@ namespace KomiBot.TypeReaders
     {
         public TimeSpan Time { get; set; } = TimeSpan.Zero;
 
-        public string Reason { get; set; }
+        public string Reason { get; set; } = string.Empty;
     }
 }
