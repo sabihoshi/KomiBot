@@ -16,14 +16,14 @@ namespace KomiBot.Services.Help
 
         public static CommandHelpData FromCommandInfo(CommandInfo command)
         {
-            var ret = new CommandHelpData()
+            var ret = new CommandHelpData
             {
                 Name = command.Name,
                 Summary = command.Summary,
                 Aliases = command.Aliases,
                 Parameters = command.Parameters
-                    .Select(x => ParameterHelpData.FromParameterInfo(x))
-                    .ToArray(),
+                                    .Select(x => ParameterHelpData.FromParameterInfo(x))
+                                    .ToArray()
             };
 
             return ret;

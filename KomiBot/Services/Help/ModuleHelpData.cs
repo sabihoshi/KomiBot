@@ -14,6 +14,8 @@ namespace KomiBot.Services.Help
 
         public IReadOnlyCollection<CommandHelpData> Commands { get; set; }
 
+        public IReadOnlyCollection<string> HelpTags { get; set; }
+
         public static ModuleHelpData FromModuleInfo(ModuleInfo module)
         {
             var moduleName = module.Name;
@@ -30,7 +32,12 @@ namespace KomiBot.Services.Help
                 Commands = module.Commands
                                  .Where(x => !ShouldBeHidden(x))
                                  .Select(x => CommandHelpData.FromCommandInfo(x))
-                                 .ToArray()
+                                 .ToArray(),
+                HelpTags = module.Attributes
+                                 .OfType<HelpTagsAttribute>()
+                                 .SingleOrDefault()
+                                ?.Tags
+                        ?? Array.Empty<string>()
             };
 
             return ret;

@@ -23,7 +23,7 @@ namespace KomiBot
                   .AddSingleton<CommandService>()
                   .AddSingleton<CommandHandlingService>()
                   .AddSingleton<ApplicationService>()
-                  .AddSingleton<ICommandHelpService, CommandHelpService>()
+                  .AddCommandHelp()
                   .BuildServiceProvider();
         }
 

@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,22 +70,26 @@ namespace KomiBot.Modules
         }
 
         [Command]
-        [Summary("Prints a neat list of all commands in the supplied module.")]
+        [Summary("Prints a neat list of all commands based on the supplied query.")]
         [Priority(-10)]
-        public async Task HelpAsync([Remainder]string moduleName)
+        public async Task HelpAsync(
+            [Remainder] [Summary("The module name or related query to use to search for the help module.")]
+            string query)
         {
-            var foundModule = _commandHelpService.GetModuleHelpData().FirstOrDefault(d => d.Name.IndexOf(moduleName, StringComparison.OrdinalIgnoreCase) >= 0);
+            var foundModule = _commandHelpService.GetModuleHelpData(query);
+            var foundCommand = _commandHelpService.GetCommandHelpData(query);
 
-            if (foundModule is null)
+            var sanitizedQuery = FormatUtilities.SanitizeAllMentions(query);
+
+            if (foundModule is null && foundCommand is null)
             {
-                await ReplyAsync($"Sorry, I couldn't find the \"{moduleName}\" module.");
+                await ReplyAsync($"Sorry, I couldn't find help related to \"{sanitizedQuery}\".");
                 return;
             }
 
-            var embed = GetEmbedForModule(foundModule);
+            var embed = foundModule == null ? GetEmbedForCommand(foundCommand) : GetEmbedForModule(foundModule);
 
-            await ReplyAsync($"Results for \"{moduleName}\":", embed: embed.Build());
-
+            await ReplyAsync($"Results for \"{sanitizedQuery}\":", embed: embed.Build());
         }
 
         private EmbedBuilder GetEmbedForModule(ModuleHelpData module)
@@ -95,20 +98,28 @@ namespace KomiBot.Modules
                               .WithTitle($"Module: {module.Name}")
                               .WithDescription(module.Summary);
 
-            return AddCommandFields(embedBuilder, module.Commands);
+            foreach (var command in module.Commands)
+            {
+                AddCommandFields(embedBuilder, command);
+            }
+
+            return embedBuilder;
         }
 
-        private EmbedBuilder AddCommandFields(EmbedBuilder embedBuilder, IEnumerable<CommandHelpData> commands)
+        private EmbedBuilder GetEmbedForCommand(CommandHelpData command)
         {
-            foreach (var command in commands)
-            {
-                var summaryBuilder = new StringBuilder(command.Summary ?? "No summary.").AppendLine();
-                var summary = AppendAliases(summaryBuilder, command.Aliases);
 
-                embedBuilder.AddField(new EmbedFieldBuilder()
-                                     .WithName($"Command: !{command.Aliases.FirstOrDefault()} {GetParams(command)}")
-                                     .WithValue(summary.ToString()));
-            }
+            return AddCommandFields(new EmbedBuilder(), command);
+        }
+
+        private EmbedBuilder AddCommandFields(EmbedBuilder embedBuilder, CommandHelpData command)
+        {
+            var summaryBuilder = new StringBuilder(command.Summary ?? "No summary.").AppendLine();
+            var summary = AppendAliases(summaryBuilder, command.Aliases);
+
+            embedBuilder.AddField(new EmbedFieldBuilder()
+                                 .WithName($"Command: !{command.Aliases.FirstOrDefault()} {GetParams(command)}")
+                                 .WithValue(summary.ToString()));
 
             return embedBuilder;
         }

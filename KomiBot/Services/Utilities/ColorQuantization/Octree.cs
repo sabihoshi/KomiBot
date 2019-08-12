@@ -36,13 +36,13 @@ namespace KomiBot.Services.Utilities.ColorQuantization
             var i = 0;
             foreach (var leaf in _leaves)
             {
-                palette[i] = new PaletteItem()
+                palette[i] = new PaletteItem
                 {
                     Color = Color.FromArgb(
                         leaf.RCount / leaf.ReferenceCount,
                         leaf.GCount / leaf.ReferenceCount,
                         leaf.BCount / leaf.ReferenceCount),
-                    Weight = leaf.ReferenceCount,
+                    Weight = leaf.ReferenceCount
                 };
 
                 i++;
