@@ -14,10 +14,10 @@ namespace KomiBot.Services
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
 
-        public CommandHandlingService(IServiceProvider services)
+        public CommandHandlingService(IServiceProvider services, CommandService commands, DiscordSocketClient discord)
         {
-            _commands = services.GetRequiredService<CommandService>();
-            _discord = services.GetRequiredService<DiscordSocketClient>();
+            _commands = commands;
+            _discord = discord;
             _services = services;
 
             _commands.CommandExecuted += CommandExecutedAsync;
