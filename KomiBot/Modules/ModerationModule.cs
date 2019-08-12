@@ -27,5 +27,24 @@ namespace KomiBot.Modules
 
             await ReplyAsync($"{user.Username}#{user.Discriminator} was banned.");
         }
+
+        [Command("kick")]
+        [Summary("Kick a user mentioned")]
+        [Priority(10)]
+        [RequireContext(ContextType.Guild)]
+        [RequireUserPermission(GuildPermission.BanMembers)]
+        [RequireBotPermission(GuildPermission.BanMembers)]
+        [UsedImplicitly]
+        public async Task KickUserAsync(
+            [RequireHigherRole] IGuildUser user,
+            [Summary("time: 5h reason: Example")] TimedReasonArguments? args = null)
+        {
+            if (args == null)
+                await user.Guild.AddBanAsync(user);
+            else
+                await user.Guild.AddBanAsync(user, args.Time.Days, args.Reason);
+
+            await ReplyAsync($"{user.Username}#{user.Discriminator} was kicked.");
+        }
     }
 }
