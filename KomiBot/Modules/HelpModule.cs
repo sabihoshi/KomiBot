@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,6 @@ using KomiBot.Services.Utilities;
 
 namespace KomiBot.Modules
 {
-    [Name("Help")]
     [Group("help")]
     [Summary("Provides commands for helping users to understand how to interact with MODiX.")]
     public sealed class HelpModule : ModuleBase<SocketCommandContext>
