@@ -4,6 +4,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using KomiBot.Services;
+using KomiBot.Services.Help;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace KomiBot
@@ -22,6 +23,7 @@ namespace KomiBot
                   .AddSingleton<CommandService>()
                   .AddSingleton<CommandHandlingService>()
                   .AddSingleton<ApplicationService>()
+                  .AddCommandHelp()
                   .BuildServiceProvider();
         }
 

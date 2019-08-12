@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using JetBrains.Annotations;
@@ -7,10 +7,12 @@ using KomiBot.TypeReaders;
 
 namespace KomiBot.Modules
 {
+    [Name("Moderation")]
+    [Summary("Commands for moderation in the server.")]
     public class ModerationModule : ModuleBase<SocketCommandContext>
     {
         [Command("ban")]
-        [Summary("Bans a user mentioned")]
+        [Summary("Bans a user mentioned.")]
         [Priority(10)]
         [RequireContext(ContextType.Guild)]
         [RequireUserPermission(GuildPermission.BanMembers)]
