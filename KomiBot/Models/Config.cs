@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace KomiBot.Models
+﻿namespace KomiBot.Models
 {
     public class Config
     {

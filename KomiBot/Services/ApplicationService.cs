@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using KomiBot.Models;
-using Microsoft.Extensions.DependencyInjection;
+﻿using KomiBot.Models;
 
 namespace KomiBot.Services
 {

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using JetBrains.Annotations;
 
 namespace KomiBot.Preconditions
 {

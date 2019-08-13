@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace KomiBot.Models
+﻿namespace KomiBot.Models
 {
     public interface ISchema
     {

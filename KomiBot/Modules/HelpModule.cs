@@ -171,7 +171,7 @@ namespace KomiBot.Modules
         {
             var sb = new StringBuilder();
 
-            var parameterInfo = info.Parameters.Select(p => GetParamName(p));
+            var parameterInfo = info.Parameters.Select(GetParamName);
             sb.Append(string.Join(" ", parameterInfo));
 
             return sb.ToString();

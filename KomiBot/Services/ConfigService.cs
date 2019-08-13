@@ -1,6 +1,6 @@
 ﻿using System.IO;
-using Newtonsoft.Json;
 using System.Reflection;
+using Newtonsoft.Json;
 
 namespace KomiBot.Services
 {

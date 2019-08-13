@@ -58,7 +58,8 @@ namespace KomiBot.Services.Help
         {
             var allHelpData = GetModuleHelpData();
 
-            var byModuleNameExact = allHelpData.FirstOrDefault(x => x.Name.Equals(query, StringComparison.OrdinalIgnoreCase));
+            var byModuleNameExact =
+                allHelpData.FirstOrDefault(x => x.Name.Equals(query, StringComparison.OrdinalIgnoreCase));
             if (byModuleNameExact != null)
                 return byModuleNameExact;
 
@@ -86,7 +87,8 @@ namespace KomiBot.Services.Help
         {
             var allHelpData = GetModuleHelpData().SelectMany(x => x.Commands);
 
-            var byModuleNameExact = allHelpData.FirstOrDefault(x => x.Name.Equals(query, StringComparison.OrdinalIgnoreCase));
+            var byModuleNameExact =
+                allHelpData.FirstOrDefault(x => x.Name.Equals(query, StringComparison.OrdinalIgnoreCase));
             if (byModuleNameExact != null)
                 return byModuleNameExact;
 

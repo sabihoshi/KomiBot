@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace KomiBot.Services
 {
@@ -58,10 +57,7 @@ namespace KomiBot.Services
             var context = new SocketCommandContext(_discord, message);
             var result = await _commands.ExecuteAsync(context, argPos, _services);
 
-            if (!result.IsSuccess)
-            {
-                await CommandFailedAsync(context, result).ConfigureAwait(false);
-            }
+            if (!result.IsSuccess) await CommandFailedAsync(context, result).ConfigureAwait(false);
         }
     }
 }
