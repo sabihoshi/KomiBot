@@ -179,6 +179,12 @@ namespace KomiBot.Services.Utilities
             return _roleMentionRegex.Replace(text, "<@&\x200b${Id}>");
         }
 
+        /// <summary>
+        ///     Surrounds a string with "[]" or "<>" if it's optional or not.
+        /// </summary>
+        public static string SurroundNullability(this string text, bool isNullable) =>
+            isNullable ? $"[{text}]" : $"<{text}>";
+
         private static readonly Regex _userMentionRegex = new Regex("<@!?(?<Id>[0-9]+)>", RegexOptions.Compiled);
 
         private static readonly Regex _roleMentionRegex = new Regex("<@&(?<Id>[0-9]+)>", RegexOptions.Compiled);

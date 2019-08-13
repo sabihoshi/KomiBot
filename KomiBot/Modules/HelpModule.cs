@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -98,28 +99,29 @@ namespace KomiBot.Modules
                               .WithTitle($"Module: {module.Name}")
                               .WithDescription(module.Summary);
 
-            foreach (var command in module.Commands)
-            {
-                AddCommandFields(embedBuilder, command);
-            }
+            foreach (var command in module.Commands) AddCommandFields(embedBuilder, command);
 
             return embedBuilder;
         }
 
         private EmbedBuilder GetEmbedForCommand(CommandHelpData command)
         {
-
             return AddCommandFields(new EmbedBuilder(), command);
         }
 
         private EmbedBuilder AddCommandFields(EmbedBuilder embedBuilder, CommandHelpData command)
         {
             var summaryBuilder = new StringBuilder(command.Summary ?? "No summary.").AppendLine();
-            var summary = AppendAliases(summaryBuilder, command.Aliases);
+
+            AppendAliases(summaryBuilder, command.Aliases
+                                                 .Where(c => !c.Equals(command.Name,
+                                                      StringComparison.OrdinalIgnoreCase))
+                                                 .ToList());
+            AppendParameters(summaryBuilder, command.Parameters);
 
             embedBuilder.AddField(new EmbedFieldBuilder()
-                                 .WithName($"Command: !{command.Aliases.FirstOrDefault()} {GetParams(command)}")
-                                 .WithValue(summary.ToString()));
+                                 .WithName($"Command: `k!{command.Name} {GetParams(command)}`")
+                                 .WithValue(summaryBuilder.ToString()));
 
             return embedBuilder;
         }
@@ -136,19 +138,46 @@ namespace KomiBot.Modules
             return stringBuilder;
         }
 
+        private StringBuilder AppendParameters(StringBuilder stringBuilder,
+            IReadOnlyCollection<ParameterHelpData> parameters)
+        {
+            if (parameters.Count == 0)
+                return stringBuilder;
+
+            stringBuilder.AppendLine(Format.Bold("Parameters:"));
+
+            foreach (var parameter in parameters)
+            {
+                if (!(parameter.Summary is null))
+                    stringBuilder.AppendLine($"• {Format.Bold(parameter.Name)}: {parameter.Summary}");
+
+                if (parameter.Options != null)
+                    foreach (var option in parameter.Options)
+                        stringBuilder.AppendLine($"• {Format.Bold(option.Name)}: {option.Summary}");
+            }
+
+            return stringBuilder;
+        }
+
         private string GetParams(CommandHelpData info)
         {
             var sb = new StringBuilder();
 
-            foreach (var parameter in info.Parameters)
-            {
-                if (parameter.IsOptional)
-                    sb.Append($"[Optional({parameter.Name})]");
-                else
-                    sb.Append($"[{parameter.Name}]");
-            }
+            var parameterInfo = info.Parameters.Select(p => GetParamName(p));
+            sb.Append(string.Join(" ", parameterInfo));
 
             return sb.ToString();
+        }
+
+        private string GetParamName(ParameterHelpData parameter)
+        {
+            if (parameter.Options != null)
+            {
+                var parameters = parameter.Options.Select(p => p.Name);
+                return string.Join("|", parameters).SurroundNullability(parameter.IsOptional);
+            }
+
+            return parameter.Name.SurroundNullability(parameter.IsOptional);
         }
     }
 }

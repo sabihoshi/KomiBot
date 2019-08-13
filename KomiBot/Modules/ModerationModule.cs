@@ -12,7 +12,7 @@ namespace KomiBot.Modules
     public class ModerationModule : ModuleBase<SocketCommandContext>
     {
         [Command("ban")]
-        [Summary("Bans a user mentioned.")]
+        [Summary("Bans a user mentioned.\nExample: `k!ban @user time: 5d reason: Spam`")]
         [Priority(10)]
         [RequireContext(ContextType.Guild)]
         [RequireUserPermission(GuildPermission.BanMembers)]
@@ -20,7 +20,7 @@ namespace KomiBot.Modules
         [UsedImplicitly]
         public async Task BanUserAsync(
             [RequireHigherRole] IGuildUser user,
-            [Summary("time: 5h reason: Example")] TimedReasonArguments? args = null)
+            TimedReasonArguments? args = null)
         {
             if (args == null)
                 await user.Guild.AddBanAsync(user);
@@ -39,7 +39,7 @@ namespace KomiBot.Modules
         [UsedImplicitly]
         public async Task KickUserAsync(
             [RequireHigherRole] IGuildUser user,
-            [Summary("time: 5h reason: Example")] TimedReasonArguments? args = null)
+            TimedReasonArguments? args = null)
         {
             if (args == null)
                 await user.Guild.AddBanAsync(user);
