@@ -145,7 +145,7 @@ namespace KomiBot.Modules
             foreach (var parameter in parameters)
             {
                 if (!(parameter.Summary is null))
-                    stringBuilder.AppendLine($"{Format.Bold(parameter.Name)}: {parameter.Summary}");
+                    stringBuilder.AppendLine($"• {Format.Bold(parameter.Name)}: {parameter.Summary}");
             }
 
             return stringBuilder;
@@ -155,7 +155,8 @@ namespace KomiBot.Modules
         {
             var sb = new StringBuilder();
 
-            foreach (var parameter in info.Parameters) sb.Append(GetParamName(parameter));
+            var parameterInfo = info.Parameters.Select(p => GetParamName(p));
+            sb.Append(string.Join(" ", parameterInfo));
 
             return sb.ToString();
         }
