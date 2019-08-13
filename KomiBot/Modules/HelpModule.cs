@@ -148,15 +148,23 @@ namespace KomiBot.Modules
 
             foreach (var parameter in parameters)
             {
-                if (!(parameter.Summary is null))
-                    stringBuilder.AppendLine($"• {Format.Bold(parameter.Name)}: {parameter.Summary}");
+                AppendSummary(stringBuilder, parameter);
 
-                if (parameter.Options != null)
-                    foreach (var option in parameter.Options)
-                        stringBuilder.AppendLine($"• {Format.Bold(option.Name)}: {option.Summary}");
+                if (parameter.Options == null) continue;
+
+                foreach (var option in parameter.Options)
+                    AppendSummary(stringBuilder, option);
             }
 
             return stringBuilder;
+
+            void AppendSummary(StringBuilder sb, ParameterHelpData parameter)
+            {
+                if (string.IsNullOrEmpty(parameter.Summary))
+                    return;
+
+                sb.AppendLine($"• {Format.Bold(parameter.Name)}: {parameter.Summary}");
+            }
         }
 
         private string GetParams(CommandHelpData info)
