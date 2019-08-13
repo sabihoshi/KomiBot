@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -112,11 +113,14 @@ namespace KomiBot.Modules
         {
             var summaryBuilder = new StringBuilder(command.Summary ?? "No summary.").AppendLine();
 
-            AppendAliases(summaryBuilder, command.Aliases);
+            AppendAliases(summaryBuilder, command.Aliases
+                                                 .Where(c => !c.Equals(command.Name,
+                                                      StringComparison.OrdinalIgnoreCase))
+                                                 .ToList());
             AppendParameters(summaryBuilder, command.Parameters);
 
             embedBuilder.AddField(new EmbedFieldBuilder()
-                                 .WithName($"Command: k!{command.Aliases.FirstOrDefault()} {GetParams(command)}")
+                                 .WithName($"Command: `k!{command.Name} {GetParams(command)}`")
                                  .WithValue(summaryBuilder.ToString()));
 
             return embedBuilder;
@@ -140,12 +144,16 @@ namespace KomiBot.Modules
             if (parameters.Count == 0)
                 return stringBuilder;
 
-            stringBuilder.AppendLine(Format.Bold("Paramters:"));
+            stringBuilder.AppendLine(Format.Bold("Parameters:"));
 
             foreach (var parameter in parameters)
             {
                 if (!(parameter.Summary is null))
                     stringBuilder.AppendLine($"• {Format.Bold(parameter.Name)}: {parameter.Summary}");
+
+                if (parameter.Options != null)
+                    foreach (var option in parameter.Options)
+                        stringBuilder.AppendLine($"• {Format.Bold(option.Name)}: {option.Summary}");
             }
 
             return stringBuilder;
@@ -163,7 +171,13 @@ namespace KomiBot.Modules
 
         private string GetParamName(ParameterHelpData parameter)
         {
-            return parameter.IsOptional ? $"[{parameter.Name}]" : $"<{parameter.Name}>";
+            if (parameter.Options != null)
+            {
+                var parameters = parameter.Options.Select(p => p.Name);
+                return string.Join("|", parameters).SurroundNullability(parameter.IsOptional);
+            }
+
+            return parameter.Name.SurroundNullability(parameter.IsOptional);
         }
     }
 }
