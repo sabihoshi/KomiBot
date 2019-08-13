@@ -75,15 +75,8 @@ namespace KomiBot.Services.Help
 
         private static string GetSummary(PropertyInfo property)
         {
-            var byDiscord = (property.GetCustomAttribute(typeof(SummaryAttribute)) as SummaryAttribute)?.Text;
-            if (byDiscord != null)
-                return byDiscord;
-
             var byProperty = (property.GetCustomAttribute(typeof(NamedArgSummaryAttrib)) as SummaryAttribute)?.Text;
-            if (byProperty != null)
-                return byProperty;
-
-            return string.Empty;
+            return byProperty ?? string.Empty;
         }
     }
 }
