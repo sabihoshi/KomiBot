@@ -98,28 +98,26 @@ namespace KomiBot.Modules
                               .WithTitle($"Module: {module.Name}")
                               .WithDescription(module.Summary);
 
-            foreach (var command in module.Commands)
-            {
-                AddCommandFields(embedBuilder, command);
-            }
+            foreach (var command in module.Commands) AddCommandFields(embedBuilder, command);
 
             return embedBuilder;
         }
 
         private EmbedBuilder GetEmbedForCommand(CommandHelpData command)
         {
-
             return AddCommandFields(new EmbedBuilder(), command);
         }
 
         private EmbedBuilder AddCommandFields(EmbedBuilder embedBuilder, CommandHelpData command)
         {
             var summaryBuilder = new StringBuilder(command.Summary ?? "No summary.").AppendLine();
-            var summary = AppendAliases(summaryBuilder, command.Aliases);
+
+            AppendAliases(summaryBuilder, command.Aliases);
+            AppendParameters(summaryBuilder, command.Parameters);
 
             embedBuilder.AddField(new EmbedFieldBuilder()
-                                 .WithName($"Command: !{command.Aliases.FirstOrDefault()} {GetParams(command)}")
-                                 .WithValue(summary.ToString()));
+                                 .WithName($"Command: k!{command.Aliases.FirstOrDefault()} {GetParams(command)}")
+                                 .WithValue(summaryBuilder.ToString()));
 
             return embedBuilder;
         }
@@ -136,19 +134,35 @@ namespace KomiBot.Modules
             return stringBuilder;
         }
 
+        private StringBuilder AppendParameters(StringBuilder stringBuilder,
+            IReadOnlyCollection<ParameterHelpData> parameters)
+        {
+            if (parameters.Count == 0)
+                return stringBuilder;
+
+            stringBuilder.AppendLine(Format.Bold("Paramters:"));
+
+            foreach (var parameter in parameters)
+            {
+                if (!(parameter.Summary is null))
+                    stringBuilder.AppendLine($"{Format.Bold(parameter.Name)}: {parameter.Summary}");
+            }
+
+            return stringBuilder;
+        }
+
         private string GetParams(CommandHelpData info)
         {
             var sb = new StringBuilder();
 
-            foreach (var parameter in info.Parameters)
-            {
-                if (parameter.IsOptional)
-                    sb.Append($"[Optional({parameter.Name})]");
-                else
-                    sb.Append($"[{parameter.Name}]");
-            }
+            foreach (var parameter in info.Parameters) sb.Append(GetParamName(parameter));
 
             return sb.ToString();
+        }
+
+        private string GetParamName(ParameterHelpData parameter)
+        {
+            return parameter.IsOptional ? $"[{parameter.Name}]" : $"<{parameter.Name}>";
         }
     }
 }
