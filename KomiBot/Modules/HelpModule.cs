@@ -113,14 +113,15 @@ namespace KomiBot.Modules
         {
             var summaryBuilder = new StringBuilder(command.Summary ?? "No summary.").AppendLine();
 
+            var name = command.Aliases.FirstOrDefault();
             AppendAliases(summaryBuilder, command.Aliases
-                                                 .Where(c => !c.Equals(command.Name,
+                                                 .Where(c => !c.Equals(name,
                                                       StringComparison.OrdinalIgnoreCase))
                                                  .ToList());
             AppendParameters(summaryBuilder, command.Parameters);
 
             embedBuilder.AddField(new EmbedFieldBuilder()
-                                 .WithName($"Command: `k!{command.Name} {GetParams(command)}`")
+                                 .WithName($"Command: `k!{name} {GetParams(command)}`")
                                  .WithValue(summaryBuilder.ToString()));
 
             return embedBuilder;
