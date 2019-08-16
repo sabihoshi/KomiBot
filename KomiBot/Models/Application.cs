@@ -1,17 +1,18 @@
-﻿using JetBrains.Annotations;
-
-namespace KomiBot.Models
+﻿namespace KomiBot.Models
 {
     public class Application
     {
-        public Application(ulong owner, [NotNull] string token)
+        public Application(ulong owner, string token, string connectionString)
         {
             Owner = owner;
             Token = token;
+            ConnectionString = connectionString;
         }
 
-        [NotNull] public ulong Owner { get; }
+        public ulong Owner { get; }
 
-        [NotNull] public string Token { get; }
+        public string Token { get; }
+
+        public string ConnectionString { get; }
     }
 }
