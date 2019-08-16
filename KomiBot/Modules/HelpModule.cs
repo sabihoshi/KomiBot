@@ -71,26 +71,78 @@ namespace KomiBot.Modules
         }
 
         [Command]
-        [Summary("Prints a neat list of all commands based on the supplied query.")]
+        [Summary("Retrieves help from a specific module or command.")]
         [Priority(-10)]
         public async Task HelpAsync(
-            [Remainder] [Summary("The module name or related query to use to search for the help module.")]
+            [Remainder] [Summary("Name of the module or command to query.")]
             string query)
         {
-            var foundModule = _commandHelpService.GetModuleHelpData(query);
-            var foundCommand = _commandHelpService.GetCommandHelpData(query);
+            await HelpAsync(query, HelpDataType.Command | HelpDataType.Module);
+        }
 
+        [Command("module"), Alias("modules")]
+        [Summary("Retrieves help from a specific module. Useful for modules that have an overlapping command name.")]
+        public async Task HelpModuleAsync(
+            [Remainder] [Summary("Name of the module to query.")]
+            string query)
+        {
+            await HelpAsync(query, HelpDataType.Module);
+        }
+
+        [Command("command"), Alias("commands")]
+        [Summary("Retrieves help from a specific command. Useful for commands that have an overlapping module name.")]
+        public async Task HelpCommandAsync(
+            [Remainder] [Summary("Name of the module to query.")]
+            string query)
+        {
+            await HelpAsync(query, HelpDataType.Command);
+        }
+
+        private async Task HelpAsync(string query, HelpDataType type)
+        {
             var sanitizedQuery = FormatUtilities.SanitizeAllMentions(query);
 
-            if (foundModule is null && foundCommand is null)
+            if (TryGetEmbed(query, type, out var embed))
             {
-                await ReplyAsync($"Sorry, I couldn't find help related to \"{sanitizedQuery}\".");
+                await ReplyAsync($"Results for \"{sanitizedQuery}\":", embed: embed.Build());
                 return;
             }
 
-            var embed = foundModule == null ? GetEmbedForCommand(foundCommand) : GetEmbedForModule(foundModule);
+            await ReplyAsync($"Sorry, I couldn't find help related to \"{sanitizedQuery}\".");
+        }
 
-            await ReplyAsync($"Results for \"{sanitizedQuery}\":", embed: embed.Build());
+        private bool TryGetEmbed(string query, HelpDataType queries, out EmbedBuilder embed)
+        {
+            embed = null;
+
+            if (queries.HasFlag(HelpDataType.Command))
+            {
+                var byCommand = _commandHelpService.GetCommandHelpData(query);
+                if (byCommand != null)
+                {
+                    embed = GetEmbedForCommand(byCommand);
+                    return true;
+                }
+            }
+
+            if (queries.HasFlag(HelpDataType.Module))
+            {
+                var byModule = _commandHelpService.GetModuleHelpData(query);
+                if (byModule != null)
+                {
+                    embed = GetEmbedForModule(byModule);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        [Flags]
+        public enum HelpDataType
+        {
+            Command = 1 << 1,
+            Module = 1 << 2
         }
 
         private EmbedBuilder GetEmbedForModule(ModuleHelpData module)
