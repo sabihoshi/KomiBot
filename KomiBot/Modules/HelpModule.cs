@@ -104,14 +104,14 @@ namespace KomiBot.Modules
 
             if (TryGetEmbed(query, type, out var embed))
             {
-                await ReplyAsync($"Results for \"{sanitizedQuery}\":", embed: embed.Build());
+                await ReplyAsync($"Results for \"{sanitizedQuery}\":", embed: embed?.Build());
                 return;
             }
 
             await ReplyAsync($"Sorry, I couldn't find help related to \"{sanitizedQuery}\".");
         }
 
-        private bool TryGetEmbed(string query, HelpDataType queries, out EmbedBuilder embed)
+        private bool TryGetEmbed(string query, HelpDataType queries, out EmbedBuilder? embed)
         {
             embed = null;
 
@@ -192,9 +192,9 @@ namespace KomiBot.Modules
         }
 
         private StringBuilder AppendParameters(StringBuilder stringBuilder,
-            IReadOnlyCollection<ParameterHelpData> parameters)
+            IReadOnlyCollection<ParameterHelpData>? parameters)
         {
-            if (parameters.Count == 0)
+            if (parameters == null || parameters.Count == 0)
                 return stringBuilder;
 
             stringBuilder.AppendLine(Format.Bold("Parameters:"));

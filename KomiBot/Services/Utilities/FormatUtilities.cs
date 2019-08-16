@@ -30,7 +30,7 @@ namespace KomiBot.Services.Utilities
         /// </summary>
         /// <param name="code">The code</param>
         /// <returns>The code language if a match is found, null of none are found</returns>
-        public static string GetCodeLanguage(string message)
+        public static string? GetCodeLanguage(string message)
         {
             var match = _buildContentRegex.Match(message);
             if (match.Success)

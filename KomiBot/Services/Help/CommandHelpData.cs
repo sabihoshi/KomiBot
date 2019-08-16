@@ -6,13 +6,13 @@ namespace KomiBot.Services.Help
 {
     public class CommandHelpData
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public string Summary { get; set; }
+        public string? Summary { get; set; }
 
-        public IReadOnlyCollection<string> Aliases { get; set; }
+        public IReadOnlyCollection<string>? Aliases { get; set; }
 
-        public IReadOnlyCollection<ParameterHelpData> Parameters { get; set; }
+        public IReadOnlyCollection<ParameterHelpData>? Parameters { get; set; }
 
         public static CommandHelpData FromCommandInfo(CommandInfo command)
         {

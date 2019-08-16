@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Discord.Commands;
 using Humanizer;
+using JetBrains.Annotations;
 
 namespace KomiBot.Services.Help
 {
@@ -10,7 +11,7 @@ namespace KomiBot.Services.Help
     {
         public string Name { get; set; }
 
-        public string Summary { get; set; }
+        public string? Summary { get; set; }
 
         public IReadOnlyCollection<CommandHelpData> Commands { get; set; }
 

@@ -27,16 +27,16 @@ namespace KomiBot.Services.Help
         ///     Help information for the supplied query, or <see langword="null" /> if no information could be found for the
         ///     supplied query.
         /// </returns>
-        ModuleHelpData GetModuleHelpData(string query);
+        ModuleHelpData? GetModuleHelpData(string query);
 
-        CommandHelpData GetCommandHelpData(string query);
+        CommandHelpData? GetCommandHelpData(string query);
     }
 
     /// <inheritdoc />
     public class CommandHelpService : ICommandHelpService
     {
         private readonly CommandService _commandService;
-        private IReadOnlyCollection<ModuleHelpData> _cachedHelpData;
+        private IReadOnlyCollection<ModuleHelpData>? _cachedHelpData;
 
         public CommandHelpService(CommandService commandService)
         {
@@ -54,7 +54,7 @@ namespace KomiBot.Services.Help
         }
 
         /// <inheritdoc />
-        public ModuleHelpData GetModuleHelpData(string query)
+        public ModuleHelpData? GetModuleHelpData(string query)
         {
             var allHelpData = GetModuleHelpData();
 
@@ -83,7 +83,7 @@ namespace KomiBot.Services.Help
         }
 
         /// <inheritdoc />
-        public CommandHelpData GetCommandHelpData(string query)
+        public CommandHelpData? GetCommandHelpData(string query)
         {
             var allHelpData = GetModuleHelpData().SelectMany(x => x.Commands);
 
