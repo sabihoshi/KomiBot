@@ -44,8 +44,8 @@ namespace KomiBot.Modules
         [Summary("Kick a user mentioned")]
         [Priority(10)]
         [RequireContext(ContextType.Guild)]
-        [RequireUserPermission(GuildPermission.BanMembers)]
-        [RequireBotPermission(GuildPermission.BanMembers)]
+        [RequireUserPermission(GuildPermission.KickMembers)]
+        [RequireBotPermission(GuildPermission.KickMembers)]
         [UsedImplicitly]
         public async Task KickUserAsync(
             [RequireHigherRole] IGuildUser user,
