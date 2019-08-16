@@ -88,12 +88,12 @@ namespace KomiBot.Services.Help
             var allHelpData = GetModuleHelpData().SelectMany(x => x.Commands);
 
             var byModuleNameExact =
-                allHelpData.FirstOrDefault(x => x.Name.Equals(query, StringComparison.OrdinalIgnoreCase));
+                allHelpData.FirstOrDefault(x => x.Aliases.Any(y => y.Equals(query, StringComparison.OrdinalIgnoreCase)));
             if (byModuleNameExact != null)
                 return byModuleNameExact;
 
             var byNameContains =
-                allHelpData.FirstOrDefault(x => x.Name.Contains(query, StringComparison.OrdinalIgnoreCase));
+                allHelpData.FirstOrDefault(x => x.Aliases.Any(y => y.Contains(query, StringComparison.OrdinalIgnoreCase)));
             if (byNameContains != null)
                 return byNameContains;
 
