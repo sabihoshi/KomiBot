@@ -10,6 +10,6 @@ namespace KomiBot.TypeReaders
         public TimeSpan Time { get; set; } = TimeSpan.Zero;
 
         [NamedArgSummaryAttrib("Reason to be written to Audit Log.")]
-        public string Reason { get; set; } = string.Empty;
+        public string? Reason { get; set; } = string.Empty;
     }
 }
