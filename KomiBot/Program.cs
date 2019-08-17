@@ -4,6 +4,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using KomiBot.Services;
+using KomiBot.Services.Core;
 using KomiBot.Services.Help;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using KomiBot.Services.Guild;
 
-namespace KomiBot.Models.GuildData.Data
+namespace KomiBot.Services.Moderation
 {
     public class ModerationData : IGuildData
     {

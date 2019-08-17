@@ -5,7 +5,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 
-namespace KomiBot.Services
+namespace KomiBot.Services.Core
 {
     public class CommandHandlingService
     {

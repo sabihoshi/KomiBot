@@ -1,6 +1,7 @@
 ﻿using System;
+using KomiBot.Services.Guild;
 
-namespace KomiBot.Models.GuildData.Data
+namespace KomiBot.Services.Moderation
 {
     public class WarningData : IGuildData
     {
@@ -12,7 +13,7 @@ namespace KomiBot.Models.GuildData.Data
 
         public int Count { get; set; }
 
-        public string? Reason { get; set; }
+        public string Reason { get; set; }
 
         public DateTime Date { get; set; }
     }

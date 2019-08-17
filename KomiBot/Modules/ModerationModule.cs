@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using JetBrains.Annotations;
-using KomiBot.Models.GuildData.Data;
-using KomiBot.Models.GuildData.Settings;
 using KomiBot.Preconditions;
 using KomiBot.Services;
+using KomiBot.Services.Core;
+using KomiBot.Services.Moderation;
 using KomiBot.TypeReaders;
 
 namespace KomiBot.Modules

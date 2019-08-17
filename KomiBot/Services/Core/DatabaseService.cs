@@ -1,9 +1,8 @@
 ﻿using Discord;
-using KomiBot.Models;
-using KomiBot.Models.GuildData;
+using KomiBot.Services.Guild;
 using LiteDB;
 
-namespace KomiBot.Services
+namespace KomiBot.Services.Core
 {
     public class DatabaseService
     {

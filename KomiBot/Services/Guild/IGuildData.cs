@@ -1,4 +1,4 @@
-﻿namespace KomiBot.Models.GuildData
+﻿namespace KomiBot.Services.Guild
 {
     public interface IGuildData
     {
