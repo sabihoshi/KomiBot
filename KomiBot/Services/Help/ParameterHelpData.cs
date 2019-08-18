@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Discord.Commands;
+using KomiBot.Services.Utilities;
 using KomiBot.TypeReaders;
 using ParameterInfo = Discord.Commands.ParameterInfo;
 
@@ -25,9 +26,12 @@ namespace KomiBot.Services.Help
             var (typeName, isNullable) = GetTypeInfo(parameter.Type);
             var name = parameter.Name;
             var summary = parameter.Summary;
-            var options = parameter.Type.IsEnum
-                ? FromEnum(parameter.Type.GetEnumNames())
-                : FromNamedArgumentInfo(parameter.Type);
+            var options = parameter.Type switch
+            {
+                var t when t.IsEnum => FromEnum(t.GetEnumValues().Cast<dynamic>()),
+                var t when t.GetCustomAttribute<NamedArgumentTypeAttribute>() != null => FromNamedArgumentInfo(parameter.Type),
+                _ => null
+            };
 
             return new ParameterHelpData(name, summary, typeName, isNullable || parameter.IsOptional, options);
         }
@@ -42,23 +46,29 @@ namespace KomiBot.Services.Help
             Options = options;
         }
 
-        private static IReadOnlyCollection<ParameterHelpData> FromEnum(string[] names)
+        private static IReadOnlyCollection<ParameterHelpData> FromEnum(IEnumerable<dynamic> names)
         {
-            return names.Select(n => new ParameterHelpData(n)).ToList();
+            var result = new List<ParameterHelpData>();
+
+            foreach (Enum n in names)
+            {
+                var name = n.ToString();
+                var summary = n.GetSummary();
+                result.Add(new ParameterHelpData(name, summary));
+            }
+
+            return result;
         }
 
-        private static IReadOnlyCollection<ParameterHelpData>? FromNamedArgumentInfo(Type type)
+        private static IReadOnlyCollection<ParameterHelpData> FromNamedArgumentInfo(Type type)
         {
-            if (type.GetCustomAttribute(typeof(NamedArgumentTypeAttribute)) is null)
-                return null;
-
             var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
             return properties.Select(p =>
             {
                 var (typeName, isNullable) = GetTypeInfo(type);
 
-                return new ParameterHelpData(p.Name, GetSummary(p), typeName, isNullable);
+                return new ParameterHelpData(p.Name, p.GetSummary(), typeName, isNullable);
             }).ToList();
         }
 
@@ -71,12 +81,6 @@ namespace KomiBot.Services.Help
             if (paramType.IsInterface && paramType.Name.StartsWith('I')) typeName = typeName.Substring(1);
 
             return new ValueTuple<string?, bool>(typeName, isNullable);
-        }
-
-        private static string GetSummary(PropertyInfo property)
-        {
-            var byProperty = (property.GetCustomAttribute(typeof(NamedArgSummaryAttrib)) as SummaryAttribute)?.Text;
-            return byProperty ?? string.Empty;
         }
     }
 }
