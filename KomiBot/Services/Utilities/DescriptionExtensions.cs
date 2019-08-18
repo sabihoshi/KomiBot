@@ -9,7 +9,7 @@ namespace KomiBot.Services.Utilities
 {
     public static class DescriptionExtensions
     {
-        public static string? GetSummary(this PropertyInfo property)
+        public static string? GetDescription(this PropertyInfo property)
         {
             try
             {
@@ -22,7 +22,7 @@ namespace KomiBot.Services.Utilities
 
         }
 
-        public static string? GetSummary(this Enum e)
+        public static string? GetDescription(this Enum e)
         {
             try
             {

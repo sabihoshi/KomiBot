@@ -53,7 +53,7 @@ namespace KomiBot.Services.Help
             foreach (Enum n in names)
             {
                 var name = n.ToString();
-                var summary = n.GetSummary();
+                var summary = n.GetDescription();
                 result.Add(new ParameterHelpData(name, summary));
             }
 
@@ -68,7 +68,7 @@ namespace KomiBot.Services.Help
             {
                 var (typeName, isNullable) = GetTypeInfo(type);
 
-                return new ParameterHelpData(p.Name, p.GetSummary(), typeName, isNullable);
+                return new ParameterHelpData(p.Name, p.GetDescription(), typeName, isNullable);
             }).ToList();
         }
 

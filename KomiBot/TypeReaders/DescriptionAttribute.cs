@@ -1,10 +1,11 @@
 ﻿using System;
+using Discord.Commands;
 
 namespace KomiBot.TypeReaders
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Enum | AttributeTargets.Field)]
-    public class SummaryAttribute : Discord.Commands.SummaryAttribute
+    public class DescriptionAttribute : SummaryAttribute
     {
-        public SummaryAttribute(string text) : base(text) { }
+        public DescriptionAttribute(string text) : base(text) { }
     }
 }
