@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using Discord.Commands;
@@ -13,7 +14,7 @@ namespace KomiBot.Services.Utilities
         {
             try
             {
-                return property.GetCustomAttribute<DescriptionAttribute>()?.Text;
+                return property.GetCustomAttribute<DescriptionAttribute>()?.Description;
             }
             catch
             {
@@ -26,7 +27,7 @@ namespace KomiBot.Services.Utilities
         {
             try
             {
-                return e.GetAttributeOfType<DescriptionAttribute>()?.Text;
+                return e.GetAttributeOfType<DescriptionAttribute>()?.Description;
             }
             catch
             {

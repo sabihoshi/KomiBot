@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,24 +81,14 @@ namespace KomiBot.Modules
             await HelpAsync(query, HelpDataType.Command | HelpDataType.Module);
         }
 
-        [Command("module")]
-        [Alias("modules")]
-        [Summary("Retrieves help from a specific module. Useful for modules that have an overlapping command name.")]
+        [Command]
+        [Summary("Retrieves help from a specified type.")]
         public async Task HelpModuleAsync(
+            HelpDataType type,
             [Remainder] [Summary("Name of the module to query.")]
             string query)
         {
-            await HelpAsync(query, HelpDataType.Module);
-        }
-
-        [Command("command")]
-        [Alias("commands")]
-        [Summary("Retrieves help from a specific command. Useful for commands that have an overlapping module name.")]
-        public async Task HelpCommandAsync(
-            [Remainder] [Summary("Name of the module to query.")]
-            string query)
-        {
-            await HelpAsync(query, HelpDataType.Command);
+            await HelpAsync(query, type);
         }
 
         private async Task HelpAsync(string query, HelpDataType type)
@@ -143,7 +134,9 @@ namespace KomiBot.Modules
         [Flags]
         public enum HelpDataType
         {
+            [Description("Request for a command help.")]
             Command = 1 << 1,
+            [Description("Request for module help and commands under the module.")]
             Module = 1 << 2
         }
 

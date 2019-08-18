@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Discord.Commands;
 
 namespace KomiBot.TypeReaders
