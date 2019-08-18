@@ -12,5 +12,7 @@
         public string Token => _application.Token;
 
         public ulong Owner => _application.Owner;
+
+        public string ConnectionString => _application.ConnectionString;
     }
 }

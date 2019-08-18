@@ -5,6 +5,8 @@ namespace KomiBot.Services.Moderation
 {
     public class ModerationSettings : IGuildData
     {
+        public int Id { get; set; }
+
         public ulong GuildId { get; set; }
 
         public int? KickAt { get; set; }

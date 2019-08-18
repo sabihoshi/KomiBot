@@ -6,13 +6,18 @@ namespace KomiBot.Services.Core
 {
     public class DatabaseService
     {
-        public Application? Application { get; set; }
+        private readonly ApplicationService _applicationService;
+
+        public DatabaseService(ApplicationService applicationService)
+        {
+            _applicationService = applicationService;
+        }
 
         private LiteCollection<T> GetTableData<T>(string? tableName = null)
         {
             tableName ??= GetTableName<T>();
 
-            using var db = new LiteDatabase(Application?.ConnectionString);
+            using var db = new LiteDatabase(_applicationService.ConnectionString);
             return db.GetCollection<T>(tableName);
         }
 
@@ -24,16 +29,16 @@ namespace KomiBot.Services.Core
             return tableName;
         }
 
-        public bool TryGetGuildData<T>(IGuild guild, out T data) where T : class, IGuildData, new()
+        public bool TryGetGuildData<T>(IGuild guild, out T data, string tableName = null) where T : class, IGuildData
         {
-            var collection = GetTableData<T>();
+            var collection = GetTableData<T>(tableName);
             data = collection.FindOne(c => c.GuildId == guild.Id);
             return data != null;
         }
 
-        public T EnsureGuildData<T>(IGuild guild) where T : class, IGuildData, new()
+        public T EnsureGuildData<T>(IGuild guild, string tableName = null) where T : class, IGuildData, new()
         {
-            if (!TryGetGuildData<T>(guild, out var data))
+            if (!TryGetGuildData<T>(guild, out var data, tableName))
             {
                 data = new T { GuildId = guild.Id };
                 GetTableData<T>().Insert(data);
