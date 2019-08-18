@@ -70,15 +70,7 @@ namespace KomiBot.Modules
             _settings = DatabaseService?.EnsureGuildData<ModerationSettings>(Context.Guild);
             _data = DatabaseService?.EnsureGuildData<ModerationData>(Context.Guild);
 
-            var warning = new WarningData
-            {
-                Reason = args?.Reason ?? string.Empty,
-                Count = args?.Count ?? 1,
-                Date = DateTime.UtcNow,
-                GuildId = Context.Guild.Id,
-                ModId = Context.User.Id,
-                UserId = user.Id
-            };
+            var warning = new WarningData(Context, user, args);
 
             _data?.Warnings.Add(warning);
 
@@ -87,6 +79,8 @@ namespace KomiBot.Modules
             else if (ShouldBe(Sanction.Kick, user))
                 await KickUserAsync(user, new TimedReasonArguments { Reason = args?.Reason });
         }
+
+        
 
         private enum Sanction
         {
