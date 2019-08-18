@@ -6,6 +6,7 @@ using Discord.WebSocket;
 using KomiBot.Services;
 using KomiBot.Services.Core;
 using KomiBot.Services.Help;
+using KomiBot.TypeReaders;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace KomiBot
@@ -41,10 +42,14 @@ namespace KomiBot
             {
                 var client = services.GetRequiredService<DiscordSocketClient>();
                 var application = services.GetRequiredService<ApplicationService>();
+                var commands = services.GetRequiredService<CommandService>();
+
+                // Custom TypeReaders
+                commands.AddTypeReader<object>(new ObjectTypeReader());
 
                 // Events
                 client.Log += LogAsync;
-                services.GetRequiredService<CommandService>().Log += LogAsync;
+                commands.Log += LogAsync;
 
                 // Login
                 await client.LoginAsync(TokenType.Bot, application.Token);

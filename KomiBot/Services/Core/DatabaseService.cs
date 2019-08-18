@@ -13,7 +13,7 @@ namespace KomiBot.Services.Core
             _applicationService = applicationService;
         }
 
-        private LiteCollection<T> GetTableData<T>(string? tableName = null)
+        public LiteCollection<T> GetTableData<T>(string? tableName = null)
         {
             tableName ??= GetTableName<T>();
 
