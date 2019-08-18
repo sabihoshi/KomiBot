@@ -2,7 +2,7 @@
 using System.Reflection;
 using Newtonsoft.Json;
 
-namespace KomiBot.Services
+namespace KomiBot.Services.Core
 {
     public class ConfigService
     {

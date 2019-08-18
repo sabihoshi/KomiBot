@@ -1,4 +1,4 @@
-﻿namespace KomiBot.Models
+﻿namespace KomiBot.Services.Core
 {
     public class Config
     {

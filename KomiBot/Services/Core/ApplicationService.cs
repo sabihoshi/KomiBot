@@ -1,6 +1,4 @@
-﻿using KomiBot.Models;
-
-namespace KomiBot.Services
+﻿namespace KomiBot.Services.Core
 {
     public class ApplicationService
     {
