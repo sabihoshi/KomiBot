@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Discord.Commands;
+using KomiBot.TypeReaders;
 
 namespace KomiBot.Services.Help
 {
@@ -48,7 +49,7 @@ namespace KomiBot.Services.Help
         {
             return LazyInitializer.EnsureInitialized(ref _cachedHelpData, () =>
                 _commandService.Modules
-                               .Where(x => !x.Attributes.Any(attr => attr is HiddenFromHelpAttribute))
+                               .Where(x => !x.Attributes.Any(attr => attr is HiddenAttribute))
                                .Select(ModuleHelpData.FromModuleInfo)
                                .ToArray());
         }

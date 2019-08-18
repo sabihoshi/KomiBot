@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Discord.Commands;
 using Humanizer;
+using KomiBot.TypeReaders;
 
 namespace KomiBot.Services.Help
 {
@@ -45,7 +46,7 @@ namespace KomiBot.Services.Help
             bool ShouldBeHidden(CommandInfo command)
             {
                 return command.Preconditions.Any(x => x is RequireOwnerAttribute)
-                    || command.Attributes.Any(x => x is HiddenFromHelpAttribute);
+                    || command.Attributes.Any(x => x is HiddenAttribute);
             }
         }
     }
