@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using KomiBot.Services.Guild;
 using LiteDB;
 
@@ -41,7 +41,7 @@ namespace KomiBot.Services.Core
             if (!TryGetGuildData<T>(guild, out var data, tableName))
             {
                 data = new T { GuildId = guild.Id };
-                GetTableData<T>().Insert(data);
+                GetTableData<T>().Upsert(data);
             }
 
             return data;
