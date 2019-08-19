@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -51,50 +49,38 @@ namespace KomiBot.Modules
 
         [Command]
         [Summary("Set a key setting")]
-        public Task SetSettingsAsync(Settings settings, string key, object value)
+        public Task SetSettingsAsync(Settings settings, string key, string value)
         {
-            switch (settings)
+            var result = settings switch
             {
-                case Settings.Guild:
-                    return SetKeyAsync(GetSettings<GuildSettings>(), key, value);
-                case Settings.Moderation:
-                    return SetKeyAsync(GetSettings<ModerationSettings>(), key, value);
-                default:
-                    return null;
-            }
+                Settings.Guild => TrySetSettingAsync<GuildSettings>(key, value),
+                Settings.Moderation => TrySetSettingAsync<ModerationSettings>(key, value),
+                _ => false
+            };
+
+            return result
+                ? ReplyAsync("Updated key.")
+                : ReplyAsync("That key was not found.");
         }
 
-        public ValueTuple<LiteCollection<T>, T> GetSettings<T>() where T : class, IGuildData, new()
+        public bool TrySetSettingAsync<T>(string key, string value) where T : class, IGuildData, new()
         {
+            if (!DatabaseService.CanAssign<T>(key, value))
+                return false;
 
-            var collection = DatabaseService.GetTableData<T>();
-            var data = DatabaseService.EnsureGuildData<T>(Context.Guild);
-            return new ValueTuple<LiteCollection<T>, T>(collection, data);
+            var (collection, data) = GetSettings<T>();
+
+            if (!DatabaseService.TrySetValue(data, key, value))
+                return false;
+
+            collection.Upsert(data);
+
+            return true;
         }
 
-        private Task SetKeyAsync<T>(ValueTuple<LiteCollection<T>, T> tuple, string key, object value)
+        public (LiteCollection<T>, T) GetSettings<T>() where T : class, IGuildData, new()
         {
-            var property = tuple.Item2.GetType().GetProperty(key);
-            var type = property?.PropertyType;
-
-            if (property is null)
-            {
-                return ReplyAsync("That key does not exist!");
-            }
-
-            try
-            {
-                var newValue = Convert.ChangeType(value, type);
-                property.SetValue(tuple.Item2, newValue);
-                tuple.Item1.Upsert(tuple.Item2);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return ReplyAsync($"An error occured: {e}");
-            }
-
-            return ReplyAsync("Changed key!");
+            return (DatabaseService.GetTableData<T>(), DatabaseService.EnsureGuildData<T>(Context.Guild));
         }
 
         private EmbedBuilder? GetSettingsEmbed(Settings settings)
@@ -134,9 +120,7 @@ namespace KomiBot.Modules
             foreach (var property in data.GetType()
                                          .GetProperties()
                                          .Where(k => k.Attributes.GetAttributeOfType<HiddenAttribute>() is null))
-            {
                 sb.AppendLine($"{Format.Bold(property.Name)}: {property.GetValue(data)}");
-            }
 
             return sb;
         }
