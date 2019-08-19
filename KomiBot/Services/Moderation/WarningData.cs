@@ -14,7 +14,7 @@ namespace KomiBot.Services.Moderation
             Reason = args?.Reason ?? string.Empty;
             Count = args?.Count ?? 1;
             Date = DateTime.UtcNow;
-            GuildId = context.Guild.Id;
+            Id = context.Guild.Id;
             ModId = context.User.Id;
             UserId = user.Id;
         }
@@ -26,9 +26,7 @@ namespace KomiBot.Services.Moderation
 
         public ulong ModId { get; set; }
 
-        public int Id { get; set; }
-
-        public ulong GuildId { get; set; }
+        public ulong Id { get; set; }
 
         public int Count { get; set; }
 
