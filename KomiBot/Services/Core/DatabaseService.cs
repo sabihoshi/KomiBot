@@ -86,7 +86,7 @@ namespace KomiBot.Services.Core
         public bool TryGetGuildData<T>(IGuild guild, out T data, string tableName = null) where T : class, IGuildData
         {
             var collection = GetTableData<T>(tableName);
-            data = collection.FindOne(c => c.GuildId == guild.Id);
+            data = collection.FindOne(c => c.Id == guild.Id);
             return data != null;
         }
 
@@ -94,7 +94,7 @@ namespace KomiBot.Services.Core
         {
             if (!TryGetGuildData<T>(guild, out var data, tableName))
             {
-                data = new T { GuildId = guild.Id };
+                data = new T { Id = guild.Id };
                 GetTableData<T>().Insert(data);
             }
 

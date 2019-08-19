@@ -1,10 +1,9 @@
-﻿using Discord;
+﻿using LiteDB;
 
 namespace KomiBot.Services.Guild
 {
     public interface IGuildData
     {
-        int Id { get; set; }
-        ulong GuildId { get; set; }
+         ulong Id { get; set; }
     }
 }
