@@ -66,7 +66,7 @@ namespace KomiBot.Modules
 
         public bool TrySetSettingAsync<T>(string key, string value) where T : class, IGuildData, new()
         {
-            if (!DatabaseService.CanAssign<T>(key, value))
+            if (!DatabaseService.CanAssign<T>(key, value).Item1)
                 return false;
 
             var (collection, data) = GetSettings<T>();
@@ -86,32 +86,25 @@ namespace KomiBot.Modules
 
         private EmbedBuilder? GetSettingsEmbed(Settings settings)
         {
-            var embed = new EmbedBuilder();
+            var embed = new EmbedBuilder()
+               .WithTitle($"Keys of {settings.ToString()}");
 
-            var tableName = settings switch
+            if(settings == Settings.Guild)
             {
-                Settings.Guild => nameof(GuildSettings),
-                Settings.Moderation => nameof(ModerationSettings),
-                _ => null
-            };
+                if (!DatabaseService.TryGetGuildData(Context.Guild, out GuildSettings guildSettings))
+                    return null;
+                return embed.WithDescription(AppendProperties(guildSettings).ToString());
 
-            if (tableName is null)
-                return null;
+            }
 
-            if (!DatabaseService.TryGetGuildData(Context.Guild, out IGuildData data, tableName))
-                return null;
-
-            var type = settings switch
+            if(settings == Settings.Moderation)
             {
-                Settings.Guild => typeof(GuildSettings),
-                Settings.Moderation => typeof(ModerationSettings),
-                _ => null
-            };
+                if (!DatabaseService.TryGetGuildData(Context.Guild, out ModerationSettings moderationSettings))
+                    return null;
+                return embed.WithDescription(AppendProperties(moderationSettings).ToString());
+            }
 
-            embed.WithTitle($"Keys of {settings.ToString()}")
-                 .WithDescription(AppendProperties(data).ToString());
-
-            return embed;
+            return null;
         }
 
         private static StringBuilder AppendProperties(IGuildData data)
