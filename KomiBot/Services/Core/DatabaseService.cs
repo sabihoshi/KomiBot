@@ -34,39 +34,46 @@ namespace KomiBot.Services.Core
 
         public static bool TrySetValue<TClass>(TClass obj, string property, string value)
         {
-            var (canAssign, p) = CanAssign<TClass>(property, value);
+            var (canAssign, nullable, p) = CanAssign<TClass>(property, value);
 
             if (!canAssign || p is null)
                 return false;
 
-            var (_, newValue) = ConvertDictionary[p.PropertyType](value);
+            Type? type = nullable ? Nullable.GetUnderlyingType(p.PropertyType) : p.PropertyType;
+
+            if (type is null)
+                return false;
+
+            var (_, newValue) = ConvertDictionary[type](value);
 
             p.SetValue(obj, newValue);
 
             return true;
         }
 
-        public static (bool, PropertyInfo?) CanAssign<TClass>(string property, string value)
+        public static (bool, bool, PropertyInfo?) CanAssign<TClass>(string property, string value)
         {
             var p = typeof(TClass).GetProperty(property,
                 BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
             if (p is null)
-                return (false, null);
+                return (false, false, null);
 
-            var type = p.PropertyType;
+            var nullable = p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
 
-            if (type == typeof(string))
-                return (true, p);
+            Type? type = nullable ? Nullable.GetUnderlyingType(p.PropertyType) : p.PropertyType;
 
-            bool canAssign = ConvertDictionary.ContainsKey(type) && ConvertDictionary[type](value).Item1;
+            var canAssign = type != null && ConvertDictionary.ContainsKey(type) && ConvertDictionary[type](value).Item1;
 
-            return (canAssign, p);
+            return (canAssign, nullable, p);
         }
 
         public static Dictionary<Type, Func<string, (bool, object)>> ConvertDictionary { get; } =
             new Dictionary<Type, Func<string, (bool, object)>>
             {
+                {
+                    typeof(string), s => (true, s)
+                },
                 {
                     typeof(int), s =>
                     {
