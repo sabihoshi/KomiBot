@@ -65,7 +65,7 @@ namespace KomiBot.Modules
 
         public bool TrySetSettingAsync<T>(string key, string value) where T : class, IGuildData, new()
         {
-            if (!DatabaseService.CanAssign<T>(key, value))
+            if (!DatabaseService.CanAssign<T>(key, value).Item1)
                 return false;
 
             var (collection, data) = GetSettings<T>();

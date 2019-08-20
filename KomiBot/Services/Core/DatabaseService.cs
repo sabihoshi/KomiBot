@@ -32,55 +32,55 @@ namespace KomiBot.Services.Core
             return tableName;
         }
 
-        public bool TrySetValue<TClass>(TClass obj, string property, string value)
+        public static bool TrySetValue<TClass>(TClass obj, string property, string value)
         {
-            if (!CanAssign<TClass>(property, value))
+            var (canAssign, p) = CanAssign<TClass>(property, value);
+
+            if (!canAssign || p is null)
                 return false;
 
+            var (_, newValue) = ConvertDictionary[p.PropertyType](value);
+
+            p.SetValue(obj, newValue);
+
+            return true;
+        }
+
+        public static (bool, PropertyInfo?) CanAssign<TClass>(string property, string value)
+        {
             var p = typeof(TClass).GetProperty(property,
                 BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
             if (p is null)
-                return false;
+                return (false, null);
 
-            return Type.GetTypeCode(p.PropertyType) switch
-            {
-                TypeCode.String => SetValue(value),
-                TypeCode.Int32 => SetValue(int.Parse(value)),
-                TypeCode.Int64 => SetValue(long.Parse(value)),
-                TypeCode.UInt32 => SetValue(uint.Parse(value)),
-                TypeCode.UInt64 => SetValue(ulong.Parse(value)),
-                TypeCode.Boolean => SetValue(bool.Parse(value)),
-                _ => false
-            };
-
-            bool SetValue(object v)
-            {
-                p.SetValue(obj, v);
-                return true;
-            }
-        }
-
-        public static bool CanAssign<TClass>(string property, string value)
-        {
-            var type = typeof(TClass).GetProperty(property,
-                                          BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
-                                    ?.PropertyType;
-
-            if (type is null)
-                return false;
+            var type = p.PropertyType;
 
             if (type == typeof(string))
-                return true;
+                return (true, p);
 
-            return ConvertDictionary.ContainsKey(type) && ConvertDictionary[type](value);
+            bool canAssign = ConvertDictionary.ContainsKey(type) && ConvertDictionary[type](value).Item1;
+
+            return (canAssign, p);
         }
 
-        public static Dictionary<Type, Func<string, bool>> ConvertDictionary { get; } =
-            new Dictionary<Type, Func<string, bool>>
+        public static Dictionary<Type, Func<string, (bool, object)>> ConvertDictionary { get; } =
+            new Dictionary<Type, Func<string, (bool, object)>>
             {
-                { typeof(int), s => int.TryParse(s, out _) },
-                { typeof(ulong), s => ulong.TryParse(s, out _) }
+                {
+                    typeof(int), s =>
+                    {
+                        var success = int.TryParse(s, out var intResult);
+                        return (success, intResult);
+                    }
+                },
+                {
+                    typeof(ulong), s =>
+                    {
+                        var success = ulong.TryParse(s, out var intResult);
+                        return (success, intResult);
+                    }
+                }
             };
 
         public bool TryGetGuildData<T>(IGuild guild, out T data, string tableName = null) where T : class, IGuildData
