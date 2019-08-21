@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -22,12 +20,9 @@ namespace KomiBot.Modules
     [Alias("Setting")]
     public class SettingsModule : ModuleBase<SocketCommandContext>
     {
-        private IReadOnlyCollection<PropertyInfo>? _guildSettingKeys;
-        private IReadOnlyCollection<PropertyInfo>? _moderationSettingKeys;
-
-        private Type _cachedType;
-
         [UsedImplicitly] public DatabaseService DatabaseService { get; set; }
+
+        [UsedImplicitly] public SettingsService SettingsService { get; set; }
 
         [Command("keys")]
         [Summary("View all the available keys")]
@@ -57,10 +52,9 @@ namespace KomiBot.Modules
         {
             var result = settings switch
             {
-                Settings.Guild => TrySetSettingAsync<GuildSettings>(GetType<GuildSettings>(), key,
+                Settings.Guild => TrySetSettingAsync<GuildSettings>(key,
                     value),
-                Settings.Moderation => TrySetSettingAsync<ModerationSettings>(
-                    GetType<ModerationSettings>(), key, value),
+                Settings.Moderation => TrySetSettingAsync<ModerationSettings>(key, value),
                 _ => false
             };
 
@@ -69,12 +63,12 @@ namespace KomiBot.Modules
                 : ReplyAsync("That key was not found.");
         }
 
-        public bool TrySetSettingAsync<T>(Type type, string key, string value) where T : class, IGuildData, new()
+        public bool TrySetSettingAsync<T>(string key, string value) where T : class, IGuildData, new()
         {
-            if (!DatabaseService.TryGetProperty(type, key, value, out var property, out var newValue))
+            if (!SettingsService.TryGetProperty<T>(key, value, out var property, out var newValue))
                 return false;
 
-            var (collection, data) = GetSettings<T>(type);
+            var (collection, data) = GetSettings<T>();
 
             property?.SetValue(data, newValue);
             collection.Upsert(data);
@@ -82,9 +76,9 @@ namespace KomiBot.Modules
             return true;
         }
 
-        public (LiteCollection<T>, T) GetSettings<T>(Type type) where T : class, IGuildData, new()
+        public (LiteCollection<T>, T) GetSettings<T>() where T : class, IGuildData, new()
         {
-            return (DatabaseService.GetTableData<T>(type.Name), DatabaseService.EnsureGuildData<T>(Context.Guild, type.Name));
+            return (DatabaseService.GetTableData<T>(), DatabaseService.EnsureGuildData<T>(Context.Guild));
         }
 
         private EmbedBuilder? GetSettingsEmbed(Settings settings)
@@ -127,10 +121,8 @@ namespace KomiBot.Modules
 
             var keys = settings switch
             {
-                Settings.Guild => GetKeys<GuildSettings>(ref _guildSettingKeys,
-                    GetType<GuildSettings>()),
-                Settings.Moderation => GetKeys<ModerationSettings>(ref _moderationSettingKeys,
-                    GetType<ModerationSettings>()),
+                Settings.Guild => SettingsService.GetKeys<GuildSettings>(),
+                Settings.Moderation => SettingsService.GetKeys<ModerationSettings>(),
                 _ => null
             };
 
@@ -151,23 +143,6 @@ namespace KomiBot.Modules
                 sb.AppendLine($"{Format.Bold(key.Name)}: {key.GetDescription()}");
 
             return sb;
-        }
-
-        private IReadOnlyCollection<PropertyInfo> GetKeys<T>(ref IReadOnlyCollection<PropertyInfo>? cachedKeys,
-            Type type)
-        {
-            return LazyInitializer.EnsureInitialized(ref cachedKeys, () =>
-            {
-                var keys = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                               .Where(p => p.Name != "Id")
-                               .ToList();
-                return keys;
-            });
-        }
-
-        private Type GetType<T>()
-        {
-            return LazyInitializer.EnsureInitialized(ref _cachedType, () => typeof(T));
         }
 
         public enum Settings
