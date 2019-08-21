@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Discord.Commands;
-using Humanizer;
 using KomiBot.Services.Utilities;
 using KomiBot.TypeReaders;
 using ParameterInfo = Discord.Commands.ParameterInfo;
@@ -53,7 +52,7 @@ namespace KomiBot.Services.Help
 
             foreach (Enum n in names)
             {
-                var name = n.ToString().Humanize(LetterCasing.Title);
+                var name = n.ToString();
                 var summary = n.GetDescription();
                 result.Add(new ParameterHelpData(name, summary));
             }
