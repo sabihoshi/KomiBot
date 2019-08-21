@@ -7,6 +7,7 @@ using LiteDB;
 
 namespace KomiBot.Services.Core
 {
+
     public class DatabaseService
     {
         private readonly ApplicationService _applicationService;
@@ -24,71 +25,55 @@ namespace KomiBot.Services.Core
             return db.GetCollection<T>(tableName);
         }
 
-        private static string GetTableName<T>()
+        private static string GetTableName<T>(Type? type = null)
         {
-            var tableName = typeof(T).Name;
-            if (typeof(T).IsInterface && tableName.StartsWith('I'))
+            type ??= typeof(T);
+            var tableName = type.Name;
+            if (type.IsInterface && tableName.StartsWith('I'))
                 tableName = tableName.Substring(1);
             return tableName;
         }
 
-        public static bool TrySetValue<TClass>(TClass obj, string property, string value)
+        public static bool TryGetProperty(Type type, string propertyName, string stringValue, out PropertyInfo? property, out object? value)
         {
-            var (canAssign, nullable, p) = CanAssign<TClass>(property, value);
+            value = null;
 
-            if (!canAssign || p is null)
-                return false;
-
-            Type? type = nullable ? Nullable.GetUnderlyingType(p.PropertyType) : p.PropertyType;
-
-            if (type is null)
-                return false;
-
-            var (_, newValue) = ConvertDictionary[type](value);
-
-            p.SetValue(obj, newValue);
-
-            return true;
-        }
-
-        public static (bool, bool, PropertyInfo?) CanAssign<TClass>(string property, string value)
-        {
-            var p = typeof(TClass).GetProperty(property,
+            property = type.GetProperty(propertyName,
                 BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-            if (p is null)
-                return (false, false, null);
+            if (property is null)
+                return false;
 
-            var nullable = p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+            var nullable = property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
 
-            Type? type = nullable ? Nullable.GetUnderlyingType(p.PropertyType) : p.PropertyType;
+            var propertyType = nullable ? Nullable.GetUnderlyingType(property.PropertyType) : property.PropertyType;
 
-            var canAssign = type != null && ConvertDictionary.ContainsKey(type) && ConvertDictionary[type](value).Item1;
+            if (propertyType is null)
+                return false;
 
-            return (canAssign, nullable, p);
+            if (!ConvertDictionary.TryGetValue(propertyType, out var tryParse))
+                return false;
+
+            return tryParse(stringValue, out value);
         }
 
-        public static Dictionary<Type, Func<string, (bool, object)>> ConvertDictionary { get; } =
-            new Dictionary<Type, Func<string, (bool, object)>>
+        public delegate bool TryParse<T>(string value, out T result);
+
+        public delegate bool TryParseObject(string value, out object result);
+
+        public static Dictionary<Type, TryParseObject> ConvertDictionary { get; } =
+            new Dictionary<Type, TryParseObject>
             {
-                {
-                    typeof(string), s => (true, s)
-                },
-                {
-                    typeof(int), s =>
-                    {
-                        var success = int.TryParse(s, out var intResult);
-                        return (success, intResult);
-                    }
-                },
-                {
-                    typeof(ulong), s =>
-                    {
-                        var success = ulong.TryParse(s, out var intResult);
-                        return (success, intResult);
-                    }
-                }
+                [typeof(string)] = (string s, out object v) => FromQualifiedTryParse(true, s, out v),
+                [typeof(int)] = (string s, out object v) => FromQualifiedTryParse(int.TryParse(s, out var result), result, out v)
+                
             };
+
+        private static bool FromQualifiedTryParse<T>(bool success, T value, out object newValue)
+        {
+            newValue = value;
+            return success;
+        }
 
         public bool TryGetGuildData<T>(IGuild guild, out T data, string tableName = null) where T : class, IGuildData
         {
@@ -97,7 +82,7 @@ namespace KomiBot.Services.Core
             return data != null;
         }
 
-        public T EnsureGuildData<T>(IGuild guild, string tableName = null) where T : class, IGuildData, new()
+        public T EnsureGuildData<T>(IGuild guild, string? tableName = null) where T : class, IGuildData, new()
         {
             if (!TryGetGuildData<T>(guild, out var data, tableName))
             {
