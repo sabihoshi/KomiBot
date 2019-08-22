@@ -9,9 +9,9 @@ using JetBrains.Annotations;
 using KomiBot.Services.Core;
 using KomiBot.Services.Guild;
 using KomiBot.Services.Moderation;
+using KomiBot.Services.Settings;
 using KomiBot.Services.Utilities;
 using KomiBot.TypeReaders;
-using LiteDB;
 
 namespace KomiBot.Modules
 {
@@ -36,6 +36,7 @@ namespace KomiBot.Modules
 
         [Command]
         [Summary("View the configured settings of the server")]
+        [UsedImplicitly]
         public Task ViewSettingsAsync(Settings settings)
         {
             var embed = GetSettingsEmbed(settings);
@@ -43,41 +44,6 @@ namespace KomiBot.Modules
             return embed is null
                 ? ReplyAsync("Settings not found")
                 : ReplyAsync(embed: embed.Build());
-        }
-
-        [Command]
-        [Summary("Set a key setting")]
-        public Task SetSettingsAsync(Settings settings, string key, string value)
-        {
-            var result = settings switch
-            {
-                Settings.Guild => TrySetSettingAsync<GuildSettings>(key,
-                    value),
-                Settings.Moderation => TrySetSettingAsync<ModerationSettings>(key, value),
-                _ => false
-            };
-
-            return result
-                ? ReplyAsync("Updated key.")
-                : ReplyAsync("That key was not found.");
-        }
-
-        public bool TrySetSettingAsync<T>(string key, string value) where T : class, IGuildData, new()
-        {
-            if (!SettingsService.TryGetProperty<T>(key, value, out var property, out var newValue))
-                return false;
-
-            var (collection, data) = GetSettings<T>();
-
-            property?.SetValue(data, newValue);
-            collection.Upsert(data);
-
-            return true;
-        }
-
-        public (LiteCollection<T>, T) GetSettings<T>() where T : class, IGuildData, new()
-        {
-            return (DatabaseService.GetTableData<T>(), DatabaseService.EnsureGuildData<T>(Context.Guild));
         }
 
         private EmbedBuilder? GetSettingsEmbed(Settings settings)
@@ -120,8 +86,8 @@ namespace KomiBot.Modules
 
             var keys = settings switch
             {
-                Settings.Guild => SettingsService.GetKeys<GuildSettings>(),
-                Settings.Moderation => SettingsService.GetKeys<ModerationSettings>(),
+                Settings.Guild => SettingsService.GetProperties<GuildSettings>(),
+                Settings.Moderation => SettingsService.GetProperties<ModerationSettings>(),
                 _ => null
             };
 
@@ -138,7 +104,7 @@ namespace KomiBot.Modules
         {
             var sb = new StringBuilder();
 
-            foreach (var key in keys.Where(k => k.Attributes.GetAttributeOfType<HiddenAttribute>() is null))
+            foreach (var key in keys)
                 sb.AppendLine($"{Format.Bold(key.Name)}: {key.GetDescription()}");
 
             return sb;

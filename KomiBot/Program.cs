@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using KomiBot.Services;
 using KomiBot.Services.Core;
+using KomiBot.Services.Guild;
 using KomiBot.Services.Help;
+using KomiBot.Services.Moderation;
+using KomiBot.Services.Settings;
 using KomiBot.TypeReaders;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -44,6 +46,10 @@ namespace KomiBot
                 var client = services.GetRequiredService<DiscordSocketClient>();
                 var application = services.GetRequiredService<ApplicationService>();
                 var commands = services.GetRequiredService<CommandService>();
+
+                // Custom Commands
+                await commands.RegisterSetting<GuildSettings>(services);
+                await commands.RegisterSetting<ModerationSettings>(services);
 
                 // Custom TypeReaders
                 commands.AddTypeReader<object>(new ObjectTypeReader());
