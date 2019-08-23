@@ -54,26 +54,24 @@ namespace KomiBot.Modules
             {
                 if (!DatabaseService.TryGetGuildData(Context.Guild, out GuildSettings guildSettings))
                     return null;
-                return embed.WithDescription(AppendProperties(guildSettings).ToString());
+                return embed.WithDescription(AppendProperties<GuildSettings>(guildSettings).ToString());
             }
 
             if (settings == Settings.Moderation)
             {
                 if (!DatabaseService.TryGetGuildData(Context.Guild, out ModerationSettings moderationSettings))
                     return null;
-                return embed.WithDescription(AppendProperties(moderationSettings).ToString());
+                return embed.WithDescription(AppendProperties<ModerationSettings>(moderationSettings).ToString());
             }
 
             return null;
         }
 
-        private static StringBuilder AppendProperties(IGuildData data)
+        private StringBuilder AppendProperties<T>(IGuildData data)
         {
             var sb = new StringBuilder();
 
-            foreach (var property in data.GetType()
-                                         .GetProperties()
-                                         .Where(k => k.Attributes.GetAttributeOfType<HiddenAttribute>() is null))
+            foreach (var property in SettingsService.GetProperties<T>())
                 sb.AppendLine($"{Format.Bold(property.Name)}: {property.GetValue(data)}");
 
             return sb;
@@ -104,7 +102,7 @@ namespace KomiBot.Modules
             var sb = new StringBuilder();
 
             foreach (var key in keys)
-                sb.AppendLine($"{Format.Bold(key.Name)}: {key.GetDescription()}");
+                sb.AppendLine($"{Format.Bold(key.Name)}: {key.GetCustomAttribute<DescriptionAttribute>()?.Text}");
 
             return sb;
         }

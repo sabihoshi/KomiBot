@@ -20,8 +20,9 @@ namespace KomiBot.Services.Settings
         private static IReadOnlyCollection<PropertyInfo> GetProperties(Type t)
         {
             return t.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(p => p.Attributes.GetAttributeOfType<HiddenAttribute>() is null && p.Name != "Id")
-                    .Where(p => !(p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>)))
+                    .Where(p => p.GetCustomAttribute<HiddenAttribute>() is null && p.Name != "Id")
+                    .Where(p => !(p.PropertyType.IsGenericType &&
+                                  p.PropertyType.GetGenericTypeDefinition() == typeof(List<>)))
                     .ToArray();
         }
 

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Discord.Commands;
+using KomiBot.Core.Attributes;
 using KomiBot.Services.Utilities;
 using ParameterInfo = Discord.Commands.ParameterInfo;
 
@@ -27,7 +29,7 @@ namespace KomiBot.Services.Help
             var summary = parameter.Summary;
             var options = parameter.Type switch
             {
-                var t when t.IsEnum => FromEnum(t.GetEnumValues().Cast<dynamic>()),
+                var t when t.IsEnum => FromEnum(t.GetEnumValues()),
                 var t when t.GetCustomAttribute<NamedArgumentTypeAttribute>() != null => FromNamedArgumentInfo(
                     parameter.Type),
                 _ => null
@@ -46,14 +48,14 @@ namespace KomiBot.Services.Help
             Options = options;
         }
 
-        private static IReadOnlyCollection<ParameterHelpData> FromEnum(IEnumerable<dynamic> names)
+        private static IReadOnlyCollection<ParameterHelpData> FromEnum(IEnumerable names)
         {
             var result = new List<ParameterHelpData>();
 
             foreach (Enum n in names)
             {
                 var name = n.ToString();
-                var summary = n.GetDescription();
+                var summary = n.GetAttributeOfEnum<DescriptionAttribute>()?.Text;
                 result.Add(new ParameterHelpData(name, summary));
             }
 
@@ -68,7 +70,7 @@ namespace KomiBot.Services.Help
             {
                 var (typeName, isNullable) = GetTypeInfo(type);
 
-                return new ParameterHelpData(p.Name, p.GetDescription(), typeName, isNullable);
+                return new ParameterHelpData(p.Name, p.GetCustomAttribute<DescriptionAttribute>()?.Text, typeName, isNullable);
             }).ToList();
         }
 
