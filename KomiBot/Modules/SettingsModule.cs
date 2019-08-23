@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ using KomiBot.Core.Attributes;
 using KomiBot.Services.Core;
 using KomiBot.Services.Moderation;
 using KomiBot.Services.Settings;
-using KomiBot.Services.Utilities;
 
 namespace KomiBot.Modules
 {
@@ -24,6 +22,7 @@ namespace KomiBot.Modules
 
         [Command("keys")]
         [Summary("View all the available keys")]
+        [UsedImplicitly]
         public Task ViewKeysAsync(Settings settings)
         {
             var embed = GetKeysEmbed(settings);

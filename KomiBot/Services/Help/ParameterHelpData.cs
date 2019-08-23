@@ -70,7 +70,8 @@ namespace KomiBot.Services.Help
             {
                 var (typeName, isNullable) = GetTypeInfo(type);
 
-                return new ParameterHelpData(p.Name, p.GetCustomAttribute<DescriptionAttribute>()?.Text, typeName, isNullable);
+                return new ParameterHelpData(p.Name, p.GetCustomAttribute<DescriptionAttribute>()?.Text, typeName,
+                    isNullable);
             }).ToList();
         }
 

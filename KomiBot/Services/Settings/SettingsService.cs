@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using KomiBot.Core.Attributes;
-using KomiBot.Services.Utilities;
 
 namespace KomiBot.Services.Settings
 {
