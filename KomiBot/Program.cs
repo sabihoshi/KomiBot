@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -48,9 +48,6 @@ namespace KomiBot
                 // Custom Commands
                 await commands.RegisterSetting<GuildSettings>(services);
                 await commands.RegisterSetting<ModerationSettings>(services);
-
-                // Custom TypeReaders
-                commands.AddTypeReader<object>(new ObjectTypeReader());
 
                 // Events
                 client.Log += LogAsync;

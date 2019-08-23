@@ -21,6 +21,7 @@ namespace KomiBot.Services.Settings
         {
             return t.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     .Where(p => p.Attributes.GetAttributeOfType<HiddenAttribute>() is null && p.Name != "Id")
+                    .Where(p => !(p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>)))
                     .ToArray();
         }
 
