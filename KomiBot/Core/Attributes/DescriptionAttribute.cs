@@ -1,7 +1,7 @@
 ﻿using System;
 using Discord.Commands;
 
-namespace KomiBot.TypeReaders
+namespace KomiBot.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Enum | AttributeTargets.Field)]
     public class DescriptionAttribute : SummaryAttribute

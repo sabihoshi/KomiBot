@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.Net;
+using JetBrains.Annotations;
 using KomiBot.Services.Help;
 using KomiBot.Services.Utilities;
 
@@ -24,6 +25,7 @@ namespace KomiBot.Modules
 
         [Command]
         [Summary("Prints a neat list of all commands.")]
+        [UsedImplicitly]
         public async Task HelpAsync()
         {
             var modules = _commandHelpService.GetModuleHelpData()
@@ -47,6 +49,7 @@ namespace KomiBot.Modules
 
         [Command("dm")]
         [Summary("Spams the user's DMs with a list of every command available.")]
+        [UsedImplicitly]
         public async Task HelpDMAsync()
         {
             var userDM = await Context.User.GetOrCreateDMChannelAsync();
@@ -73,6 +76,7 @@ namespace KomiBot.Modules
         [Command]
         [Summary("Retrieves help from a specific module or command.")]
         [Priority(-10)]
+        [UsedImplicitly]
         public async Task HelpAsync(
             [Remainder] [Summary("Name of the module or command to query.")]
             string query)
@@ -83,6 +87,7 @@ namespace KomiBot.Modules
         [Command("module")]
         [Alias("modules")]
         [Summary("Retrieves help from a specific module. Useful for modules that have an overlapping command name.")]
+        [UsedImplicitly]
         public async Task HelpModuleAsync(
             [Remainder] [Summary("Name of the module to query.")]
             string query)
@@ -93,6 +98,7 @@ namespace KomiBot.Modules
         [Command("command")]
         [Alias("commands")]
         [Summary("Retrieves help from a specific command. Useful for commands that have an overlapping module name.")]
+        [UsedImplicitly]
         public async Task HelpCommandAsync(
             [Remainder] [Summary("Name of the module to query.")]
             string query)
@@ -141,7 +147,7 @@ namespace KomiBot.Modules
         }
 
         [Flags]
-        public enum HelpDataType
+        private enum HelpDataType
         {
             Command = 1 << 1,
             Module = 1 << 2

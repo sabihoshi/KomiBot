@@ -1,6 +1,6 @@
 ﻿using System;
 using Discord;
-using KomiBot.Services.Guild;
+using KomiBot.Services.Settings;
 using LiteDB;
 
 namespace KomiBot.Services.Core
@@ -22,7 +22,7 @@ namespace KomiBot.Services.Core
             return db.GetCollection<T>(tableName);
         }
 
-        private static string GetTableName<T>(Type? type = null)
+        public static string GetTableName<T>(Type? type = null)
         {
             type ??= typeof(T);
             var tableName = type.Name;

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
+using JetBrains.Annotations;
 
 namespace KomiBot.Modules
 {
@@ -8,6 +9,7 @@ namespace KomiBot.Modules
         [Command("ping")]
         [Alias("pong")]
         [Summary("Shows the current ping of the bot.")]
+        [UsedImplicitly]
         public Task PingAsync()
         {
             return ReplyAsync($"Pong! {Context.Client.Latency}");

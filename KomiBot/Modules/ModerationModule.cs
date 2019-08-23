@@ -1,14 +1,12 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using JetBrains.Annotations;
-using KomiBot.Preconditions;
-using KomiBot.Services;
+using KomiBot.Core.Preconditions;
+using KomiBot.Core.TypeReaders;
 using KomiBot.Services.Core;
 using KomiBot.Services.Moderation;
-using KomiBot.TypeReaders;
 
 namespace KomiBot.Modules
 {
@@ -79,8 +77,6 @@ namespace KomiBot.Modules
             else if (ShouldBe(Sanction.Kick, user))
                 await KickUserAsync(user, new TimedReasonArguments { Reason = args?.Reason });
         }
-
-        
 
         private enum Sanction
         {

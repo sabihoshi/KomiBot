@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using KomiBot.Services.Guild;
+using KomiBot.Services.Settings;
 
 namespace KomiBot.Services.Moderation
 {

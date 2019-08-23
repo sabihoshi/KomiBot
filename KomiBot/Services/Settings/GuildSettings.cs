@@ -1,6 +1,4 @@
-using LiteDB;
-
-namespace KomiBot.Services.Guild
+namespace KomiBot.Services.Settings
 {
     public class GuildSettings : IGuildData
     {

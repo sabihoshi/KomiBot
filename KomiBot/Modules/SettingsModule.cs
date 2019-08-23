@@ -1,17 +1,15 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using JetBrains.Annotations;
+using KomiBot.Core.Attributes;
 using KomiBot.Services.Core;
-using KomiBot.Services.Guild;
 using KomiBot.Services.Moderation;
+using KomiBot.Services.Settings;
 using KomiBot.Services.Utilities;
-using KomiBot.TypeReaders;
-using LiteDB;
 
 namespace KomiBot.Modules
 {
@@ -21,10 +19,9 @@ namespace KomiBot.Modules
     {
         [UsedImplicitly] public DatabaseService DatabaseService { get; set; }
 
-        [UsedImplicitly] public SettingsService SettingsService { get; set; }
-
         [Command("keys")]
         [Summary("View all the available keys")]
+        [UsedImplicitly]
         public Task ViewKeysAsync(Settings settings)
         {
             var embed = GetKeysEmbed(settings);
@@ -36,6 +33,7 @@ namespace KomiBot.Modules
 
         [Command]
         [Summary("View the configured settings of the server")]
+        [UsedImplicitly]
         public Task ViewSettingsAsync(Settings settings)
         {
             var embed = GetSettingsEmbed(settings);
@@ -43,41 +41,6 @@ namespace KomiBot.Modules
             return embed is null
                 ? ReplyAsync("Settings not found")
                 : ReplyAsync(embed: embed.Build());
-        }
-
-        [Command]
-        [Summary("Set a key setting")]
-        public Task SetSettingsAsync(Settings settings, string key, string value)
-        {
-            var result = settings switch
-            {
-                Settings.Guild => TrySetSettingAsync<GuildSettings>(key,
-                    value),
-                Settings.Moderation => TrySetSettingAsync<ModerationSettings>(key, value),
-                _ => false
-            };
-
-            return result
-                ? ReplyAsync("Updated key.")
-                : ReplyAsync("That key was not found.");
-        }
-
-        public bool TrySetSettingAsync<T>(string key, string value) where T : class, IGuildData, new()
-        {
-            if (!SettingsService.TryGetProperty<T>(key, value, out var property, out var newValue))
-                return false;
-
-            var (collection, data) = GetSettings<T>();
-
-            property?.SetValue(data, newValue);
-            collection.Upsert(data);
-
-            return true;
-        }
-
-        public (LiteCollection<T>, T) GetSettings<T>() where T : class, IGuildData, new()
-        {
-            return (DatabaseService.GetTableData<T>(), DatabaseService.EnsureGuildData<T>(Context.Guild));
         }
 
         private EmbedBuilder? GetSettingsEmbed(Settings settings)
@@ -89,26 +52,24 @@ namespace KomiBot.Modules
             {
                 if (!DatabaseService.TryGetGuildData(Context.Guild, out GuildSettings guildSettings))
                     return null;
-                return embed.WithDescription(AppendProperties(guildSettings).ToString());
+                return embed.WithDescription(AppendProperties<GuildSettings>(guildSettings).ToString());
             }
 
             if (settings == Settings.Moderation)
             {
                 if (!DatabaseService.TryGetGuildData(Context.Guild, out ModerationSettings moderationSettings))
                     return null;
-                return embed.WithDescription(AppendProperties(moderationSettings).ToString());
+                return embed.WithDescription(AppendProperties<ModerationSettings>(moderationSettings).ToString());
             }
 
             return null;
         }
 
-        private static StringBuilder AppendProperties(IGuildData data)
+        private StringBuilder AppendProperties<T>(IGuildData data)
         {
             var sb = new StringBuilder();
 
-            foreach (var property in data.GetType()
-                                         .GetProperties()
-                                         .Where(k => k.Attributes.GetAttributeOfType<HiddenAttribute>() is null))
+            foreach (var property in CacheExtensions.GetProperties<T>())
                 sb.AppendLine($"{Format.Bold(property.Name)}: {property.GetValue(data)}");
 
             return sb;
@@ -120,8 +81,8 @@ namespace KomiBot.Modules
 
             var keys = settings switch
             {
-                Settings.Guild => SettingsService.GetKeys<GuildSettings>(),
-                Settings.Moderation => SettingsService.GetKeys<ModerationSettings>(),
+                Settings.Guild => CacheExtensions.GetProperties<GuildSettings>(),
+                Settings.Moderation => CacheExtensions.GetProperties<ModerationSettings>(),
                 _ => null
             };
 
@@ -138,8 +99,11 @@ namespace KomiBot.Modules
         {
             var sb = new StringBuilder();
 
-            foreach (var key in keys.Where(k => k.Attributes.GetAttributeOfType<HiddenAttribute>() is null))
-                sb.AppendLine($"{Format.Bold(key.Name)}: {key.GetDescription()}");
+            foreach (var key in keys)
+            {
+                sb.AppendLine(
+                    $"{Format.Bold(key.Name)}: {key.GetAttribute<DescriptionAttribute>()?.Text}");
+            }
 
             return sb;
         }

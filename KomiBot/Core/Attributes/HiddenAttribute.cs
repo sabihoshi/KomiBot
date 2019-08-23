@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace KomiBot.TypeReaders
+namespace KomiBot.Core.Attributes
 {
     /// <summary>
     ///     Hides the module or command from display

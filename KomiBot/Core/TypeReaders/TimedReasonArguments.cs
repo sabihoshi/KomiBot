@@ -1,7 +1,8 @@
 ﻿using System;
 using Discord.Commands;
+using KomiBot.Core.Attributes;
 
-namespace KomiBot.TypeReaders
+namespace KomiBot.Core.TypeReaders
 {
     [NamedArgumentType]
     public class TimedReasonArguments

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Discord.Commands;
 using Humanizer;
-using KomiBot.TypeReaders;
+using KomiBot.Core.Attributes;
 
 namespace KomiBot.Services.Help
 {
