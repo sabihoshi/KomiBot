@@ -9,7 +9,7 @@ namespace KomiBot.Services.Moderation
 {
     public class WarningData : IGuildData
     {
-        public WarningData(SocketCommandContext context, IGuildUser user, WarningArguments args)
+        public WarningData(SocketCommandContext context, IGuildUser user, WarningArguments? args)
         {
             Reason = args?.Reason ?? string.Empty;
             Count = args?.Count ?? 1;

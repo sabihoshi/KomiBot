@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace KomiBot.Services.Settings
+namespace KomiBot.Services.Utilities
 {
     public class Cache<TKey, TValue>
     {

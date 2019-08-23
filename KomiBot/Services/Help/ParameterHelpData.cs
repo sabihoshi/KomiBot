@@ -30,8 +30,8 @@ namespace KomiBot.Services.Help
             var options = parameter.Type switch
             {
                 var t when t.IsEnum => FromEnum(t.GetEnumValues()),
-                var t when t.GetCustomAttribute<NamedArgumentTypeAttribute>() != null => FromNamedArgumentInfo(
-                    parameter.Type),
+                var t when t.GetAttribute<NamedArgumentTypeAttribute>() != null
+                => FromNamedArgumentInfo(parameter.Type),
                 _ => null
             };
 
@@ -70,7 +70,8 @@ namespace KomiBot.Services.Help
             {
                 var (typeName, isNullable) = GetTypeInfo(type);
 
-                return new ParameterHelpData(p.Name, p.GetCustomAttribute<DescriptionAttribute>()?.Text, typeName,
+                return new ParameterHelpData(p.Name,
+                    p.GetAttribute<DescriptionAttribute>()?.Text, typeName,
                     isNullable);
             }).ToList();
         }

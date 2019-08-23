@@ -5,19 +5,19 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using KomiBot.Core.Attributes;
 using KomiBot.Services.Core;
+using KomiBot.Services.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace KomiBot.Services.Settings
 {
     public static class SettingsSetup
     {
-        private static SettingsService? _settingsService;
         private static DatabaseService? _databaseService;
 
         public static Task RegisterSetting<T>(this CommandService commands, IServiceProvider services)
             where T : class, IGuildData, new()
         {
-            var properties = GetSettingsService(services).GetProperties<T>();
+            var properties = CacheExtensions.GetProperties<T>();
             var typeName = typeof(T).Name.ToLower().Replace("settings", string.Empty);
 
             return commands.CreateModuleAsync($"Settings {typeName}", module =>
@@ -38,7 +38,7 @@ namespace KomiBot.Services.Settings
                         command =>
                         {
                             command.WithSummary($"Sets the {name} key in {typeName}");
-                            command.AddParameter("value", SettingsService.TypeCache[property],
+                            command.AddParameter("value", property.GetRealType(),
                                 p => p.AddAttributes(new RemainderAttribute()));
                         });
                 }
@@ -51,12 +51,6 @@ namespace KomiBot.Services.Settings
         {
             return LazyInitializer.EnsureInitialized(ref _databaseService,
                 services.GetRequiredService<DatabaseService>);
-        }
-
-        private static SettingsService GetSettingsService(IServiceProvider services)
-        {
-            return LazyInitializer.EnsureInitialized(ref _settingsService,
-                services.GetRequiredService<SettingsService>);
         }
     }
 }

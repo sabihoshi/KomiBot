@@ -9,6 +9,7 @@ using KomiBot.Core.Attributes;
 using KomiBot.Services.Core;
 using KomiBot.Services.Moderation;
 using KomiBot.Services.Settings;
+using KomiBot.Services.Utilities;
 
 namespace KomiBot.Modules
 {
@@ -17,8 +18,6 @@ namespace KomiBot.Modules
     public class SettingsModule : ModuleBase<SocketCommandContext>
     {
         [UsedImplicitly] public DatabaseService DatabaseService { get; set; }
-
-        [UsedImplicitly] public SettingsService SettingsService { get; set; }
 
         [Command("keys")]
         [Summary("View all the available keys")]
@@ -70,7 +69,7 @@ namespace KomiBot.Modules
         {
             var sb = new StringBuilder();
 
-            foreach (var property in SettingsService.GetProperties<T>())
+            foreach (var property in CacheExtensions.GetProperties<T>())
                 sb.AppendLine($"{Format.Bold(property.Name)}: {property.GetValue(data)}");
 
             return sb;
@@ -82,8 +81,8 @@ namespace KomiBot.Modules
 
             var keys = settings switch
             {
-                Settings.Guild => SettingsService.GetProperties<GuildSettings>(),
-                Settings.Moderation => SettingsService.GetProperties<ModerationSettings>(),
+                Settings.Guild => CacheExtensions.GetProperties<GuildSettings>(),
+                Settings.Moderation => CacheExtensions.GetProperties<ModerationSettings>(),
                 _ => null
             };
 
@@ -101,7 +100,10 @@ namespace KomiBot.Modules
             var sb = new StringBuilder();
 
             foreach (var key in keys)
-                sb.AppendLine($"{Format.Bold(key.Name)}: {key.GetCustomAttribute<DescriptionAttribute>()?.Text}");
+            {
+                sb.AppendLine(
+                    $"{Format.Bold(key.Name)}: {key.GetAttribute<DescriptionAttribute>()?.Text}");
+            }
 
             return sb;
         }
