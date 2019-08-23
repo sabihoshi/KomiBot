@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using JetBrains.Annotations;
+using KomiBot.Core.Attributes;
 using KomiBot.Services.Core;
-using KomiBot.Services.Guild;
 using KomiBot.Services.Moderation;
 using KomiBot.Services.Settings;
 using KomiBot.Services.Utilities;
-using KomiBot.TypeReaders;
 
 namespace KomiBot.Modules
 {

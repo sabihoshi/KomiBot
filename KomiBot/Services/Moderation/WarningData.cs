@@ -2,8 +2,8 @@
 using Discord;
 using Discord.Commands;
 using JetBrains.Annotations;
-using KomiBot.Services.Guild;
-using KomiBot.TypeReaders;
+using KomiBot.Core.TypeReaders;
+using KomiBot.Services.Settings;
 
 namespace KomiBot.Services.Moderation
 {

@@ -1,6 +1,6 @@
 ﻿using Discord.Commands;
 
-namespace KomiBot.TypeReaders
+namespace KomiBot.Core.TypeReaders
 {
     [NamedArgumentType]
     public class WarningArguments

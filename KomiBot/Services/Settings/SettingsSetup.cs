@@ -3,9 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord.Commands;
+using KomiBot.Core.Attributes;
 using KomiBot.Services.Core;
-using KomiBot.Services.Guild;
-using KomiBot.TypeReaders;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace KomiBot.Services.Settings

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace KomiBot.Services.Core
+namespace KomiBot.Services.Settings
 {
     public class Cache<TKey, TValue>
     {
@@ -18,8 +17,8 @@ namespace KomiBot.Services.Core
         {
             get
             {
-                if (_cachedItems.TryGetValue(key, out TValue value)) return value;
-                TValue val = _func(key);
+                if (_cachedItems.TryGetValue(key, out var value)) return value;
+                var val = _func(key);
                 _cachedItems[key] = val;
                 return val;
             }

@@ -1,6 +1,6 @@
 ﻿using System;
 using Discord;
-using KomiBot.Services.Guild;
+using KomiBot.Services.Settings;
 using LiteDB;
 
 namespace KomiBot.Services.Core

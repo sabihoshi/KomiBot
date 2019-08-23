@@ -1,14 +1,12 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using KomiBot.Services.Core;
-using KomiBot.Services.Guild;
 using KomiBot.Services.Help;
 using KomiBot.Services.Moderation;
 using KomiBot.Services.Settings;
-using KomiBot.TypeReaders;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace KomiBot

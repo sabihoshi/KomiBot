@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using KomiBot.Services.Core;
+using KomiBot.Core.Attributes;
 using KomiBot.Services.Utilities;
-using KomiBot.TypeReaders;
 
 namespace KomiBot.Services.Settings
 {

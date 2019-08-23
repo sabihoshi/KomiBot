@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using Discord.Commands;
 using KomiBot.Services.Utilities;
-using KomiBot.TypeReaders;
 using ParameterInfo = Discord.Commands.ParameterInfo;
 
 namespace KomiBot.Services.Help
@@ -29,7 +28,8 @@ namespace KomiBot.Services.Help
             var options = parameter.Type switch
             {
                 var t when t.IsEnum => FromEnum(t.GetEnumValues().Cast<dynamic>()),
-                var t when t.GetCustomAttribute<NamedArgumentTypeAttribute>() != null => FromNamedArgumentInfo(parameter.Type),
+                var t when t.GetCustomAttribute<NamedArgumentTypeAttribute>() != null => FromNamedArgumentInfo(
+                    parameter.Type),
                 _ => null
             };
 
