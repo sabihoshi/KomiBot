@@ -17,7 +17,7 @@ namespace KomiBot.Services.Utilities
         private static readonly Cache<PropertyInfo, Type?> TypeCache = new Cache<PropertyInfo, Type?>(GetType);
 
         private static readonly Cache<(MemberInfo, Type), Attribute?> AttributeCache =
-            new Cache<(MemberInfo Member, Type Type), Attribute?>(GetAttributeFromType);
+            new Cache<(MemberInfo Member, Type Type), Attribute?>(GetAttributeFromMember);
 
         private static readonly Cache<(Enum, Type), Attribute?> EnumAttributeCache =
             new Cache<(Enum, Type), Attribute?>(GetAttributeFromEnum);
@@ -45,20 +45,20 @@ namespace KomiBot.Services.Utilities
                 : property.PropertyType;
         }
 
-        private static Attribute? GetAttributeFromType((MemberInfo Member, Type Type) o)
+        private static Attribute? GetAttributeFromMember((MemberInfo Member, Type Type) o)
         {
             return o.Member.GetCustomAttribute(o.Type);
         }
 
-        private static Attribute? GetAttributeFromEnum((Enum @enum, Type type) o)
+        private static Attribute? GetAttributeFromEnum((Enum @enum, Type attribute) o)
         {
-            var (@enum, type) = o;
-            var eType = @enum.GetType();
-            var name = Enum.GetName(eType, @enum);
+            var (@enum, attribute) = o;
+            var enumType = @enum.GetType();
+            var name = Enum.GetName(enumType, @enum);
             if (name is null)
                 return null;
-            var field = type.GetField(name);
-            return field is null ? null : GetAttributeFromType((field, type));
+            var field = enumType.GetField(name);
+            return field is null ? null : GetAttributeFromMember((field, attribute));
         }
 
         public static T? GetAttribute<T>(this MemberInfo member) where T : Attribute
