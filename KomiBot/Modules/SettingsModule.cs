@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -7,6 +8,7 @@ using Discord.Commands;
 using JetBrains.Annotations;
 using KomiBot.Core.Attributes;
 using KomiBot.Services.Core;
+using KomiBot.Services.Image;
 using KomiBot.Services.Moderation;
 using KomiBot.Services.Settings;
 using KomiBot.Services.Utilities;
@@ -18,34 +20,36 @@ namespace KomiBot.Modules
     public class SettingsModule : ModuleBase<SocketCommandContext>
     {
         [UsedImplicitly] public DatabaseService DatabaseService { get; set; }
+        [UsedImplicitly] public IImageService ImageService { get; set; }
 
         [Command("keys")]
         [Summary("View all the available keys")]
         [UsedImplicitly]
-        public Task ViewKeysAsync(Settings settings)
+        public async Task ViewKeysAsync(Settings settings)
         {
-            var embed = GetKeysEmbed(settings);
+            var embed = await GetKeysEmbed(settings);
 
-            return embed is null
+            await (embed is null
                 ? ReplyAsync("Settings not found")
-                : ReplyAsync(embed: embed.Build());
+                : ReplyAsync(embed: embed.Build()));
         }
 
         [Command]
         [Summary("View the configured settings of the server")]
         [UsedImplicitly]
-        public Task ViewSettingsAsync(Settings settings)
+        public async Task ViewSettingsAsync(Settings settings)
         {
-            var embed = GetSettingsEmbed(settings);
-
-            return embed is null
+            var embed = await GetSettingsEmbed(settings);
+            
+            await (embed is null
                 ? ReplyAsync("Settings not found")
-                : ReplyAsync(embed: embed.Build());
+                : ReplyAsync(embed: embed.Build()));
         }
 
-        private EmbedBuilder? GetSettingsEmbed(Settings settings)
+        private async Task<EmbedBuilder?> GetSettingsEmbed(Settings settings)
         {
             var embed = new EmbedBuilder()
+               .WithColor(await GetAvatarColor(Context.User))
                .WithTitle($"Keys of {settings.ToString()}");
 
             if (settings == Settings.Guild)
@@ -75,7 +79,7 @@ namespace KomiBot.Modules
             return sb;
         }
 
-        private EmbedBuilder? GetKeysEmbed(Settings settings)
+        private async Task<EmbedBuilder?> GetKeysEmbed(Settings settings)
         {
             var embed = new EmbedBuilder();
 
@@ -90,6 +94,7 @@ namespace KomiBot.Modules
                 return null;
 
             embed.WithTitle($"Keys of {settings.ToString()}")
+                 .WithColor(await GetAvatarColor(Context.User))
                  .WithDescription(AppendKeys(keys).ToString());
 
             return embed;
@@ -106,6 +111,17 @@ namespace KomiBot.Modules
             }
 
             return sb;
+        }
+        private ValueTask<Color> GetAvatarColor(IUser contextUser)
+        {
+            ValueTask<Color> colorTask = default;
+
+            if ((contextUser.GetAvatarUrl(size: 16) ?? contextUser.GetDefaultAvatarUrl()) is { } avatarUrl)
+            {
+                colorTask = ImageService.GetDominantColorAsync(new Uri(avatarUrl));
+            }
+
+            return colorTask;
         }
 
         public enum Settings

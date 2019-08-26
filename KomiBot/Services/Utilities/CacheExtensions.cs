@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using KomiBot.Core.Attributes;
@@ -26,8 +27,8 @@ namespace KomiBot.Services.Utilities
         {
             return t.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     .Where(p => !(p.GetAttribute<HiddenAttribute>() is null) || p.Name != "Id")
-                    .Where(p => !(p.PropertyType.IsGenericType &&
-                                  p.PropertyType.GetGenericTypeDefinition() == typeof(List<>)))
+                    .Where(p => !(p.PropertyType.IsGenericType
+                               && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>)))
                     .ToArray();
         }
 
@@ -79,6 +80,12 @@ namespace KomiBot.Services.Utilities
         public static T? GetAttributeOfEnum<T>(this Enum obj) where T : Attribute
         {
             return EnumAttributeCache[(obj, typeof(T))] as T;
+        }
+
+        public static bool TryGetAttributeOfEnum<T>(this Enum obj, [MaybeNullWhen(false)] out T result) where T : Attribute
+        {
+            result = EnumAttributeCache[(obj, typeof(T))] as T;
+            return result != null;
         }
     }
 }

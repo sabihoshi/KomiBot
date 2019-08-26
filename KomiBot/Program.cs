@@ -1,10 +1,13 @@
-﻿using System;
+﻿
+using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using KomiBot.Services.Core;
 using KomiBot.Services.Help;
+using KomiBot.Services.Image;
 using KomiBot.Services.Moderation;
 using KomiBot.Services.Settings;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,12 +24,15 @@ namespace KomiBot
         private ServiceProvider ConfigureServices()
         {
             return new ServiceCollection()
+                  .AddHttpClient()
+                  .AddMemoryCache()
                   .AddSingleton<DiscordSocketClient>()
                   .AddSingleton<CommandService>()
                   .AddSingleton<CommandHandlingService>()
                   .AddSingleton<ApplicationService>()
                   .AddSingleton<DatabaseService>()
                   .AddCommandHelp()
+                  .AddImages()
                   .BuildServiceProvider();
         }
 

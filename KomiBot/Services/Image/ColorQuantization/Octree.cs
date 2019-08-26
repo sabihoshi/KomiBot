@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace KomiBot.Services.Utilities.ColorQuantization
+namespace KomiBot.Services.Image.ColorQuantization
 {
     public sealed class Octree
     {

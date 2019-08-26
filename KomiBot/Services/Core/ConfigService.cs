@@ -7,7 +7,6 @@ namespace KomiBot.Services.Core
     public class ConfigService
     {
         private static string GetPath(MemberInfo type)
-
         {
             return type.Name.ToLowerInvariant() + ".json";
         }

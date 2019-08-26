@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Discord.Commands;
 using Discord.Net;
 using JetBrains.Annotations;
 using KomiBot.Services.Help;
+using KomiBot.Services.Image;
 using KomiBot.Services.Utilities;
 
 namespace KomiBot.Modules
@@ -17,10 +19,12 @@ namespace KomiBot.Modules
     public sealed class HelpModule : ModuleBase<SocketCommandContext>
     {
         private readonly ICommandHelpService _commandHelpService;
+        private readonly IImageService _imageService;
 
-        public HelpModule(ICommandHelpService commandHelpService)
+        public HelpModule(ICommandHelpService commandHelpService, IImageService imageService)
         {
             _commandHelpService = commandHelpService;
+            _imageService = imageService;
         }
 
         [Command]
@@ -42,6 +46,7 @@ namespace KomiBot.Modules
 
             var embed = new EmbedBuilder()
                        .WithTitle("Help")
+                       .WithColor(await GetAvatarColor(Context.User))
                        .WithDescription(descriptionBuilder.ToString());
 
             await ReplyAsync(embed: embed.Build());
@@ -56,7 +61,8 @@ namespace KomiBot.Modules
 
             foreach (var module in _commandHelpService.GetModuleHelpData().OrderBy(x => x.Name))
             {
-                var embed = GetEmbedForModule(module);
+                var embed = GetEmbedForModule(module)
+                   .WithColor(await GetAvatarColor(Context.User));
 
                 try
                 {
@@ -112,6 +118,7 @@ namespace KomiBot.Modules
 
             if (TryGetEmbed(query, type, out var embed))
             {
+                embed.WithColor(await GetAvatarColor(Context.User));
                 await ReplyAsync($"Results for \"{sanitizedQuery}\":", embed: embed?.Build());
                 return;
             }
@@ -119,7 +126,7 @@ namespace KomiBot.Modules
             await ReplyAsync($"Sorry, I couldn't find help related to \"{sanitizedQuery}\".");
         }
 
-        private bool TryGetEmbed(string query, HelpDataType queries, out EmbedBuilder? embed)
+        private bool TryGetEmbed(string query, HelpDataType queries, [MaybeNullWhen(false)] out EmbedBuilder? embed)
         {
             embed = null;
 
@@ -226,6 +233,16 @@ namespace KomiBot.Modules
 
                 sb.AppendLine($"• {Format.Bold(parameter.Name)}: {parameter.Summary}");
             }
+        }
+
+        private ValueTask<Color> GetAvatarColor(IUser contextUser)
+        {
+            ValueTask<Color> colorTask = default;
+
+            if ((contextUser.GetAvatarUrl(size: 16) ?? contextUser.GetDefaultAvatarUrl()) is { } avatarUrl)
+                colorTask = _imageService.GetDominantColorAsync(new Uri(avatarUrl));
+
+            return colorTask;
         }
 
         private string GetParams(CommandHelpData info)

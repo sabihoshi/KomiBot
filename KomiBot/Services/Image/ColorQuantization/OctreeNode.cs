@@ -1,4 +1,4 @@
-﻿namespace KomiBot.Services.Utilities.ColorQuantization
+﻿namespace KomiBot.Services.Image.ColorQuantization
 {
     public sealed class OctreeNode
     {
@@ -10,6 +10,6 @@
 
         public int BCount { get; set; }
 
-        public OctreeNode[] Children { get; } = new OctreeNode[8];
+        public OctreeNode?[] Children { get; } = new OctreeNode?[8];
     }
 }

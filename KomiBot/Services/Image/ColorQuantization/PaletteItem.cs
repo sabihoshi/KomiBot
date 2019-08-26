@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace KomiBot.Services.Utilities.ColorQuantization
+namespace KomiBot.Services.Image.ColorQuantization
 {
     public struct PaletteItem
     {

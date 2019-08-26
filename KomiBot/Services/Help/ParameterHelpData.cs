@@ -52,8 +52,9 @@ namespace KomiBot.Services.Help
         {
             var result = new List<ParameterHelpData>();
 
-            foreach (Enum n in names)
+            foreach (Enum? n in names)
             {
+                if (n is null) continue;
                 var name = n.ToString();
                 var summary = n.GetAttributeOfEnum<DescriptionAttribute>()?.Text;
                 result.Add(new ParameterHelpData(name, summary));
