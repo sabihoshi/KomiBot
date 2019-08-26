@@ -21,7 +21,7 @@ namespace KomiBot.Services.Utilities
         /// <returns>The resulting StringContent for HTTP operations</returns>
         public static StringContent BuildContent(string code)
         {
-            var cleanCode = StripFormatting(code);
+            string cleanCode = StripFormatting(code);
             return new StringContent(cleanCode, Encoding.UTF8, "text/plain");
         }
 
@@ -35,7 +35,7 @@ namespace KomiBot.Services.Utilities
             var match = _buildContentRegex.Match(message);
             if (match.Success)
             {
-                var codeLanguage = match.Groups[1].Value;
+                string codeLanguage = match.Groups[1].Value;
                 return string.IsNullOrEmpty(codeLanguage) ? null : codeLanguage;
             }
 
@@ -44,9 +44,8 @@ namespace KomiBot.Services.Utilities
 
         public static string StripFormatting(string code)
         {
-            var cleanCode =
-                _buildContentRegex.Replace(code.Trim(),
-                    string.Empty);                       //strip out the ` characters and code block markers
+            string cleanCode = _buildContentRegex.Replace(
+                code.Trim(), string.Empty);              //strip out the ` characters and code block markers
             cleanCode = cleanCode.Replace("\t", "    "); //spaces > tabs
             cleanCode = FixIndentation(cleanCode);
             return cleanCode;
@@ -60,13 +59,13 @@ namespace KomiBot.Services.Utilities
         public static string FixIndentation(string code)
         {
             var lines = code.Split('\n');
-            var indentLine = lines.SkipWhile(d => d.FirstOrDefault() != ' ').FirstOrDefault();
+            string indentLine = lines.SkipWhile(d => d.FirstOrDefault() != ' ').FirstOrDefault();
 
             if (indentLine != null)
             {
-                var indent = indentLine.LastIndexOf(' ') + 1;
+                int indent = indentLine.LastIndexOf(' ') + 1;
 
-                var pattern = $@"^[^\S\n]{{{indent}}}";
+                string pattern = $@"^[^\S\n]{{{indent}}}";
 
                 return Regex.Replace(code, pattern, "", RegexOptions.Multiline);
             }
@@ -83,18 +82,15 @@ namespace KomiBot.Services.Utilities
         {
             var splitIntoWords = sentences.Select(x => x.Split(" ", StringSplitOptions.RemoveEmptyEntries));
 
-            var withSingulars = splitIntoWords.Select(x =>
-            (
-                Singular: x.Select(y => y.Singularize(false)).ToArray(),
-                Value: x
-            ));
+            var withSingulars =
+                splitIntoWords.Select(x => (Singular: x.Select(y => y.Singularize(false)).ToArray(), Value: x));
 
-            var groupedBySingulars =
-                withSingulars.GroupBy(x => x.Singular, x => x.Value, new SequenceEqualityComparer<string>());
+            var groupedBySingulars = withSingulars.GroupBy(
+                x => x.Singular, x => x.Value, new SequenceEqualityComparer<string>());
 
             var withDistinctParts = new HashSet<string>[groupedBySingulars.Count()][];
 
-            foreach (var (singular, singularIndex) in groupedBySingulars.AsIndexable())
+            foreach ((var singular, int singularIndex) in groupedBySingulars.AsIndexable())
             {
                 var parts = new HashSet<string>[singular.Key.Count];
 
@@ -102,7 +98,7 @@ namespace KomiBot.Services.Utilities
                     parts[i] = new HashSet<string>();
 
                 foreach (var variation in singular)
-                foreach (var (part, partIndex) in variation.AsIndexable())
+                foreach ((string part, int partIndex) in variation.AsIndexable())
                     parts[partIndex].Add(part);
 
                 withDistinctParts[singularIndex] = parts;
@@ -110,31 +106,26 @@ namespace KomiBot.Services.Utilities
 
             var parenthesized = new string[withDistinctParts.Length][];
 
-            foreach (var (alias, aliasIndex) in withDistinctParts.AsIndexable())
+            foreach ((var alias, int aliasIndex) in withDistinctParts.AsIndexable())
             {
                 parenthesized[aliasIndex] = new string[alias.Length];
 
-                foreach (var (word, wordIndex) in alias.AsIndexable())
+                foreach ((var word, int wordIndex) in alias.AsIndexable())
                 {
                     if (word.Count == 2)
                     {
-                        var indexOfDifference = word.First()
-                                                    .ZipOrDefault(word.Last())
-                                                    .AsIndexable()
-                                                    .First(x => x.Value.First != x.Value.Second)
-                                                    .Index;
+                        int indexOfDifference = word.First()
+                           .ZipOrDefault(word.Last())
+                           .AsIndexable()
+                           .First(x => x.Value.First != x.Value.Second)
+                           .Index;
 
-                        var longestForm = word.First().Length > word.Last().Length
-                            ? word.First()
-                            : word.Last();
+                        string longestForm = word.First().Length > word.Last().Length ? word.First() : word.Last();
 
                         parenthesized[aliasIndex][wordIndex] =
                             $"{longestForm.Substring(0, indexOfDifference)}({longestForm.Substring(indexOfDifference)})";
                     }
-                    else
-                    {
-                        parenthesized[aliasIndex][wordIndex] = word.Single();
-                    }
+                    else { parenthesized[aliasIndex][wordIndex] = word.Single(); }
                 }
             }
 
@@ -147,7 +138,7 @@ namespace KomiBot.Services.Utilities
         {
             var span = now - ago;
 
-            var humanizedTimeAgo = span > TimeSpan.FromSeconds(60)
+            string humanizedTimeAgo = span > TimeSpan.FromSeconds(60)
                 ? span.Humanize(maxUnit: TimeUnit.Year, culture: CultureInfo.InvariantCulture)
                 : "a few seconds";
 
@@ -156,36 +147,25 @@ namespace KomiBot.Services.Utilities
 
         public static string SanitizeAllMentions(string text)
         {
-            var everyoneSanitized = SanitizeEveryone(text);
-            var userSanitized = SanitizeUserMentions(everyoneSanitized);
-            var roleSanitized = SanitizeRoleMentions(userSanitized);
+            string everyoneSanitized = SanitizeEveryone(text);
+            string userSanitized = SanitizeUserMentions(everyoneSanitized);
+            string roleSanitized = SanitizeRoleMentions(userSanitized);
 
             return roleSanitized;
         }
 
-        public static string SanitizeEveryone(string text)
-        {
-            return text.Replace("@everyone", "@\x200beveryone")
-                       .Replace("@here", "@\x200bhere");
-        }
+        public static string SanitizeEveryone(string text) =>
+            text.Replace("@everyone", "@\x200beveryone").Replace("@here", "@\x200bhere");
 
-        public static string SanitizeUserMentions(string text)
-        {
-            return _userMentionRegex.Replace(text, "<@\x200b${Id}>");
-        }
+        public static string SanitizeUserMentions(string text) => _userMentionRegex.Replace(text, "<@\x200b${Id}>");
 
-        public static string SanitizeRoleMentions(string text)
-        {
-            return _roleMentionRegex.Replace(text, "<@&\x200b${Id}>");
-        }
+        public static string SanitizeRoleMentions(string text) => _roleMentionRegex.Replace(text, "<@&\x200b${Id}>");
 
         /// <summary>
         ///     Surrounds a string with "[]" or "<>" if it's optional or not.
         /// </summary>
-        public static string SurroundNullability(this string text, bool isNullable)
-        {
-            return isNullable ? $"[{text}]" : $"<{text}>";
-        }
+        public static string SurroundNullability(this string text, bool isNullable) =>
+            isNullable ? $"[{text}]" : $"<{text}>";
 
         private static readonly Regex _userMentionRegex = new Regex("<@!?(?<Id>[0-9]+)>", RegexOptions.Compiled);
 

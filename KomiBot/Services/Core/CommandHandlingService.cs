@@ -13,7 +13,10 @@ namespace KomiBot.Services.Core
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
 
-        public CommandHandlingService(IServiceProvider services, CommandService commands, DiscordSocketClient discord)
+        public CommandHandlingService(
+            IServiceProvider services,
+            CommandService commands,
+            DiscordSocketClient discord)
         {
             _commands = commands;
             _discord = discord;
@@ -23,7 +26,10 @@ namespace KomiBot.Services.Core
             _discord.MessageReceived += MessageReceivedAsync;
         }
 
-        public Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
+        public Task CommandExecutedAsync(
+            Optional<CommandInfo> command,
+            ICommandContext context,
+            IResult result)
         {
             if (!command.IsSpecified)
                 return Task.CompletedTask;
@@ -35,29 +41,28 @@ namespace KomiBot.Services.Core
             return Task.CompletedTask;
         }
 
-        public Task CommandFailedAsync(ICommandContext context, IResult result)
-        {
-            return context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
-        }
+        public Task CommandFailedAsync(ICommandContext context, IResult result) =>
+            context.Channel.SendMessageAsync($"Error: {result.ErrorReason}");
 
-        public Task InitializeAsync()
-        {
-            return _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
-        }
+        public Task InitializeAsync() => _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 
         public async Task MessageReceivedAsync(SocketMessage rawMessage)
         {
-            if (!(rawMessage is SocketUserMessage message)) return;
-            if (message.Source != MessageSource.User) return;
+            if (!(rawMessage is SocketUserMessage message))
+                return;
+            if (message.Source != MessageSource.User)
+                return;
 
             var argPos = 0;
-            if (!(message.HasStringPrefix("k!", ref argPos) ||
-                  message.HasMentionPrefix(_discord.CurrentUser, ref argPos))) return;
+            if (!(message.HasStringPrefix("k!", ref argPos)
+               || message.HasMentionPrefix(_discord.CurrentUser, ref argPos)))
+                return;
 
             var context = new SocketCommandContext(_discord, message);
             var result = await _commands.ExecuteAsync(context, argPos, _services);
 
-            if (!result.IsSuccess) await CommandFailedAsync(context, result).ConfigureAwait(false);
+            if (!result.IsSuccess)
+                await CommandFailedAsync(context, result).ConfigureAwait(false);
         }
     }
 }

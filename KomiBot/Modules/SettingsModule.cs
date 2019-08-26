@@ -20,6 +20,7 @@ namespace KomiBot.Modules
     public class SettingsModule : ModuleBase<SocketCommandContext>
     {
         [UsedImplicitly] public DatabaseService DatabaseService { get; set; }
+
         [UsedImplicitly] public IImageService ImageService { get; set; }
 
         [Command("keys")]
@@ -29,9 +30,7 @@ namespace KomiBot.Modules
         {
             var embed = await GetKeysEmbed(settings);
 
-            await (embed is null
-                ? ReplyAsync("Settings not found")
-                : ReplyAsync(embed: embed.Build()));
+            await (embed is null ? ReplyAsync("Settings not found") : ReplyAsync(embed: embed.Build()));
         }
 
         [Command]
@@ -40,43 +39,35 @@ namespace KomiBot.Modules
         public async Task ViewSettingsAsync(Settings settings)
         {
             var embed = await GetSettingsEmbed(settings);
-            
-            await (embed is null
-                ? ReplyAsync("Settings not found")
-                : ReplyAsync(embed: embed.Build()));
+
+            await (embed is null ? ReplyAsync("Settings not found") : ReplyAsync(embed: embed.Build()));
         }
 
         private async Task<EmbedBuilder?> GetSettingsEmbed(Settings settings)
         {
-            var embed = new EmbedBuilder()
-               .WithColor(await GetAvatarColor(Context.User))
+            var embed = new EmbedBuilder().WithColor(await GetAvatarColor(Context.User))
                .WithTitle($"Keys of {settings.ToString()}");
 
-            if (settings == Settings.Guild)
+            return settings switch
             {
-                if (!DatabaseService.TryGetGuildData(Context.Guild, out GuildSettings guildSettings))
-                    return null;
-                return embed.WithDescription(AppendProperties<GuildSettings>(guildSettings).ToString());
-            }
-
-            if (settings == Settings.Moderation)
-            {
-                if (!DatabaseService.TryGetGuildData(Context.Guild, out ModerationSettings moderationSettings))
-                    return null;
-                return embed.WithDescription(AppendProperties<ModerationSettings>(moderationSettings).ToString());
-            }
-
-            return null;
+                Settings.Guild when DatabaseService.TryGetGuildData(
+                    Context.Guild, out GuildSettings guildSettings)
+                => embed.WithDescription(AppendProperties<GuildSettings>(guildSettings)),
+                Settings.Moderation when DatabaseService.TryGetGuildData(
+                    Context.Guild, out ModerationSettings moderationSettings)
+                => embed.WithDescription(AppendProperties<ModerationSettings>(moderationSettings)),
+                _ => null
+            };
         }
 
-        private StringBuilder AppendProperties<T>(IGuildData data)
+        private string AppendProperties<T>(IGuildData data)
         {
             var sb = new StringBuilder();
 
             foreach (var property in CacheExtensions.GetProperties<T>())
                 sb.AppendLine($"{Format.Bold(property.Name)}: {property.GetValue(data)}");
 
-            return sb;
+            return sb.ToString();
         }
 
         private async Task<EmbedBuilder?> GetKeysEmbed(Settings settings)
@@ -85,17 +76,17 @@ namespace KomiBot.Modules
 
             var keys = settings switch
             {
-                Settings.Guild => CacheExtensions.GetProperties<GuildSettings>(),
+                Settings.Guild      => CacheExtensions.GetProperties<GuildSettings>(),
                 Settings.Moderation => CacheExtensions.GetProperties<ModerationSettings>(),
-                _ => null
+                _                   => null
             };
 
             if (keys is null)
                 return null;
 
             embed.WithTitle($"Keys of {settings.ToString()}")
-                 .WithColor(await GetAvatarColor(Context.User))
-                 .WithDescription(AppendKeys(keys).ToString());
+               .WithColor(await GetAvatarColor(Context.User))
+               .WithDescription(AppendKeys(keys).ToString());
 
             return embed;
         }
@@ -105,21 +96,17 @@ namespace KomiBot.Modules
             var sb = new StringBuilder();
 
             foreach (var key in keys)
-            {
-                sb.AppendLine(
-                    $"{Format.Bold(key.Name)}: {key.GetAttribute<DescriptionAttribute>()?.Text}");
-            }
+                sb.AppendLine($"{Format.Bold(key.Name)}: {key.GetAttribute<DescriptionAttribute>()?.Text}");
 
             return sb;
         }
+
         private ValueTask<Color> GetAvatarColor(IUser contextUser)
         {
             ValueTask<Color> colorTask = default;
 
             if ((contextUser.GetAvatarUrl(size: 16) ?? contextUser.GetDefaultAvatarUrl()) is { } avatarUrl)
-            {
                 colorTask = ImageService.GetDominantColorAsync(new Uri(avatarUrl));
-            }
 
             return colorTask;
         }

@@ -33,9 +33,7 @@ namespace KomiBot.Services.Image
 
     public sealed class ImageService : IImageService
     {
-        public ImageService(
-            IHttpClientFactory httpClientFactory,
-            IMemoryCache memoryCache)
+        public ImageService(IHttpClientFactory httpClientFactory, IMemoryCache memoryCache)
         {
             _httpClientFactory = httpClientFactory;
             _cache = memoryCache;
@@ -80,19 +78,18 @@ namespace KomiBot.Services.Image
                 }
             }
 
-            for (var i = 0; i < 7; i++) colorTree.Reduce();
+            for (var i = 0; i < 7; i++)
+                colorTree.Reduce();
 
             var mostCommonPaletteColor = colorTree.GetPalette()
-                                                  .OrderByDescending(x => x.Weight * x.Color.GetSaturation())
-                                                  .FirstOrDefault().Color;
+               .OrderByDescending(x => x.Weight * x.Color.GetSaturation())
+               .FirstOrDefault()
+               .Color;
 
-            return (Color) mostCommonPaletteColor;
+            return (Color)mostCommonPaletteColor;
         }
 
-        private object GetKey(Uri uri)
-        {
-            return new { Target = "DominantColor", uri.AbsoluteUri };
-        }
+        private object GetKey(Uri uri) => new { Target = "DominantColor", uri.AbsoluteUri };
 
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMemoryCache _cache;

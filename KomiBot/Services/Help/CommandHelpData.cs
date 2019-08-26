@@ -18,12 +18,8 @@ namespace KomiBot.Services.Help
         {
             var ret = new CommandHelpData
             {
-                Name = command.Name,
-                Summary = command.Summary,
-                Aliases = command.Aliases,
-                Parameters = command.Parameters
-                                    .Select(x => ParameterHelpData.FromParameterInfo(x))
-                                    .ToArray()
+                Name = command.Name, Summary = command.Summary, Aliases = command.Aliases,
+                Parameters = command.Parameters.Select(x => ParameterHelpData.FromParameterInfo(x)).ToArray()
             };
 
             return ret;

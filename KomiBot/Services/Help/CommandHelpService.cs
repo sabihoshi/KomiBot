@@ -39,19 +39,16 @@ namespace KomiBot.Services.Help
         private readonly CommandService _commandService;
         private IReadOnlyCollection<ModuleHelpData>? _cachedHelpData;
 
-        public CommandHelpService(CommandService commandService)
-        {
-            _commandService = commandService;
-        }
+        public CommandHelpService(CommandService commandService) => _commandService = commandService;
 
         /// <inheritdoc />
         public IReadOnlyCollection<ModuleHelpData> GetModuleHelpData()
         {
-            return LazyInitializer.EnsureInitialized(ref _cachedHelpData, () =>
-                _commandService.Modules
-                               .Where(x => !x.Attributes.Any(attr => attr is HiddenAttribute))
-                               .Select(ModuleHelpData.FromModuleInfo)
-                               .ToArray());
+            return LazyInitializer.EnsureInitialized(
+                ref _cachedHelpData,
+                () => _commandService.Modules.Where(x => !x.Attributes.Any(attr => attr is HiddenAttribute))
+                   .Select(ModuleHelpData.FromModuleInfo)
+                   .ToArray());
         }
 
         /// <inheritdoc />
@@ -64,8 +61,8 @@ namespace KomiBot.Services.Help
             if (byModuleNameExact != null)
                 return byModuleNameExact;
 
-            var byTagsExact = allHelpData.FirstOrDefault(x =>
-                x.HelpTags.Any(y => y.Equals(query, StringComparison.OrdinalIgnoreCase)));
+            var byTagsExact = allHelpData.FirstOrDefault(
+                x => x.HelpTags.Any(y => y.Equals(query, StringComparison.OrdinalIgnoreCase)));
             if (byTagsExact != null)
                 return byTagsExact;
 
@@ -74,8 +71,8 @@ namespace KomiBot.Services.Help
             if (byNameContains != null)
                 return byNameContains;
 
-            var byTagsContains = allHelpData.FirstOrDefault(x =>
-                x.HelpTags.Any(y => y.Contains(query, StringComparison.OrdinalIgnoreCase)));
+            var byTagsContains = allHelpData.FirstOrDefault(
+                x => x.HelpTags.Any(y => y.Contains(query, StringComparison.OrdinalIgnoreCase)));
 
             if (byTagsContains != null)
                 return byTagsContains;
@@ -88,15 +85,13 @@ namespace KomiBot.Services.Help
         {
             var allHelpData = GetModuleHelpData().SelectMany(x => x.Commands);
 
-            var byModuleNameExact =
-                allHelpData.FirstOrDefault(x =>
-                    x.Aliases.Any(y => y.Equals(query, StringComparison.OrdinalIgnoreCase)));
+            var byModuleNameExact = allHelpData.FirstOrDefault(
+                x => x.Aliases.Any(y => y.Equals(query, StringComparison.OrdinalIgnoreCase)));
             if (byModuleNameExact != null)
                 return byModuleNameExact;
 
-            var byNameContains =
-                allHelpData.FirstOrDefault(x =>
-                    x.Aliases.Any(y => y.Contains(query, StringComparison.OrdinalIgnoreCase)));
+            var byNameContains = allHelpData.FirstOrDefault(
+                x => x.Aliases.Any(y => y.Contains(query, StringComparison.OrdinalIgnoreCase)));
             if (byNameContains != null)
                 return byNameContains;
 

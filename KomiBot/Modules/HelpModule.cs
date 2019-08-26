@@ -32,22 +32,19 @@ namespace KomiBot.Modules
         [UsedImplicitly]
         public async Task HelpAsync()
         {
-            var modules = _commandHelpService.GetModuleHelpData()
-                                             .Select(d => d.Name)
-                                             .OrderBy(d => d);
+            var modules = _commandHelpService.GetModuleHelpData().Select(d => d.Name).OrderBy(d => d);
 
             var descriptionBuilder = new StringBuilder()
-                                    .AppendLine("Modules:")
-                                    .AppendJoin(", ", modules)
-                                    .AppendLine()
-                                    .AppendLine()
-                                    .AppendLine("Do \"k!help dm\" to have everything DMed to you. (Spammy!)")
-                                    .AppendLine("Do \"k!help [module name] to have that module's commands listed.");
+               .AppendLine("Modules:")
+               .AppendJoin(", ", modules)
+               .AppendLine()
+               .AppendLine()
+               .AppendLine("Do \"k!help dm\" to have everything DMed to you. (Spammy!)")
+               .AppendLine("Do \"k!help [module name] to have that module's commands listed.");
 
-            var embed = new EmbedBuilder()
-                       .WithTitle("Help")
-                       .WithColor(await GetAvatarColor(Context.User))
-                       .WithDescription(descriptionBuilder.ToString());
+            var embed = new EmbedBuilder().WithTitle("Help")
+               .WithColor(await GetAvatarColor(Context.User))
+               .WithDescription(descriptionBuilder.ToString());
 
             await ReplyAsync(embed: embed.Build());
         }
@@ -61,13 +58,9 @@ namespace KomiBot.Modules
 
             foreach (var module in _commandHelpService.GetModuleHelpData().OrderBy(x => x.Name))
             {
-                var embed = GetEmbedForModule(module)
-                   .WithColor(await GetAvatarColor(Context.User));
+                var embed = GetEmbedForModule(module).WithColor(await GetAvatarColor(Context.User));
 
-                try
-                {
-                    await userDM.SendMessageAsync(embed: embed.Build());
-                }
+                try { await userDM.SendMessageAsync(embed: embed.Build()); }
                 catch (HttpException ex) when (ex.DiscordCode == 50007)
                 {
                     await ReplyAsync(
@@ -114,19 +107,22 @@ namespace KomiBot.Modules
 
         private async Task HelpAsync(string query, HelpDataType type)
         {
-            var sanitizedQuery = FormatUtilities.SanitizeAllMentions(query);
+            string sanitizedQuery = FormatUtilities.SanitizeAllMentions(query);
 
             if (TryGetEmbed(query, type, out var embed))
             {
                 embed.WithColor(await GetAvatarColor(Context.User));
-                await ReplyAsync($"Results for \"{sanitizedQuery}\":", embed: embed?.Build());
+                await ReplyAsync($"Results for \"{sanitizedQuery}\":", embed: embed.Build());
                 return;
             }
 
             await ReplyAsync($"Sorry, I couldn't find help related to \"{sanitizedQuery}\".");
         }
 
-        private bool TryGetEmbed(string query, HelpDataType queries, [MaybeNullWhen(false)] out EmbedBuilder? embed)
+        private bool TryGetEmbed(
+            string query,
+            HelpDataType queries,
+            [MaybeNullWhen(false)] out EmbedBuilder embed)
         {
             embed = null;
 
@@ -163,33 +159,31 @@ namespace KomiBot.Modules
         private EmbedBuilder GetEmbedForModule(ModuleHelpData module)
         {
             var embedBuilder = new EmbedBuilder()
-                              .WithTitle($"Module: {module.Name}")
-                              .WithDescription(module.Summary);
+               .WithTitle($"Module: {module.Name}")
+               .WithDescription(module.Summary);
 
-            foreach (var command in module.Commands) AddCommandFields(embedBuilder, command);
+            foreach (var command in module.Commands)
+                AddCommandFields(embedBuilder, command);
 
             return embedBuilder;
         }
 
-        private EmbedBuilder GetEmbedForCommand(CommandHelpData command)
-        {
-            return AddCommandFields(new EmbedBuilder(), command);
-        }
+        private EmbedBuilder GetEmbedForCommand(CommandHelpData command) =>
+            AddCommandFields(new EmbedBuilder(), command);
 
         private EmbedBuilder AddCommandFields(EmbedBuilder embedBuilder, CommandHelpData command)
         {
             var summaryBuilder = new StringBuilder(command.Summary ?? "No summary.").AppendLine();
 
-            var name = command.Aliases.FirstOrDefault();
-            AppendAliases(summaryBuilder, command.Aliases
-                                                 .Where(c => !c.Equals(name,
-                                                      StringComparison.OrdinalIgnoreCase))
-                                                 .ToList());
+            string name = command.Aliases.FirstOrDefault();
+            AppendAliases(
+                summaryBuilder,
+                command.Aliases.Where(c => !c.Equals(name, StringComparison.OrdinalIgnoreCase)).ToList());
             AppendParameters(summaryBuilder, command.Parameters);
 
-            embedBuilder.AddField(new EmbedFieldBuilder()
-                                 .WithName($"Command: `k!{name} {GetParams(command)}`")
-                                 .WithValue(summaryBuilder.ToString()));
+            embedBuilder.AddField(
+                new EmbedFieldBuilder().WithName($"Command: `k!{name} {GetParams(command)}`")
+                   .WithValue(summaryBuilder.ToString()));
 
             return embedBuilder;
         }
@@ -201,12 +195,14 @@ namespace KomiBot.Modules
 
             stringBuilder.AppendLine(Format.Bold("Aliases:"));
 
-            foreach (var alias in FormatUtilities.CollapsePlurals(aliases)) stringBuilder.AppendLine($"• {alias}");
+            foreach (string alias in FormatUtilities.CollapsePlurals(aliases))
+                stringBuilder.AppendLine($"• {alias}");
 
             return stringBuilder;
         }
 
-        private StringBuilder AppendParameters(StringBuilder stringBuilder,
+        private StringBuilder AppendParameters(
+            StringBuilder stringBuilder,
             IReadOnlyCollection<ParameterHelpData>? parameters)
         {
             if (parameters == null || parameters.Count == 0)
@@ -218,7 +214,8 @@ namespace KomiBot.Modules
             {
                 AppendSummary(stringBuilder, parameter);
 
-                if (parameter.Options == null) continue;
+                if (parameter.Options == null)
+                    continue;
 
                 foreach (var option in parameter.Options)
                     AppendSummary(stringBuilder, option);

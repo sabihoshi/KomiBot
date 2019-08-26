@@ -13,7 +13,7 @@ namespace KomiBot.Services.Image.ColorQuantization
 
             for (var i = 0; i < 8; i++)
             {
-                var index = GetOctreeIndex(color, i);
+                int index = GetOctreeIndex(color, i);
 
                 if (node.Children[index] is null)
                     node.Children[index] = new OctreeNode();
@@ -39,8 +39,7 @@ namespace KomiBot.Services.Image.ColorQuantization
                 palette[i] = new PaletteItem
                 {
                     Color = Color.FromArgb(
-                        leaf.RCount / leaf.ReferenceCount,
-                        leaf.GCount / leaf.ReferenceCount,
+                        leaf.RCount / leaf.ReferenceCount, leaf.GCount / leaf.ReferenceCount,
                         leaf.BCount / leaf.ReferenceCount),
                     Weight = leaf.ReferenceCount
                 };
@@ -77,10 +76,7 @@ namespace KomiBot.Services.Image.ColorQuantization
 
                         _leaves.Add(node);
                     }
-                    else
-                    {
-                        Reduce(child);
-                    }
+                    else { Reduce(child); }
                 }
             }
         }
@@ -92,14 +88,14 @@ namespace KomiBot.Services.Image.ColorQuantization
             if (bitIndex < 0 || bitIndex > 7)
                 throw new ArgumentOutOfRangeException(nameof(bitIndex));
 
-            var mask = 0b1000_0000 >> bitIndex;
+            int mask = 0b1000_0000 >> bitIndex;
 
-            var bitIndexComplement = 7 - bitIndex;
+            int bitIndexComplement = 7 - bitIndex;
 
             // Get the indicated bit and format in 0b0000_0RGB format.
-            var r = (color.R & mask) >> (bitIndexComplement - 2);
-            var g = (color.G & mask) >> (bitIndexComplement - 1);
-            var b = (color.B & mask) >> bitIndexComplement;
+            int r = (color.R & mask) >> (bitIndexComplement - 2);
+            int g = (color.G & mask) >> (bitIndexComplement - 1);
+            int b = (color.B & mask) >> bitIndexComplement;
 
             return r | g | b;
         }

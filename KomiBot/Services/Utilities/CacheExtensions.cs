@@ -26,10 +26,10 @@ namespace KomiBot.Services.Utilities
         private static IReadOnlyCollection<PropertyInfo> GetProperties(Type t)
         {
             return t.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(p => !(p.GetAttribute<HiddenAttribute>() is null) || p.Name != "Id")
-                    .Where(p => !(p.PropertyType.IsGenericType
-                               && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>)))
-                    .ToArray();
+               .Where(p => !(p.GetAttribute<HiddenAttribute>() is null) || p.Name != "Id")
+               .Where(
+                    p => !(p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>)))
+               .ToArray();
         }
 
         private static IReadOnlyDictionary<string, PropertyInfo> GetPropDict(Type t)
@@ -39,50 +39,38 @@ namespace KomiBot.Services.Utilities
 
         private static Type? GetType(PropertyInfo property)
         {
-            var isGeneric = property.PropertyType.IsGenericType &&
-                            property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
-            return isGeneric
-                ? Nullable.GetUnderlyingType(property.PropertyType)
-                : property.PropertyType;
+            bool isGeneric = property.PropertyType.IsGenericType
+                          && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+            return isGeneric ? Nullable.GetUnderlyingType(property.PropertyType) : property.PropertyType;
         }
 
-        private static Attribute? GetAttributeFromMember((MemberInfo Member, Type Type) o)
-        {
-            return o.Member.GetCustomAttribute(o.Type);
-        }
+        private static Attribute? GetAttributeFromMember((MemberInfo Member, Type Type) o) =>
+            o.Member.GetCustomAttribute(o.Type);
 
         private static Attribute? GetAttributeFromEnum((Enum @enum, Type attribute) o)
         {
             var (@enum, attribute) = o;
             var enumType = @enum.GetType();
-            var name = Enum.GetName(enumType, @enum);
+            string name = Enum.GetName(enumType, @enum);
             if (name is null)
                 return null;
+
             var field = enumType.GetField(name);
             return field is null ? null : GetAttributeFromMember((field, attribute));
         }
 
-        public static T? GetAttribute<T>(this MemberInfo member) where T : Attribute
-        {
-            return AttributeCache[(member, typeof(T))] as T;
-        }
+        public static T? GetAttribute<T>(this MemberInfo member) where T : Attribute =>
+            AttributeCache[(member, typeof(T))] as T;
 
-        public static Type? GetRealType(this PropertyInfo property)
-        {
-            return TypeCache[property];
-        }
+        public static Type? GetRealType(this PropertyInfo property) => TypeCache[property];
 
-        public static IReadOnlyCollection<PropertyInfo> GetProperties<T>()
-        {
-            return CachedProperties[typeof(T)];
-        }
+        public static IReadOnlyCollection<PropertyInfo> GetProperties<T>() => CachedProperties[typeof(T)];
 
-        public static T? GetAttributeOfEnum<T>(this Enum obj) where T : Attribute
-        {
-            return EnumAttributeCache[(obj, typeof(T))] as T;
-        }
+        public static T? GetAttributeOfEnum<T>(this Enum obj) where T : Attribute =>
+            EnumAttributeCache[(obj, typeof(T))] as T;
 
-        public static bool TryGetAttributeOfEnum<T>(this Enum obj, [MaybeNullWhen(false)] out T result) where T : Attribute
+        public static bool TryGetAttributeOfEnum<T>(this Enum obj, [MaybeNullWhen(false)] out T result)
+            where T : Attribute
         {
             result = EnumAttributeCache[(obj, typeof(T))] as T;
             return result != null;

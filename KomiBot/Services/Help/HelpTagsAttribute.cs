@@ -8,10 +8,7 @@ namespace KomiBot.Services.Help
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class HelpTagsAttribute : Attribute
     {
-        public HelpTagsAttribute(params string[] tags)
-        {
-            Tags = tags;
-        }
+        public HelpTagsAttribute(params string[] tags) => Tags = tags;
 
         public string[] Tags { get; }
     }

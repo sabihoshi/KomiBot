@@ -9,10 +9,7 @@ namespace KomiBot.Services.Core
     {
         private readonly ApplicationService _applicationService;
 
-        public DatabaseService(ApplicationService applicationService)
-        {
-            _applicationService = applicationService;
-        }
+        public DatabaseService(ApplicationService applicationService) => _applicationService = applicationService;
 
         public LiteCollection<T> GetTableData<T>(string? tableName = null)
         {
@@ -25,13 +22,16 @@ namespace KomiBot.Services.Core
         public static string GetTableName<T>(Type? type = null)
         {
             type ??= typeof(T);
-            var tableName = type.Name;
+            string tableName = type.Name;
             if (type.IsInterface && tableName.StartsWith('I'))
                 tableName = tableName.Substring(1);
             return tableName;
         }
 
-        public bool TryGetGuildData<T>(IGuild guild, out T data, string tableName = null) where T : class, IGuildData
+        public bool TryGetGuildData<T>(
+            IGuild guild,
+            out T data,
+            string tableName = null) where T : class, IGuildData
         {
             var collection = GetTableData<T>(tableName);
             data = collection.FindOne(c => c.Id == guild.Id);
@@ -40,7 +40,7 @@ namespace KomiBot.Services.Core
 
         public T EnsureGuildData<T>(IGuild guild, string? tableName = null) where T : class, IGuildData, new()
         {
-            if (!TryGetGuildData<T>(guild, out var data, tableName))
+            if (!TryGetGuildData(guild, out T data, tableName))
             {
                 data = new T { Id = guild.Id };
                 GetTableData<T>().Insert(data);

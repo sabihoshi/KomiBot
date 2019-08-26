@@ -18,39 +18,41 @@ namespace KomiBot.Services.Settings
             where T : class, IGuildData, new()
         {
             var properties = CacheExtensions.GetProperties<T>();
-            var typeName = typeof(T).Name.ToLower().Replace("settings", string.Empty);
+            string typeName = typeof(T).Name.ToLower().Replace("settings", string.Empty);
 
-            return commands.CreateModuleAsync($"Settings {typeName}", module =>
-            {
-                foreach (var property in properties)
+            return commands.CreateModuleAsync(
+                $"Settings {typeName}", module =>
                 {
-                    var name = property.Name.ToLower();
-                    module.AddCommand(name, (ctx, args, service, command) =>
-                        {
-                            var db = GetDatabaseService(service);
-                            var settings = db.EnsureGuildData<T>(ctx.Guild);
-                            var collection = db.GetTableData<T>();
-                            property.SetValue(settings, args.First());
-                            collection.Update(settings);
+                    foreach (var property in properties)
+                    {
+                        string name = property.Name.ToLower();
+                        module.AddCommand(
+                            name, (
+                                ctx,
+                                args,
+                                service,
+                                command) =>
+                            {
+                                var db = GetDatabaseService(service);
+                                var settings = db.EnsureGuildData<T>(ctx.Guild);
+                                var collection = db.GetTableData<T>();
+                                property.SetValue(settings, args.First());
+                                collection.Update(settings);
 
-                            return ctx.Channel.SendMessageAsync("Updated key.");
-                        },
-                        command =>
-                        {
-                            command.WithSummary($"Sets the {name} key in {typeName}");
-                            command.AddParameter("value", property.GetRealType(),
-                                p => p.AddAttributes(new RemainderAttribute()));
-                        });
-                }
+                                return ctx.Channel.SendMessageAsync("Updated key.");
+                            }, command =>
+                            {
+                                command.WithSummary($"Sets the {name} key in {typeName}");
+                                command.AddParameter(
+                                    "value", property.GetRealType(), p => p.AddAttributes(new RemainderAttribute()));
+                            });
+                    }
 
-                module.AddAttributes(new HiddenAttribute());
-            });
+                    module.AddAttributes(new HiddenAttribute());
+                });
         }
 
-        private static DatabaseService GetDatabaseService(IServiceProvider services)
-        {
-            return LazyInitializer.EnsureInitialized(ref _databaseService,
-                services.GetRequiredService<DatabaseService>);
-        }
+        private static DatabaseService GetDatabaseService(IServiceProvider services) =>
+            LazyInitializer.EnsureInitialized(ref _databaseService, services.GetRequiredService<DatabaseService>);
     }
 }

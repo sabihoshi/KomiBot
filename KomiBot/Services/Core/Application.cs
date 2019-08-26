@@ -2,7 +2,10 @@
 {
     public class Application
     {
-        public Application(ulong owner, string token, string connectionString)
+        public Application(
+            ulong owner,
+            string token,
+            string connectionString)
         {
             Owner = owner;
             Token = token;

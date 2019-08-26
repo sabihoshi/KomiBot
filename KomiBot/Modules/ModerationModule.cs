@@ -46,7 +46,9 @@ namespace KomiBot.Modules
         [RequireBotPermission(GuildPermission.KickMembers)]
         [UsedImplicitly]
         public async Task KickUserAsync(
-            [RequireHigherRole] IGuildUser user,
+            [
+                RequireHigherRole]
+            IGuildUser user,
             TimedReasonArguments? args = null)
         {
             if (args == null)
@@ -89,16 +91,14 @@ namespace KomiBot.Modules
             var sanctionAt = sanction switch
             {
                 Sanction.Kick => _settings?.KickAt,
-                Sanction.Ban => _settings?.BanAt,
-                _ => null
+                Sanction.Ban  => _settings?.BanAt,
+                _             => null
             };
 
             if (sanctionAt is null || sanctionAt == 0)
                 return false;
 
-            return _data?.Warnings
-                         .Where(w => w.UserId == subject.Id)
-                         .Sum(w => w.Count) > sanctionAt;
+            return _data?.Warnings.Where(w => w.UserId == subject.Id).Sum(w => w.Count) > sanctionAt;
         }
     }
 }

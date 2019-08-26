@@ -24,21 +24,25 @@ namespace KomiBot.Services.Help
 
         public static ParameterHelpData FromParameterInfo(ParameterInfo parameter)
         {
-            var (typeName, isNullable) = GetTypeInfo(parameter.Type);
-            var name = parameter.Name;
-            var summary = parameter.Summary;
+            (string typeName, bool isNullable) = GetTypeInfo(parameter.Type);
+            string name = parameter.Name;
+            string summary = parameter.Summary;
             var options = parameter.Type switch
             {
                 var t when t.IsEnum => FromEnum(t.GetEnumValues()),
-                var t when t.GetAttribute<NamedArgumentTypeAttribute>() != null
-                => FromNamedArgumentInfo(parameter.Type),
+                var t when t.GetAttribute<NamedArgumentTypeAttribute>() != null =>
+                FromNamedArgumentInfo(parameter.Type),
                 _ => null
             };
 
             return new ParameterHelpData(name, summary, typeName, isNullable || parameter.IsOptional, options);
         }
 
-        private ParameterHelpData(string name, string? summary = null, string? type = null, bool isOptional = false,
+        private ParameterHelpData(
+            string name,
+            string? summary = null,
+            string? type = null,
+            bool isOptional = false,
             IReadOnlyCollection<ParameterHelpData>? options = null)
         {
             Name = name;
@@ -54,9 +58,11 @@ namespace KomiBot.Services.Help
 
             foreach (Enum? n in names)
             {
-                if (n is null) continue;
-                var name = n.ToString();
-                var summary = n.GetAttributeOfEnum<DescriptionAttribute>()?.Text;
+                if (n is null)
+                    continue;
+
+                string name = n.ToString();
+                string summary = n.GetAttributeOfEnum<DescriptionAttribute>()?.Text;
                 result.Add(new ParameterHelpData(name, summary));
             }
 
@@ -67,23 +73,24 @@ namespace KomiBot.Services.Help
         {
             var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
-            return properties.Select(p =>
-            {
-                var (typeName, isNullable) = GetTypeInfo(type);
+            return properties.Select(
+                    p =>
+                    {
+                        (string typeName, bool isNullable) = GetTypeInfo(type);
 
-                return new ParameterHelpData(p.Name,
-                    p.GetAttribute<DescriptionAttribute>()?.Text, typeName,
-                    isNullable);
-            }).ToList();
+                        return new ParameterHelpData(
+                            p.Name, p.GetAttribute<DescriptionAttribute>()?.Text, typeName, isNullable);
+                    })
+               .ToList();
         }
 
         private static ValueTuple<string?, bool> GetTypeInfo(Type type)
         {
-            var isNullable = type.IsGenericType &&
-                             type.GetGenericTypeDefinition() == typeof(Nullable<>);
+            bool isNullable = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
             var paramType = isNullable ? type.GetGenericArguments()[0] : type;
-            var typeName = paramType.Name;
-            if (paramType.IsInterface && paramType.Name.StartsWith('I')) typeName = typeName.Substring(1);
+            string typeName = paramType.Name;
+            if (paramType.IsInterface && paramType.Name.StartsWith('I'))
+                typeName = typeName.Substring(1);
 
             return new ValueTuple<string?, bool>(typeName, isNullable);
         }

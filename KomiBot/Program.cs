@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Net.Http;
+﻿using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -16,25 +14,19 @@ namespace KomiBot
 {
     public class Program
     {
-        public static void Main(string[] args)
-        {
-            new Program().MainAsync().GetAwaiter().GetResult();
-        }
+        public static void Main(string[] args) { new Program().MainAsync().GetAwaiter().GetResult(); }
 
-        private ServiceProvider ConfigureServices()
-        {
-            return new ServiceCollection()
-                  .AddHttpClient()
-                  .AddMemoryCache()
-                  .AddSingleton<DiscordSocketClient>()
-                  .AddSingleton<CommandService>()
-                  .AddSingleton<CommandHandlingService>()
-                  .AddSingleton<ApplicationService>()
-                  .AddSingleton<DatabaseService>()
-                  .AddCommandHelp()
-                  .AddImages()
-                  .BuildServiceProvider();
-        }
+        private ServiceProvider ConfigureServices() =>
+            new ServiceCollection().AddHttpClient()
+               .AddMemoryCache()
+               .AddSingleton<DiscordSocketClient>()
+               .AddSingleton<CommandService>()
+               .AddSingleton<CommandHandlingService>()
+               .AddSingleton<ApplicationService>()
+               .AddSingleton<DatabaseService>()
+               .AddCommandHelp()
+               .AddImages()
+               .BuildServiceProvider();
 
         private Task LogAsync(LogMessage message)
         {

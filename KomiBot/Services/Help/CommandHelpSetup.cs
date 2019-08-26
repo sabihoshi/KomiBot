@@ -14,10 +14,7 @@ namespace KomiBot.Services.Help
         /// <returns>
         ///     <paramref name="services" />
         /// </returns>
-        public static IServiceCollection AddCommandHelp(this IServiceCollection services)
-        {
-            return services
-               .AddSingleton<ICommandHelpService, CommandHelpService>();
-        }
+        public static IServiceCollection AddCommandHelp(this IServiceCollection services) =>
+            services.AddSingleton<ICommandHelpService, CommandHelpService>();
     }
 }

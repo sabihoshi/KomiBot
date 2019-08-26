@@ -10,9 +10,6 @@ namespace KomiBot.Modules
         [Alias("pong")]
         [Summary("Shows the current ping of the bot.")]
         [UsedImplicitly]
-        public Task PingAsync()
-        {
-            return ReplyAsync($"Pong! {Context.Client.Latency}");
-        }
+        public Task PingAsync() => ReplyAsync($"Pong! {Context.Client.Latency}");
     }
 }
