@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using KomiBot.Services.Settings;
 
 namespace KomiBot.Services.Core
 {
@@ -12,15 +14,18 @@ namespace KomiBot.Services.Core
         private readonly CommandService _commands;
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
+        private readonly DatabaseService _database;
 
         public CommandHandlingService(
             IServiceProvider services,
             CommandService commands,
-            DiscordSocketClient discord)
+            DiscordSocketClient discord,
+            DatabaseService database)
         {
             _commands = commands;
             _discord = discord;
             _services = services;
+            _database = database;
 
             _commands.CommandExecuted += CommandExecutedAsync;
             _discord.MessageReceived += MessageReceivedAsync;
@@ -50,15 +55,20 @@ namespace KomiBot.Services.Core
         {
             if (!(rawMessage is SocketUserMessage message))
                 return;
+
             if (message.Source != MessageSource.User)
                 return;
 
             var argPos = 0;
+            var context = new SocketCommandContext(_discord, message);
+            var settings = _database.EnsureGuildData<GuildSettings>(context.Guild);
             if (!(message.HasStringPrefix("k!", ref argPos)
                || message.HasMentionPrefix(_discord.CurrentUser, ref argPos)))
-                return;
+            {
+                if (settings.Prefixes.FirstOrDefault(p => message.HasStringPrefix(p, ref argPos)) is null)
+                    return;
+            }
 
-            var context = new SocketCommandContext(_discord, message);
             var result = await _commands.ExecuteAsync(context, argPos, _services);
 
             if (!result.IsSuccess)

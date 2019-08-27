@@ -46,9 +46,7 @@ namespace KomiBot.Modules
         [RequireBotPermission(GuildPermission.KickMembers)]
         [UsedImplicitly]
         public async Task KickUserAsync(
-            [
-                RequireHigherRole]
-            IGuildUser user,
+            [RequireHigherRole] IGuildUser user,
             TimedReasonArguments? args = null)
         {
             if (args == null)
