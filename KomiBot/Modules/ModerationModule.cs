@@ -14,10 +14,12 @@ namespace KomiBot.Modules
     [Summary("Commands for moderation in the server.")]
     public class ModerationModule : ModuleBase<SocketCommandContext>
     {
-        public DatabaseService? DatabaseService { get; set; }
+        private readonly IDatabaseService _db;
 
         private ModerationSettings? _settings;
         private ModerationData? _data;
+
+        public ModerationModule(IDatabaseService db) => _db = db;
 
         [Command("ban")]
         [Summary("Bans a user mentioned.\nExample: `k!ban @user time: 5d reason: Spam`")]
@@ -65,12 +67,12 @@ namespace KomiBot.Modules
             [RequireHigherRole] IGuildUser user,
             WarningArguments? args = null)
         {
-            _settings = DatabaseService?.EnsureGuildData<ModerationSettings>(Context.Guild);
-            _data = DatabaseService?.EnsureGuildData<ModerationData>(Context.Guild);
+            _settings = _db.EnsureGuildData<ModerationSettings>(Context.Guild);
+            _data = _db.EnsureGuildData<ModerationData>(Context.Guild);
 
             var warning = new WarningData(Context, user, args);
 
-            _data?.Warnings.Add(warning);
+            _data.Warnings.Add(warning);
 
             if (ShouldBe(Sanction.Ban, user))
                 await BanUserAsync(user, new TimedReasonArguments { Reason = args?.Reason });

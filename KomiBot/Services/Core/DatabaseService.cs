@@ -1,11 +1,26 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Discord;
 using KomiBot.Services.Settings;
 using LiteDB;
 
 namespace KomiBot.Services.Core
 {
+    public interface IDatabaseService
+    {
+        LiteCollection<T> GetTableData<T>(string? tableName = null);
+
+        bool TryGetGuildData<T>(
+            IGuild guild,
+            [MaybeNullWhen(false)]
+            out T data,
+            string? tableName = null) where T : class, IGuildData;
+
+        T EnsureGuildData<T>(IGuild guild, string? tableName = null) where T : class, IGuildData, new();
+    }
+
     public class DatabaseService
+        : IDatabaseService
     {
         private readonly ApplicationService _applicationService;
 
@@ -31,7 +46,7 @@ namespace KomiBot.Services.Core
         public bool TryGetGuildData<T>(
             IGuild guild,
             out T data,
-            string tableName = null) where T : class, IGuildData
+            string? tableName = null) where T : class, IGuildData
         {
             var collection = GetTableData<T>(tableName);
             data = collection.FindOne(c => c.Id == guild.Id);
