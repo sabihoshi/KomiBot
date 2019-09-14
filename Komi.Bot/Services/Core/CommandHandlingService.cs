@@ -6,6 +6,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Komi.Bot.Services.Settings;
+using Komi.Data.Models.Settings;
 
 namespace Komi.Bot.Services.Core
 {

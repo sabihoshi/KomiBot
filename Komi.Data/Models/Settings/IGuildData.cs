@@ -1,4 +1,4 @@
-﻿namespace Komi.Bot.Services.Settings
+﻿namespace Komi.Data.Models.Settings
 {
     public interface IGuildData
     {

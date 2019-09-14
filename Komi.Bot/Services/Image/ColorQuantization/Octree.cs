@@ -76,7 +76,8 @@ namespace Komi.Bot.Services.Image.ColorQuantization
 
                         _leaves.Add(node);
                     }
-                    else { Reduce(child); }
+                    else
+                        Reduce(child);
                 }
             }
         }

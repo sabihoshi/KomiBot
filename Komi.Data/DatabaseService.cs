@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Discord;
 using Komi.Bot.Services.Settings;
+using Komi.Data.Models.Settings;
 using LiteDB;
 
 namespace Komi.Bot.Services.Core
@@ -12,8 +13,7 @@ namespace Komi.Bot.Services.Core
 
         bool TryGetGuildData<T>(
             IGuild guild,
-            [MaybeNullWhen(false)]
-            out T data,
+            [MaybeNullWhen(false)] out T data,
             string? tableName = null) where T : class, IGuildData;
 
         T EnsureGuildData<T>(IGuild guild, string? tableName = null) where T : class, IGuildData, new();

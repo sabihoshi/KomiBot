@@ -125,7 +125,8 @@ namespace Komi.Bot.Services.Utilities
                         parenthesized[aliasIndex][wordIndex] =
                             $"{longestForm.Substring(0, indexOfDifference)}({longestForm.Substring(indexOfDifference)})";
                     }
-                    else { parenthesized[aliasIndex][wordIndex] = word.Single(); }
+                    else
+                        parenthesized[aliasIndex][wordIndex] = word.Single();
                 }
             }
 

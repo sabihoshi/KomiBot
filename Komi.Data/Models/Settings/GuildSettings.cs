@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Komi.Bot.Services.Settings
+namespace Komi.Data.Models.Settings
 {
     public class GuildSettings : IGuildData
     {

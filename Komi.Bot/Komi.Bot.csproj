@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Komi.Data\Komi.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="application.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

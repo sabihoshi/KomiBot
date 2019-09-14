@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -6,7 +7,7 @@ using JetBrains.Annotations;
 using Komi.Bot.Core.Preconditions;
 using Komi.Bot.Core.TypeReaders;
 using Komi.Bot.Services.Core;
-using Komi.Bot.Services.Moderation;
+using Komi.Data.Models.Moderation;
 
 namespace Komi.Bot.Modules
 {
@@ -70,7 +71,14 @@ namespace Komi.Bot.Modules
             _settings = _db.EnsureGuildData<ModerationSettings>(Context.Guild);
             _data = _db.EnsureGuildData<ModerationData>(Context.Guild);
 
-            var warning = new WarningData(Context, user, args);
+            var warning = new WarningData
+            {
+                UserId = user.Id,
+                ModId = Context.User.Id,
+                Count = args?.Count ?? 1,
+                Reason = args?.Reason,
+                Date = DateTimeOffset.UtcNow
+            };
 
             _data.Warnings.Add(warning);
 

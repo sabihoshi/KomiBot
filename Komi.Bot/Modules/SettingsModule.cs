@@ -9,9 +9,10 @@ using JetBrains.Annotations;
 using Komi.Bot.Core.Attributes;
 using Komi.Bot.Services.Core;
 using Komi.Bot.Services.Image;
-using Komi.Bot.Services.Moderation;
 using Komi.Bot.Services.Settings;
 using Komi.Bot.Services.Utilities;
+using Komi.Data.Models.Moderation;
+using Komi.Data.Models.Settings;
 
 namespace Komi.Bot.Modules
 {

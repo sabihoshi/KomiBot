@@ -6,6 +6,7 @@ using Discord.Commands;
 using Komi.Bot.Core.Attributes;
 using Komi.Bot.Services.Core;
 using Komi.Bot.Services.Utilities;
+using Komi.Data.Models.Settings;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Komi.Bot.Services.Settings
