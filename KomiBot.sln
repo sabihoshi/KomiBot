@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KomiBot", "KomiBot\KomiBot.csproj", "{B88452A6-2EAB-49BF-A2F9-70E497D6B943}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Komi.Bot", "Komi.Bot\Komi.Bot.csproj", "{B88452A6-2EAB-49BF-A2F9-70E497D6B943}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Komi.Data", "Komi.Data\Komi.Data.csproj", "{B64F689B-8612-4860-AC7D-271751CFAAA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{B88452A6-2EAB-49BF-A2F9-70E497D6B943}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B88452A6-2EAB-49BF-A2F9-70E497D6B943}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B88452A6-2EAB-49BF-A2F9-70E497D6B943}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B64F689B-8612-4860-AC7D-271751CFAAA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B64F689B-8612-4860-AC7D-271751CFAAA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B64F689B-8612-4860-AC7D-271751CFAAA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B64F689B-8612-4860-AC7D-271751CFAAA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
