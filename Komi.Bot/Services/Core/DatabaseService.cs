@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Discord;
-using Komi.Bot.Services.Settings;
 using Komi.Data.Models.Settings;
 using LiteDB;
 
