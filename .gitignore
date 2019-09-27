@@ -341,3 +341,5 @@ healthchecksdb
 KomiBot/application\.json
 
 *.kao
+
+Komi.Bot/application.json
