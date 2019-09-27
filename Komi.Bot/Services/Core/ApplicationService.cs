@@ -1,4 +1,6 @@
-﻿namespace Komi.Bot.Services.Core
+﻿using Komi.Data.Models;
+
+namespace Komi.Bot.Services.Core
 {
     public class ApplicationService
     {

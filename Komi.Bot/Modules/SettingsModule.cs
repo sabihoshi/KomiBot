@@ -20,7 +20,7 @@ namespace Komi.Bot.Modules
     [Alias("Setting")]
     public class SettingsModule : ModuleBase<SocketCommandContext>
     {
-        [UsedImplicitly] public DatabaseService DatabaseService { get; set; }
+        [UsedImplicitly] public IDatabaseService DatabaseService { get; set; }
 
         [UsedImplicitly] public IImageService ImageService { get; set; }
 
