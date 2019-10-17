@@ -99,6 +99,7 @@ namespace Komi.Bot.Modules
 
             _data = _db.EnsureGuildData<ModerationData>(Context.Guild);
             _data.Warnings.Add(warning);
+            _db.UpdateData(_data);
 
             if (ShouldBe(Sanction.Ban, user))
                 await BanUserAsync(user, new TimedReasonArguments { Reason = args?.Reason });

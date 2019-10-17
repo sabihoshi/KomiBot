@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Discord;
 using Komi.Data.Models.Settings;
@@ -16,6 +16,8 @@ namespace Komi.Bot.Services.Core
             string? tableName = null) where T : class, IGuildData;
 
         T EnsureGuildData<T>(IGuild guild, string? tableName = null) where T : class, IGuildData, new();
+
+        void UpdateData<T>(T update);
     }
 
     public class DatabaseService
@@ -62,5 +64,7 @@ namespace Komi.Bot.Services.Core
 
             return data;
         }
+
+        public void UpdateData<T>(T update) => GetTableData<T>().Upsert(update);
     }
 }
