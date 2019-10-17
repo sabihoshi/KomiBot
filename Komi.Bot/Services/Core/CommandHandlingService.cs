@@ -15,13 +15,13 @@ namespace Komi.Bot.Services.Core
         private readonly CommandService _commands;
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
-        private readonly DatabaseService _database;
+        private readonly IDatabaseService _database;
 
         public CommandHandlingService(
             IServiceProvider services,
             CommandService commands,
             DiscordSocketClient discord,
-            DatabaseService database)
+            IDatabaseService database)
         {
             _commands = commands;
             _discord = discord;
