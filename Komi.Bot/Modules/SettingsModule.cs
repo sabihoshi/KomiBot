@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +11,6 @@ using JetBrains.Annotations;
 using Komi.Bot.Core.Attributes;
 using Komi.Bot.Services.Core;
 using Komi.Bot.Services.Image;
-using Komi.Bot.Services.Settings;
 using Komi.Bot.Services.Utilities;
 using Komi.Data.Models.Moderation;
 using Komi.Data.Models.Settings;
@@ -61,12 +62,24 @@ namespace Komi.Bot.Modules
             };
         }
 
-        private string AppendProperties<T>(IGuildData data)
+        private string AppendProperties<T>(IGuildData data) where T : IGuildData
         {
             var sb = new StringBuilder();
 
             foreach (var property in CacheExtensions.GetProperties<T>())
-                sb.AppendLine($"{Format.Bold(property.Name)}: {property.GetValue(data)}");
+            {
+                if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType) && property.PropertyType != typeof(string))
+                {
+                    var enumerable = (property.GetValue(data) as IEnumerable)?.OfType<object>()
+                                  ?? Enumerable.Empty<object>();
+                    sb.AppendLine($"{Format.Bold(property.Name)}:");
+                    sb.AppendLine($"```prolog\n"
+                                + $"{string.Join("\n", enumerable)}"
+                                + $"```");
+                }
+                else
+                    sb.AppendLine($"{Format.Bold(property.Name)}: {property.GetValue(data) ?? 0}");
+            }
 
             return sb.ToString();
         }

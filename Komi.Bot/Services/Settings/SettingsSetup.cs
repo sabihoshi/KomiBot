@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using Discord.Commands;
+using Discord.Commands.Builders;
 using Komi.Bot.Core.Attributes;
 using Komi.Bot.Services.Core;
 using Komi.Bot.Services.Utilities;
@@ -15,37 +17,67 @@ namespace Komi.Bot.Services.Settings
     {
         private static IDatabaseService? _databaseService;
 
-        public static Task RegisterSetting<T>(this CommandService commands, IServiceProvider services)
-            where T : class, IGuildData, new()
+        public static void RegisterSetting<T>(this CommandService commands) where T : class, IGuildData, new()
         {
-            var properties = CacheExtensions.GetProperties<T>();
-            string typeName = typeof(T).Name.ToLower().Replace("settings", string.Empty);
+            string guildData = typeof(T).Name.ToLower().Replace("Settings", string.Empty);
 
-            return commands.CreateModuleAsync(
-                $"Settings {typeName}", module =>
+            commands.CreateModuleAsync("Settings", module =>
+            {
+                foreach (var property in CacheExtensions.GetPrimitives<T>())
                 {
-                    foreach (var property in properties)
+                    CreateCommand<T>("Updated key.", module, guildData, property, property.Name, (p, s, args) =>
+                        p.SetValue(s, args.First()));
+                }
+
+                foreach (var property in CacheExtensions.GetLists<T>())
+                {
+                    string name = property.Name;
+                    CreateCommand<T>("Cleared key.", module, guildData, property, name, (p, s, args) =>
+                        (p.GetValue(property) as IList)?.Clear());
+
+                    CreateCommand<T>("Added key.", module, guildData, property, name, (p, s, args) =>
                     {
-                        string name = property.Name.ToLower();
-                        module.AddCommand(name, (ctx, args, service, command) =>
-                        {
-                            var db = GetDatabaseService(service);
-                            var settings = db.EnsureGuildData<T>(ctx.Guild);
-                            var collection = db.GetTableData<T>();
-                            property.SetValue(settings, args.First());
-                            collection.Update(settings);
+                        var list = p.GetValue(property) as IList;
+                        foreach (var item in args)
+                            list?.Add(item);
+                    });
+                }
+            });
 
-                            return ctx.Channel.SendMessageAsync("Updated key.");
-                        }, command =>
-                        {
-                            command.WithSummary($"Sets the {name} key in {typeName}");
-                            command.AddParameter(
-                                "value", property.GetRealType(), p => p.AddAttributes(new RemainderAttribute()));
-                        });
-                    }
+            static void CreateCommand<TData>(string message, ModuleBuilder module, string data, PropertyInfo property,
+                string name, Action<PropertyInfo, TData, object[]> propertyFunc) where TData : class, IGuildData, new()
+            {
+                module.AddCommand(name, (ctx, args, service, command) =>
+                {
+                    GetData<TData>(ctx, service, property, args, propertyFunc);
+                    return ctx.Channel.SendMessageAsync(message);
+                }, c => WithSettings(c, name, property, data));
+                module.AddAttributes(new HiddenAttribute());
+            }
 
-                    module.AddAttributes(new HiddenAttribute());
+            static void WithSettings(
+                CommandBuilder command, string propName,
+                PropertyInfo property, string keyName)
+            {
+                command.WithSummary($"Sets the {propName} key in {keyName}");
+                command.AddParameter("Value", property.GetRealType(), p =>
+                {
+                    p.AddAttributes(new RemainderAttribute());
+                    p.WithSummary("The new value of the key");
                 });
+            }
+
+            static void GetData<TData>(
+                ICommandContext ctx, IServiceProvider service,
+                PropertyInfo property, object[] args,
+                Action<PropertyInfo, TData, object[]> propertyFunc)
+                where TData : class, IGuildData, new()
+            {
+                var db = GetDatabaseService(service);
+                var settings = db.EnsureGuildData<TData>(ctx.Guild);
+                propertyFunc.Invoke(property, settings, args);
+                db.UpdateData(settings);
+            }
         }
 
         private static IDatabaseService GetDatabaseService(IServiceProvider services) =>

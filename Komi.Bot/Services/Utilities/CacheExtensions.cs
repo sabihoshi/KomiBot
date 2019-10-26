@@ -9,11 +9,14 @@ namespace Komi.Bot.Services.Utilities
 {
     public static class CacheExtensions
     {
+        private static readonly Cache<Type, IReadOnlyCollection<PropertyInfo>> CachedPrimitives =
+            new Cache<Type, IReadOnlyCollection<PropertyInfo>>(GetPrimitives);
+
+        private static readonly Cache<Type, IReadOnlyCollection<PropertyInfo>> CachedLists =
+            new Cache<Type, IReadOnlyCollection<PropertyInfo>>(GetLists);
+
         private static readonly Cache<Type, IReadOnlyCollection<PropertyInfo>> CachedProperties =
             new Cache<Type, IReadOnlyCollection<PropertyInfo>>(GetProperties);
-
-        private static readonly Cache<Type, IReadOnlyDictionary<string, PropertyInfo>> PropertyCache =
-            new Cache<Type, IReadOnlyDictionary<string, PropertyInfo>>(GetPropDict);
 
         private static readonly Cache<PropertyInfo, Type?> TypeCache = new Cache<PropertyInfo, Type?>(GetType);
 
@@ -23,25 +26,47 @@ namespace Komi.Bot.Services.Utilities
         private static readonly Cache<(Enum, Type), Attribute?> EnumAttributeCache =
             new Cache<(Enum, Type), Attribute?>(GetAttributeFromEnum);
 
+        private static IReadOnlyCollection<PropertyInfo> GetPrimitives(Type t)
+        {
+            return CachedProperties[t]
+               .Where(p => !p.PropertyType.IsGenericType)
+               .ToArray();
+        }
+
+        private static IReadOnlyCollection<PropertyInfo> GetLists(Type t)
+        {
+            return CachedProperties[t]
+               .Where(p => p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
+               .ToArray();
+        }
+
         private static IReadOnlyCollection<PropertyInfo> GetProperties(Type t)
         {
             return t.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                .Where(p => !(p.GetAttribute<HiddenAttribute>() is null) || p.Name != "Id")
-               .Where(
-                    p => !(p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>)))
                .ToArray();
         }
 
         private static IReadOnlyDictionary<string, PropertyInfo> GetPropDict(Type t)
         {
-            return CachedProperties[t].ToDictionary(p => p.Name.ToLower(), p => p);
+            return CachedPrimitives[t].ToDictionary(p => p.Name.ToLower(), p => p);
         }
 
         private static Type? GetType(PropertyInfo property)
         {
-            bool isGeneric = property.PropertyType.IsGenericType
-                          && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
-            return isGeneric ? Nullable.GetUnderlyingType(property.PropertyType) : property.PropertyType;
+            return property switch
+            {
+                var p when p.PropertyType.IsGenericType
+                        && p.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) =>
+                Nullable.GetUnderlyingType(
+                    p.PropertyType),
+                var p when p.PropertyType.IsGenericType
+                        && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>) =>
+                p.PropertyType
+                   .GetGenericArguments()
+                   .Single(),
+                _ => property.PropertyType
+            };
         }
 
         private static Attribute? GetAttributeFromMember((MemberInfo Member, Type Type) o) =>
@@ -64,12 +89,16 @@ namespace Komi.Bot.Services.Utilities
 
         public static Type? GetRealType(this PropertyInfo property) => TypeCache[property];
 
+        public static IReadOnlyCollection<PropertyInfo> GetPrimitives<T>() => CachedPrimitives[typeof(T)];
+
+        public static IReadOnlyCollection<PropertyInfo> GetLists<T>() => CachedLists[typeof(T)];
+
         public static IReadOnlyCollection<PropertyInfo> GetProperties<T>() => CachedProperties[typeof(T)];
 
         public static T? GetAttributeOfEnum<T>(this Enum obj) where T : Attribute =>
             EnumAttributeCache[(obj, typeof(T))] as T;
 
-        public static bool TryGetAttributeOfEnum<T>(this Enum obj, [MaybeNullWhen(false)] out T result)
+        public static bool TryGetAttributeOfEnum<T>(this Enum obj, [MaybeNullWhen(false)] out T? result)
             where T : Attribute
         {
             result = EnumAttributeCache[(obj, typeof(T))] as T;

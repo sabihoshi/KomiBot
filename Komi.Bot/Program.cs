@@ -44,8 +44,8 @@ namespace Komi.Bot
                 var commands = services.GetRequiredService<CommandService>();
 
                 // Custom Commands
-                await commands.RegisterSetting<GuildSettings>(services);
-                await commands.RegisterSetting<ModerationSettings>(services);
+                commands.RegisterSetting<GuildSettings>();
+                commands.RegisterSetting<ModerationSettings>();
 
                 // Events
                 client.Log += LogAsync;
