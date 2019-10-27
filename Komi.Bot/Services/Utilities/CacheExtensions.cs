@@ -18,7 +18,7 @@ namespace Komi.Bot.Services.Utilities
         private static readonly Cache<Type, IReadOnlyCollection<PropertyInfo>> CachedProperties =
             new Cache<Type, IReadOnlyCollection<PropertyInfo>>(GetProperties);
 
-        private static readonly Cache<PropertyInfo, Type?> TypeCache = new Cache<PropertyInfo, Type?>(GetType);
+        private static readonly Cache<PropertyInfo, Type> TypeCache = new Cache<PropertyInfo, Type>(GetType);
 
         private static readonly Cache<(MemberInfo, Type), Attribute?> AttributeCache =
             new Cache<(MemberInfo Member, Type Type), Attribute?>(GetAttributeFromMember);
@@ -47,27 +47,10 @@ namespace Komi.Bot.Services.Utilities
                .ToArray();
         }
 
-        private static IReadOnlyDictionary<string, PropertyInfo> GetPropDict(Type t)
-        {
-            return CachedPrimitives[t].ToDictionary(p => p.Name.ToLower(), p => p);
-        }
-
-        private static Type? GetType(PropertyInfo property)
-        {
-            return property switch
-            {
-                var p when p.PropertyType.IsGenericType
-                        && p.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) =>
-                Nullable.GetUnderlyingType(
-                    p.PropertyType),
-                var p when p.PropertyType.IsGenericType
-                        && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>) =>
-                p.PropertyType
-                   .GetGenericArguments()
-                   .Single(),
-                _ => property.PropertyType
-            };
-        }
+        private static Type GetType(PropertyInfo property) =>
+            property.PropertyType.IsGenericType
+                ? property.PropertyType.GetGenericArguments().First()
+                : property.PropertyType;
 
         private static Attribute? GetAttributeFromMember((MemberInfo Member, Type Type) o) =>
             o.Member.GetCustomAttribute(o.Type);
@@ -87,7 +70,7 @@ namespace Komi.Bot.Services.Utilities
         public static T? GetAttribute<T>(this MemberInfo member) where T : Attribute =>
             AttributeCache[(member, typeof(T))] as T;
 
-        public static Type? GetRealType(this PropertyInfo property) => TypeCache[property];
+        public static Type GetRealType(this PropertyInfo property) => TypeCache[property];
 
         public static IReadOnlyCollection<PropertyInfo> GetPrimitives<T>() => CachedPrimitives[typeof(T)];
 
@@ -97,12 +80,5 @@ namespace Komi.Bot.Services.Utilities
 
         public static T? GetAttributeOfEnum<T>(this Enum obj) where T : Attribute =>
             EnumAttributeCache[(obj, typeof(T))] as T;
-
-        public static bool TryGetAttributeOfEnum<T>(this Enum obj, [MaybeNullWhen(false)] out T? result)
-            where T : Attribute
-        {
-            result = EnumAttributeCache[(obj, typeof(T))] as T;
-            return result != null;
-        }
     }
 }

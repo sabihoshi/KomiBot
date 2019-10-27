@@ -19,23 +19,23 @@ namespace Komi.Bot.Services.Settings
 
         public static void RegisterSetting<T>(this CommandService commands) where T : class, IGuildData, new()
         {
-            string guildData = typeof(T).Name.ToLower().Replace("Settings", string.Empty);
+            string group = typeof(T).Name.ToLower().Replace("Settings", string.Empty);
 
             commands.CreateModuleAsync("Settings", module =>
             {
                 foreach (var property in CacheExtensions.GetPrimitives<T>())
                 {
-                    CreateCommand<T>("Updated key.", module, guildData, property, property.Name, (p, s, args) =>
+                    module.CreateCommand<T>("Updated key.", group, property.Name, property, (p, s, args) =>
                         p.SetValue(s, args.First()));
                 }
 
                 foreach (var property in CacheExtensions.GetLists<T>())
                 {
                     string name = property.Name;
-                    CreateCommand<T>("Cleared key.", module, guildData, property, name, (p, s, args) =>
+                    module.CreateCommand<T>("Cleared key.", group, $"clear {name}", property, (p, s, args) =>
                         (p.GetValue(property) as IList)?.Clear());
 
-                    CreateCommand<T>("Added key.", module, guildData, property, name, (p, s, args) =>
+                    module.CreateCommand<T>("Added key.", group, name, property, (p, s, args) =>
                     {
                         var list = p.GetValue(property) as IList;
                         foreach (var item in args)
@@ -43,41 +43,44 @@ namespace Komi.Bot.Services.Settings
                     });
                 }
             });
+        }
 
-            static void CreateCommand<TData>(string message, ModuleBuilder module, string data, PropertyInfo property,
-                string name, Action<PropertyInfo, TData, object[]> propertyFunc) where TData : class, IGuildData, new()
+        private static void CreateCommand<TData>(
+            this ModuleBuilder module,
+            string message, string group, string key,
+            PropertyInfo property, Action<PropertyInfo, TData, object[]> propertyFunc)
+            where TData : class, IGuildData, new()
+        {
+            module.AddCommand(key, (ctx, args, service, command) =>
             {
-                module.AddCommand(name, (ctx, args, service, command) =>
-                {
-                    GetData<TData>(ctx, service, property, args, propertyFunc);
-                    return ctx.Channel.SendMessageAsync(message);
-                }, c => WithSettings(c, name, property, data));
-                module.AddAttributes(new HiddenAttribute());
-            }
+                GetData(ctx, args, service, property, propertyFunc);
+                return ctx.Channel.SendMessageAsync(message);
+            }, c => c.WithSettings(property.GetRealType(), group, key));
+            module.AddAttributes(new HiddenAttribute());
+        }
 
-            static void WithSettings(
-                CommandBuilder command, string propName,
-                PropertyInfo property, string keyName)
+        private static void WithSettings(
+            this CommandBuilder command, Type type,
+            string group, string key)
+        {
+            command.WithSummary($"Sets the {key} key in {group}");
+            command.AddParameter("Value", type, p =>
             {
-                command.WithSummary($"Sets the {propName} key in {keyName}");
-                command.AddParameter("Value", property.GetRealType(), p =>
-                {
-                    p.AddAttributes(new RemainderAttribute());
-                    p.WithSummary("The new value of the key");
-                });
-            }
+                p.AddAttributes(new RemainderAttribute());
+                p.WithSummary("The new value of the key");
+            });
+        }
 
-            static void GetData<TData>(
-                ICommandContext ctx, IServiceProvider service,
-                PropertyInfo property, object[] args,
-                Action<PropertyInfo, TData, object[]> propertyFunc)
-                where TData : class, IGuildData, new()
-            {
-                var db = GetDatabaseService(service);
-                var settings = db.EnsureGuildData<TData>(ctx.Guild);
-                propertyFunc.Invoke(property, settings, args);
-                db.UpdateData(settings);
-            }
+        private static void GetData<TData>(
+            ICommandContext ctx, object[] args,
+            IServiceProvider service, PropertyInfo property,
+            Action<PropertyInfo, TData, object[]> propertyFunc)
+            where TData : class, IGuildData, new()
+        {
+            var db = GetDatabaseService(service);
+            var settings = db.EnsureGuildData<TData>(ctx.Guild);
+            propertyFunc.Invoke(property, settings, args);
+            db.UpdateData(settings);
         }
 
         private static IDatabaseService GetDatabaseService(IServiceProvider services) =>
