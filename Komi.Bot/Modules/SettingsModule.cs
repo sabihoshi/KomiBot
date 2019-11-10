@@ -73,9 +73,9 @@ namespace Komi.Bot.Modules
                     var enumerable = (property.GetValue(data) as IEnumerable)?.OfType<object>()
                                   ?? Enumerable.Empty<object>();
                     sb.AppendLine($"{Format.Bold(property.Name)}:");
-                    sb.AppendLine($"```prolog\n"
+                    sb.AppendLine( "```prolog\n"
                                 + $"{string.Join("\n", enumerable)}"
-                                + $"```");
+                                +  "```");
                 }
                 else
                     sb.AppendLine($"{Format.Bold(property.Name)}: {property.GetValue(data) ?? 0}");
