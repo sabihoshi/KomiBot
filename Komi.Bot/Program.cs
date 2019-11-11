@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -24,6 +24,7 @@ namespace Komi.Bot
                .AddSingleton<CommandService>()
                .AddSingleton<CommandHandlingService>()
                .AddSingleton<ApplicationService>()
+               .AddScoped<IFunModuleService, FunModuleService>()
                .AddScoped<IDatabaseService, DatabaseService>()
                .AddCommandHelp()
                .AddImages()

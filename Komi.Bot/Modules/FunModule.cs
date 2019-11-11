@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -11,7 +11,7 @@ namespace Komi.Bot.Modules
 {
     public class FunModule : ModuleBase<SocketCommandContext>
     {
-        private FunModuleService FunModuleService { get; set; }
+        public IFunModuleService FunModuleService { get; set; }
 
         [Command("hug")]
         [Summary("Hug a user or Komi!")]
