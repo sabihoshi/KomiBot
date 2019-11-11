@@ -19,7 +19,7 @@ namespace Komi.Bot.Services.Utilities
         /// </summary>
         /// <param name="code">The code to prepare</param>
         /// <returns>The resulting StringContent for HTTP operations</returns>
-        public static StringContent BuildContent(string code)
+        public static StringContent BuildContent(this string code)
         {
             string cleanCode = StripFormatting(code);
             return new StringContent(cleanCode, Encoding.UTF8, "text/plain");
@@ -30,7 +30,7 @@ namespace Komi.Bot.Services.Utilities
         /// </summary>
         /// <param name="code">The code</param>
         /// <returns>The code language if a match is found, null of none are found</returns>
-        public static string? GetCodeLanguage(string message)
+        public static string? GetCodeLanguage(this string message)
         {
             var match = _buildContentRegex.Match(message);
             if (match.Success)
@@ -42,7 +42,7 @@ namespace Komi.Bot.Services.Utilities
             return null;
         }
 
-        public static string StripFormatting(string code)
+        public static string StripFormatting(this string code)
         {
             string cleanCode = _buildContentRegex.Replace(
                 code.Trim(), string.Empty);              //strip out the ` characters and code block markers
@@ -56,7 +56,7 @@ namespace Komi.Bot.Services.Utilities
         /// </summary>
         /// <param name="code">The code to align</param>
         /// <returns>The newly aligned code</returns>
-        public static string FixIndentation(string code)
+        public static string FixIndentation(this string code)
         {
             var lines = code.Split('\n');
             string indentLine = lines.SkipWhile(d => d.FirstOrDefault() != ' ').FirstOrDefault();
@@ -78,7 +78,7 @@ namespace Komi.Bot.Services.Utilities
         /// </summary>
         /// <param name="sentences">The collection of sentences for which to collapse plurals.</param>
         /// <returns>A collection of formatted sentences.</returns>
-        public static IReadOnlyCollection<string> CollapsePlurals(IReadOnlyCollection<string> sentences)
+        public static IReadOnlyCollection<string> CollapsePlurals(this IReadOnlyCollection<string> sentences)
         {
             var splitIntoWords = sentences.Select(x => x.Split(" ", StringSplitOptions.RemoveEmptyEntries));
 
@@ -135,7 +135,7 @@ namespace Komi.Bot.Services.Utilities
             return formatted;
         }
 
-        public static string FormatTimeAgo(DateTimeOffset now, DateTimeOffset ago)
+        public static string FormatTimeAgo(this DateTimeOffset now, DateTimeOffset ago)
         {
             var span = now - ago;
 
@@ -146,21 +146,19 @@ namespace Komi.Bot.Services.Utilities
             return $"{humanizedTimeAgo} ago ({ago.UtcDateTime:yyyy-MM-ddTHH:mm:ssK})";
         }
 
-        public static string SanitizeAllMentions(string text)
-        {
-            string everyoneSanitized = SanitizeEveryone(text);
-            string userSanitized = SanitizeUserMentions(everyoneSanitized);
-            string roleSanitized = SanitizeRoleMentions(userSanitized);
+        public static string SanitizeAllMentions(this string text) =>
+            text.SanitizeEveryone()
+               .SanitizeUserMentions()
+               .SanitizeRoleMentions();
 
-            return roleSanitized;
-        }
-
-        public static string SanitizeEveryone(string text) =>
+        public static string SanitizeEveryone(this string text) =>
             text.Replace("@everyone", "@\x200beveryone").Replace("@here", "@\x200bhere");
 
-        public static string SanitizeUserMentions(string text) => _userMentionRegex.Replace(text, "<@\x200b${Id}>");
+        public static string SanitizeUserMentions(this string text) =>
+            _userMentionRegex.Replace(text, "<@\x200b${Id}>");
 
-        public static string SanitizeRoleMentions(string text) => _roleMentionRegex.Replace(text, "<@&\x200b${Id}>");
+        public static string SanitizeRoleMentions(this string text) =>
+            _roleMentionRegex.Replace(text, "<@&\x200b${Id}>");
 
         /// <summary>
         ///     Surrounds a string with "[]" or "<>" if it's optional or not.
