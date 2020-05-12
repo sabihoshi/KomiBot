@@ -39,5 +39,18 @@ namespace Komi.Bot.Modules
                 ? ReplyAsync("You patted me! Komi pats you back~")
                 : ReplyAsync($"You patted {user.Username} {FunModuleService.RandomEmote()}".SanitizeAllMentions());
         }
+
+        [Command("kiss")]
+        [Summary("Kiss a user or Komi~")]
+        public Task KissAsync([Optional] [Summary("The user to kiss")]
+            IGuildUser user)
+        {
+            if (user is null)
+                return ReplyAsync("You kissed the air, silly.");
+
+            return user.Id == Context.Client.CurrentUser.Id
+                ? ReplyAsync("You kissed me! Komi kissed you on the cheeks~")
+                : ReplyAsync($"You kissed {user.Username} {FunModuleService.RandomEmote()} ❤".SanitizeAllMentions());
+        }
     }
 }
