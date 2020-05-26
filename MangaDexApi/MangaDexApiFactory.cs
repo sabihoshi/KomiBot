@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MangaDexApi.Serialization;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Refit;
 
@@ -11,14 +12,7 @@ namespace MangaDexApi
                 new RefitSettings
                 {
                     ContentSerializer = new NewtonsoftJsonContentSerializer(
-                        new JsonSerializerSettings
-                        {
-                            ContractResolver = new DefaultContractResolver
-                            {
-                                NamingStrategy = new SnakeCaseNamingStrategy()
-                            }
-                        }
-                    )
+                        new MangaDexSerializerSettings())
                 });
     }
 }

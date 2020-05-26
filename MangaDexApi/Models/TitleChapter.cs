@@ -2,7 +2,7 @@
 {
     public class TitleChapter
     {
-        public int Volume { get; set; }
+        public int? Volume { get; set; }
 
         public string Chapter { get; set; }
 

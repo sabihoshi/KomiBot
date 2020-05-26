@@ -1,0 +1,78 @@
+{
+  "al": {
+    "type": 1,
+    "name": "AniList",
+    "emoji": "<:al:704080914228969593>",
+    "base_url": "https:\/\/anilist.co\/manga\/"
+  },
+  "amz": {
+    "type": 0,
+    "name": "Amazon",
+    "emoji": "<:amz:704276992198967366>"
+  },
+  "ap": {
+    "type": 1,
+    "name": "Anime-Planet",
+    "emoji": "<:ap:704080914417975396>",
+    "base_url": "https:\/\/www.anime-planet.com\/manga\/"
+  },
+  "bw": {
+    "type": 0,
+    "name": "Bookwalker",
+    "emoji": "<:bw:704276974733885490>",
+    "base_url": "https:\/\/bookwalker.jp\/"
+  },
+  "cdj": {
+    "type": 0,
+    "name": "CDJapan",
+    "emoji": "<:cdj:704276974801256498>"
+  },
+  "dj": {
+    "type": 1,
+    "name": "Doujinshi.org",
+    "emoji": "<:dj:704284511763955725>",
+    "base_url": "https:\/\/www.doujinshi.org\/book\/"
+  },
+  "ebj": {
+    "type": 0,
+    "name": "eBookJapan",
+    "emoji": "<:ebj:704276974843199498>"
+  },
+  "engtl": {
+    "type": 2,
+    "name": "Official English",
+    "code": "engtl",
+    "emoji": "Official English"
+  },
+  "kt": {
+    "type": 1,
+    "name": "Kitsu",
+    "code": "kt",
+    "emoji": "<:kt:704276974868234270>",
+    "base_url": "https:\/\/kitsu.io\/manga\/"
+  },
+  "mal": {
+    "type": 1,
+    "name": "MyAnimeList",
+    "emoji": "<:mal:704080914111529209>",
+    "base_url": "https:\/\/myanimelist.net\/manga\/"
+  },
+  "mu": {
+    "type": 1,
+    "name": "MangaUpdates",
+    "emoji": "<:mu:704080914107465828>",
+    "base_url": "https:\/\/www.mangaupdates.com\/series.html?id="
+  },
+  "nu": {
+    "type": 1,
+    "name": "NovelUpdates",
+    "emoji": "<:nu:704080914107465778>",
+    "base_url": "https:\/\/www.novelupdates.com\/series\/"
+  },
+  "raw": {
+    "type": 2,
+    "name": "Raw",
+    "code": "raw",
+    "emoji": "Raw"
+  }
+}

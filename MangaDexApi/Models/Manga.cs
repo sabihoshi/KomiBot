@@ -1,4 +1,8 @@
-﻿namespace MangaDexApi.Models
+﻿using System.Collections.Generic;
+using MangaDexApi.Serialization;
+using Newtonsoft.Json;
+
+namespace MangaDexApi.Models
 {
     public class Manga
     {
@@ -24,6 +28,7 @@
 
         public int Hentai { get; set; }
 
-        public Links Links { get; set; }
+        [JsonConverter(typeof(SourceConverter))]
+        public IEnumerable<Source> Links { get; set; }
     }
 }

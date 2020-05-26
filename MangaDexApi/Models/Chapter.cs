@@ -11,7 +11,7 @@ namespace MangaDexApi.Models
 
         public string Hash { get; set; }
 
-        public int Volume { get; set; }
+        public int? Volume { get; set; }
 
         [JsonProperty("chapter")]
         public string ChapterNumber { get; set; }
@@ -26,9 +26,9 @@ namespace MangaDexApi.Models
 
         public int GroupId { get; set; }
 
-        public int GroupId2 { get; set; }
+        public int? GroupId2 { get; set; }
 
-        public int GroupId3 { get; set; }
+        public int? GroupId3 { get; set; }
 
         public int Comments { get; set; }
 
