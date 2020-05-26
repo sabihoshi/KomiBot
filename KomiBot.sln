@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Komi.Bot", "Komi.Bot\Komi.Bot.csproj", "{B88452A6-2EAB-49BF-A2F9-70E497D6B943}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Komi.Data", "Komi.Data\Komi.Data.csproj", "{B64F689B-8612-4860-AC7D-271751CFAAA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Komi.Data", "Komi.Data\Komi.Data.csproj", "{B64F689B-8612-4860-AC7D-271751CFAAA3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MangaDexApi", "MangaDexApi\MangaDexApi.csproj", "{C73842A6-0CF8-44D6-9AC7-F7D229D53874}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{B64F689B-8612-4860-AC7D-271751CFAAA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B64F689B-8612-4860-AC7D-271751CFAAA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B64F689B-8612-4860-AC7D-271751CFAAA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C73842A6-0CF8-44D6-9AC7-F7D229D53874}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C73842A6-0CF8-44D6-9AC7-F7D229D53874}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C73842A6-0CF8-44D6-9AC7-F7D229D53874}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C73842A6-0CF8-44D6-9AC7-F7D229D53874}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

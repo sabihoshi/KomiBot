@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Komi.Data\Komi.Data.csproj" />
+    <ProjectReference Include="..\MangaDexApi\MangaDexApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

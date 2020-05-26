@@ -36,6 +36,8 @@ namespace MangaDexApi.Serialization
 
                 writer.WritePropertyName("link");
                 writer.WriteValue(source.Link);
+
+                writer.WriteEndObject();
             }
 
             writer.WriteEndArray();

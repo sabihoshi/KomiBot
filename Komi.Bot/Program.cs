@@ -9,6 +9,7 @@ using Komi.Bot.Services.Image;
 using Komi.Bot.Services.Settings;
 using Komi.Data.Models.Moderation;
 using Komi.Data.Models.Settings;
+using MangaDexApi;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Komi.Bot
@@ -26,6 +27,7 @@ namespace Komi.Bot
                .AddSingleton<ApplicationService>()
                .AddScoped<IFunModuleService, FunModuleService>()
                .AddScoped<IDatabaseService, DatabaseService>()
+               .AddScoped(MangaDexApiFactory.Create)
                .AddCommandHelp()
                .AddImages()
                .BuildServiceProvider();
