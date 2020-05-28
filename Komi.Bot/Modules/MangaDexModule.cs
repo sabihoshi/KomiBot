@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -34,15 +35,75 @@ namespace Komi.Bot.Modules
             @"\[(?<text>[^\]]+?)\]\((?<url>[^\]]+?)\)",
             RegexOptions.Compiled);
 
+        private readonly Regex _mangaDexLinkRegex = new Regex(
+            @"^https?://mangadex\.org/(?<type>chapter|title)/(?<id>[0-9]+)",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private readonly Regex _chapterRegex = new Regex(
+            @"^https?://mangadex\.org/chapter/(?<id>[0-9]+)",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private readonly Regex _titleRegex = new Regex(
+            @"^https?://mangadex\.org/title/(?<id>[0-9]+)",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         public MangaDexModule(IMangaDexApi api) => _api = api;
 
+        [Command("", RunMode = RunMode.Async)]
+        [Summary("Requests info for a MangaDex chapter/title based on the link.")]
+        [Alias("info")]
+        [Priority(-1)]
+        public async Task InfoAsync(string url)
+        {
+            var link = _mangaDexLinkRegex.Match(url);
+            if (link.Success)
+            {
+                var id = int.Parse(link.Groups["id"].Value);
+                switch (link.Groups["type"].Value)
+                {
+                    case "chapter": await ChapterInfoAsync(id);
+                        break;
+                    case "title": await TitleInfoAsync(id);
+                        break;
+                }
+            }
+        }
+
+        [Command("chapter", RunMode = RunMode.Async)]
+        [Summary("Requests info for a specific chapter.")]
+        public async Task ChapterInfoAsync(string url)
+        {
+            var link = _chapterRegex.Match(url);
+            if (link.Success)
+            {
+                var id = int.Parse(link.Groups["id"].Value);
+                await ChapterInfoAsync(id);
+            }
+        }
+
         [Command("title", RunMode = RunMode.Async)]
+        [Summary("Requests info for a specific title.")]
+        public async Task TitleInfoAsync(string url)
+        {
+            var link = _titleRegex.Match(url);
+            if (link.Success)
+            {
+                var id = int.Parse(link.Groups["id"].Value);
+                await TitleInfoAsync(id);
+            }
+        }
+
+        [Command("title", RunMode = RunMode.Async)]
+        [Priority(1)]
         public async Task TitleInfoAsync(int id)
         {
             var title = await _api.GetTitle(id);
+            if (title.Status != "OK")
+                return;
+
             var embed = new EmbedBuilder()
                .WithAuthor(title.Manga.Author)
-               .WithTitle(title.Manga.Title)
+               .WithTitle($"{title.Manga.Title} :flag_{title.Manga.LangFlag}:")
                .WithDescription(DecodeBbTag(title.Manga.Description))
                .WithThumbnailUrl($"https://mangadex.org{title.Manga.CoverUrl}");
 
@@ -64,6 +125,31 @@ namespace Komi.Bot.Modules
                            .WithIsInline(false));
                 }
             }
+
+            await ReplyAsync(embed: embed.Build());
+        }
+
+        [Command("title", RunMode = RunMode.Async)]
+        [Priority(1)]
+        public async Task ChapterInfoAsync(int id)
+        {
+            var chapter = await _api.GetChapter(id);
+            if (chapter.Status != "OK")
+                return;
+
+            var title = await _api.GetTitle((int)chapter.MangaId!);
+
+            var description = new StringBuilder();
+            if (chapter.Volume != null)
+                description.AppendLine($"Volume: {chapter.Volume}");
+
+            description.AppendLine($"Chapter: {chapter.ChapterNumber}");
+
+            var embed = new EmbedBuilder()
+               .WithAuthor(title.Manga.Author)
+               .WithTitle($"{chapter.Title ?? title.Manga.Title} :flag_{title.Manga.LangFlag}: → :flag_{chapter.LangCode}:")
+               .WithDescription(description.ToString())
+               .WithThumbnailUrl($"https://mangadex.org{title.Manga.CoverUrl}");
 
             await ReplyAsync(embed: embed.Build());
         }
