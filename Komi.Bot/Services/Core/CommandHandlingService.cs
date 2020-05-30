@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Komi.Bot.Services.Settings;
-using Komi.Data.Models.Settings;
+using Komi.Bot.Services.Utilities;
 
 namespace Komi.Bot.Services.Core
 {
@@ -16,6 +16,7 @@ namespace Komi.Bot.Services.Core
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
         private readonly IDatabaseService _database;
+        private readonly Cache<ulong, IEnumerable<string>> _prefixCache;
 
         public CommandHandlingService(
             IServiceProvider services,
@@ -27,6 +28,7 @@ namespace Komi.Bot.Services.Core
             _discord = discord;
             _services = services;
             _database = database;
+            _prefixCache = new Cache<ulong, IEnumerable<string>>(GetPrefix);
 
             _commands.CommandExecuted += CommandExecutedAsync;
             _discord.MessageReceived += MessageReceivedAsync;
@@ -62,11 +64,11 @@ namespace Komi.Bot.Services.Core
 
             var argPos = 0;
             var context = new SocketCommandContext(_discord, message);
-            var settings = _database.EnsureGuildData<GuildSettings>(context.Guild);
+            var prefixes = _prefixCache[context.Guild.Id];
             if (!(message.HasStringPrefix("k!", ref argPos)
                || message.HasMentionPrefix(_discord.CurrentUser, ref argPos)))
             {
-                if (settings.Prefixes.FirstOrDefault(p => message.HasStringPrefix(p, ref argPos)) is null)
+                if (!prefixes.Any(p => message.HasStringPrefix(p, ref argPos)))
                     return;
             }
 
@@ -74,6 +76,15 @@ namespace Komi.Bot.Services.Core
 
             if (!result.IsSuccess)
                 await CommandFailedAsync(context, result).ConfigureAwait(false);
+        }
+
+        private IEnumerable<string> GetPrefix(ulong guildId)
+        {
+            using var db = _database.CreateDbContext();
+            return db.Groups
+               .SingleOrDefault(g => g.GuildId == guildId)
+               ?.GroupSettings.Prefixes
+               ?.Select(x => x.Text) ?? Enumerable.Empty<string>();
         }
     }
 }

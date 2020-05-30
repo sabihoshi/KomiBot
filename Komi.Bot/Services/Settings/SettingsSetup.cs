@@ -17,7 +17,7 @@ namespace Komi.Bot.Services.Settings
     {
         private static IDatabaseService? _databaseService;
 
-        public static void RegisterSetting<T>(this CommandService commands) where T : class, IGuildData, new()
+        public static void RegisterSetting<T>(this CommandService commands) where T : class, IGroupSetting, new()
         {
             string group = typeof(T).Name.ToLower().Replace("Settings", string.Empty);
 
@@ -49,7 +49,7 @@ namespace Komi.Bot.Services.Settings
             this ModuleBuilder module,
             string message, string group, string key,
             PropertyInfo property, Action<PropertyInfo, TData, object[]> propertyFunc)
-            where TData : class, IGuildData, new()
+            where TData : class, IGroupSetting, new()
         {
             module.AddCommand(key, (ctx, args, service, command) =>
             {
@@ -75,12 +75,17 @@ namespace Komi.Bot.Services.Settings
             ICommandContext ctx, object[] args,
             IServiceProvider service, PropertyInfo property,
             Action<PropertyInfo, TData, object[]> propertyFunc)
-            where TData : class, IGuildData, new()
+            where TData : class, IGroupSetting, new()
         {
-            var db = GetDatabaseService(service);
-            var settings = db.EnsureGuildData<TData>(ctx.Guild);
+            using var db = GetDatabaseService(service).CreateDbContext();
+            var settings = db.Find<TData>(ctx.Guild.Id);
+            if (settings is null)
+            {
+                settings = new TData();
+            }
             propertyFunc.Invoke(property, settings, args);
-            db.UpdateData(settings);
+            db.Update(settings);
+            db.SaveChanges();
         }
 
         private static IDatabaseService GetDatabaseService(IServiceProvider services) =>

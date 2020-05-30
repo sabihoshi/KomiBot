@@ -17,7 +17,7 @@ namespace Komi.Bot.Modules
     {
         private readonly IDatabaseService _db;
 
-        private ModerationSettings? _settings;
+        private ModerationSetting? _settings;
         private ModerationData? _data;
 
         public ModerationModule(IDatabaseService db) => _db = db;
@@ -33,14 +33,17 @@ namespace Komi.Bot.Modules
             TimedReasonArguments? args = null)
         {
             var mod = (IGuildUser)Context.User;
-            _settings = _db.EnsureGuildData<ModerationSettings>(Context.Guild);
+            await using var db = _db.CreateDbContext();
+            _settings = db.Groups
+               .Single(g => g.GuildId == Context.Guild.Id)
+               .ModerationSettings;
 
-            if (!IsModerator(_settings, mod) 
-             && !mod.GuildPermissions.Has(GuildPermission.BanMembers))
-            {
-                await ReplyAsync("You don't have permissions to ban.");
-                return;
-            }
+            //if (!IsModerator(_settings, mod) 
+            // && !mod.GuildPermissions.Has(GuildPermission.BanMembers))
+            //{
+            //    await ReplyAsync("You don't have permissions to ban.");
+            //    return;
+            //}
 
             if (args == null)
                 await user.BanAsync();
@@ -60,14 +63,17 @@ namespace Komi.Bot.Modules
             [RequireHigherRole] IGuildUser user)
         {
             var mod = (IGuildUser)Context.User;
-            _settings = _db.EnsureGuildData<ModerationSettings>(Context.Guild);
+            await using var db = _db.CreateDbContext();
+            _settings = db.Groups
+               .Single(g => g.GuildId == Context.Guild.Id)
+               .ModerationSettings;
 
-            if (!IsModerator(_settings, mod) 
-             && !mod.GuildPermissions.Has(GuildPermission.KickMembers))
-            {
-                await ReplyAsync("You don't have permissions to kick.");
-                return;
-            }
+            //if (!IsModerator(_settings, mod) 
+            // && !mod.GuildPermissions.Has(GuildPermission.KickMembers))
+            //{
+            //    await ReplyAsync("You don't have permissions to kick.");
+            //    return;
+            //}
 
             await user.KickAsync();
             await ReplyAsync($"{mod.Username}#{mod.Discriminator} was kicked.");
@@ -81,12 +87,17 @@ namespace Komi.Bot.Modules
             [RequireHigherRole] IGuildUser user,
             WarningArguments? args = null)
         {
-            _settings = _db.EnsureGuildData<ModerationSettings>(Context.Guild);
-            if (!IsModerator(_settings, (IGuildUser)Context.User))
-            {
-                await ReplyAsync("You don't have permissions to warn.");
-                return;
-            }
+            await using var db = _db.CreateDbContext();
+            var group = db.Groups
+               .Single(g => g.GuildId == Context.Guild.Id);
+            _settings = group
+               .ModerationSettings;
+
+            //if (!IsModerator(_settings, (IGuildUser)Context.User))
+            //{
+            //    await ReplyAsync("You don't have permissions to warn.");
+            //    return;
+            //}
 
             var warning = new WarningData
             {
@@ -97,9 +108,9 @@ namespace Komi.Bot.Modules
                 Date = DateTimeOffset.UtcNow
             };
 
-            _data = _db.EnsureGuildData<ModerationData>(Context.Guild);
+            _data = group.ModerationData;
             _data.Warnings.Add(warning);
-            _db.UpdateData(_data);
+            db.Update(_data);
 
             if (ShouldBe(Sanction.Ban, user))
                 await BanUserAsync(user, new TimedReasonArguments { Reason = args?.Reason });
@@ -131,16 +142,16 @@ namespace Komi.Bot.Modules
                  > sanctionAt;
         }
 
-        private bool IsModerator(
-            ModerationSettings settings,
-            IGuildUser user)
-        {
-            return settings
-                      .Moderators
-                      .Contains(user.Id)
-                || settings
-                      .ModeratorRoles
-                      .Any(role => user.RoleIds.Contains(role));
-        }
+        //private bool IsModerator(
+        //    ModerationSetting setting,
+        //    IGuildUser user)
+        //{
+        //    return setting
+        //              .Moderators
+        //              .Contains(user.Id)
+        //        || setting
+        //              .ModeratorRoles
+        //              .Any(role => user.RoleIds.Contains(role));
+        //}
     }
 }

@@ -3,11 +3,19 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UserSecretsId>760a2f9d-a025-44a1-aa81-1f34bcea0b3f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.1.1" />
-    <PackageReference Include="LiteDB" Version="4.1.4" />
+    <PackageReference Include="Discord.Net" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.4">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.4">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.4" />
   </ItemGroup>
 
 </Project>

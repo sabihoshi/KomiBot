@@ -12,6 +12,7 @@ using Komi.Bot.Core.Attributes;
 using Komi.Bot.Services.Core;
 using Komi.Bot.Services.Image;
 using Komi.Bot.Services.Utilities;
+using Komi.Data.Models.Discord.Guild;
 using Komi.Data.Models.Moderation;
 using Komi.Data.Models.Settings;
 
@@ -52,30 +53,31 @@ namespace Komi.Bot.Modules
 
             return settings switch
             {
-                Settings.Guild when DatabaseService.TryGetGuildData(
-                    Context.Guild, out GuildSettings guildSettings)
-                => embed.WithDescription(AppendProperties<GuildSettings>(guildSettings)),
-                Settings.Moderation when DatabaseService.TryGetGuildData(
-                    Context.Guild, out ModerationSettings moderationSettings)
-                => embed.WithDescription(AppendProperties<ModerationSettings>(moderationSettings)),
+                //Settings.Group when DatabaseService.TryGetGuildData(
+                //    Context.Group, out Data.Models.Settings.GroupSetting guildSettings)
+                //=> embed.WithDescription(AppendProperties<Data.Models.Settings.GroupSetting>(guildSettings)),
+                //Settings.Moderation when DatabaseService.TryGetGuildData(
+                //    Context.Group, out ModerationSetting moderationSettings)
+                //=> embed.WithDescription(AppendProperties<ModerationSetting>(moderationSettings)),
                 _ => null
             };
         }
 
-        private string AppendProperties<T>(IGuildData data) where T : IGuildData
+        private string AppendProperties<T>(IGroupSetting data) where T : IGroupSetting
         {
             var sb = new StringBuilder();
 
             foreach (var property in CacheExtensions.GetProperties<T>())
             {
-                if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType) && property.PropertyType != typeof(string))
+                if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType)
+                 && property.PropertyType != typeof(string))
                 {
                     var enumerable = (property.GetValue(data) as IEnumerable)?.OfType<object>()
                                   ?? Enumerable.Empty<object>();
                     sb.AppendLine($"{Format.Bold(property.Name)}:");
-                    sb.AppendLine( "```prolog\n"
+                    sb.AppendLine("```prolog\n"
                                 + $"{string.Join("\n", enumerable)}"
-                                +  "```");
+                                + "```");
                 }
                 else
                     sb.AppendLine($"{Format.Bold(property.Name)}: {property.GetValue(data) ?? 0}");
@@ -90,8 +92,8 @@ namespace Komi.Bot.Modules
 
             var keys = settings switch
             {
-                Settings.Guild      => CacheExtensions.GetProperties<GuildSettings>(),
-                Settings.Moderation => CacheExtensions.GetProperties<ModerationSettings>(),
+                Settings.Guild      => CacheExtensions.GetProperties<GroupSetting>(),
+                Settings.Moderation => CacheExtensions.GetProperties<ModerationSetting>(),
                 _                   => null
             };
 

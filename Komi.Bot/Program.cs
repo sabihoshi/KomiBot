@@ -7,9 +7,11 @@ using Komi.Bot.Services.Core;
 using Komi.Bot.Services.Help;
 using Komi.Bot.Services.Image;
 using Komi.Bot.Services.Settings;
+using Komi.Data.Models.Core;
 using Komi.Data.Models.Moderation;
 using Komi.Data.Models.Settings;
 using MangaDexApi;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Komi.Bot
@@ -24,7 +26,6 @@ namespace Komi.Bot
                .AddSingleton<DiscordSocketClient>()
                .AddSingleton<CommandService>()
                .AddSingleton<CommandHandlingService>()
-               .AddSingleton<ApplicationService>()
                .AddScoped<IFunModuleService, FunModuleService>()
                .AddScoped<IDatabaseService, DatabaseService>()
                .AddScoped(MangaDexApiFactory.Create)
@@ -43,19 +44,21 @@ namespace Komi.Bot
             using (var services = ConfigureServices())
             {
                 var client = services.GetRequiredService<DiscordSocketClient>();
-                var application = services.GetRequiredService<ApplicationService>();
                 var commands = services.GetRequiredService<CommandService>();
+                var config = new ConfigurationBuilder()
+                   .AddUserSecrets<KomiConfig>()
+                   .Build();
 
                 // Custom Commands
-                commands.RegisterSetting<GuildSettings>();
-                commands.RegisterSetting<ModerationSettings>();
+                commands.RegisterSetting<GroupSetting>();
+                commands.RegisterSetting<ModerationSetting>();
 
                 // Events
                 client.Log += LogAsync;
                 commands.Log += LogAsync;
 
                 // Login
-                await client.LoginAsync(TokenType.Bot, application.Token);
+                await client.LoginAsync(TokenType.Bot, config.GetValue<string>(nameof(KomiConfig.Token)));
                 await client.StartAsync();
 
                 // Here we initialize the logic required to register our commands.
