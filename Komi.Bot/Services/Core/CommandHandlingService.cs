@@ -7,6 +7,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Komi.Bot.Services.Utilities;
+using Komi.Data;
 
 namespace Komi.Bot.Services.Core
 {
@@ -15,14 +16,14 @@ namespace Komi.Bot.Services.Core
         private readonly CommandService _commands;
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
-        private readonly IDatabaseService _database;
+        private readonly KomiContext _database;
         private readonly Cache<ulong, IEnumerable<string>> _prefixCache;
 
         public CommandHandlingService(
             IServiceProvider services,
             CommandService commands,
             DiscordSocketClient discord,
-            IDatabaseService database)
+            KomiContext database)
         {
             _commands = commands;
             _discord = discord;
@@ -33,7 +34,6 @@ namespace Komi.Bot.Services.Core
             _commands.CommandExecuted += CommandExecutedAsync;
             _discord.MessageReceived += MessageReceivedAsync;
         }
-
         public Task CommandExecutedAsync(
             Optional<CommandInfo> command,
             ICommandContext context,
@@ -80,11 +80,10 @@ namespace Komi.Bot.Services.Core
 
         private IEnumerable<string> GetPrefix(ulong guildId)
         {
-            using var db = _database.CreateDbContext();
-            return db.Groups
-               .SingleOrDefault(g => g.GuildId == guildId)
-               ?.GroupSettings.Prefixes
-               ?.Select(x => x.Text) ?? Enumerable.Empty<string>();
+            return _database.Groups
+                      .SingleOrDefault(g => g.GuildId == guildId)
+                     ?.GroupSettings.Prefixes
+                     ?.Select(x => x.Text) ?? Enumerable.Empty<string>();
         }
     }
 }

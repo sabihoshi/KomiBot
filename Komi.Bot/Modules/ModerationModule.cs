@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using Komi.Bot.Core.Preconditions;
 using Komi.Bot.Core.TypeReaders;
 using Komi.Bot.Services.Core;
+using Komi.Data;
 using Komi.Data.Models.Moderation;
 
 namespace Komi.Bot.Modules
@@ -15,12 +16,12 @@ namespace Komi.Bot.Modules
     [Summary("Commands for moderation in the server.")]
     public class ModerationModule : ModuleBase<SocketCommandContext>
     {
-        private readonly IDatabaseService _db;
+        private readonly KomiContext _db;
 
         private ModerationSetting? _settings;
         private ModerationData? _data;
 
-        public ModerationModule(IDatabaseService db) => _db = db;
+        public ModerationModule(KomiContext db) => _db = db;
 
         [Command("ban")]
         [Summary("Bans a user mentioned.\nExample: `k!ban @user time: 5d reason: Spam`")]
@@ -33,8 +34,7 @@ namespace Komi.Bot.Modules
             TimedReasonArguments? args = null)
         {
             var mod = (IGuildUser)Context.User;
-            await using var db = _db.CreateDbContext();
-            _settings = db.Groups
+            _settings = _db.Groups
                .Single(g => g.GuildId == Context.Guild.Id)
                .ModerationSettings;
 
@@ -63,8 +63,7 @@ namespace Komi.Bot.Modules
             [RequireHigherRole] IGuildUser user)
         {
             var mod = (IGuildUser)Context.User;
-            await using var db = _db.CreateDbContext();
-            _settings = db.Groups
+            _settings = _db.Groups
                .Single(g => g.GuildId == Context.Guild.Id)
                .ModerationSettings;
 
@@ -87,8 +86,7 @@ namespace Komi.Bot.Modules
             [RequireHigherRole] IGuildUser user,
             WarningArguments? args = null)
         {
-            await using var db = _db.CreateDbContext();
-            var group = db.Groups
+            var group = _db.Groups
                .Single(g => g.GuildId == Context.Guild.Id);
             _settings = group
                .ModerationSettings;
@@ -110,7 +108,7 @@ namespace Komi.Bot.Modules
 
             _data = group.ModerationData;
             _data.Warnings.Add(warning);
-            db.Update(_data);
+            _db.Update(_data);
 
             if (ShouldBe(Sanction.Ban, user))
                 await BanUserAsync(user, new TimedReasonArguments { Reason = args?.Reason });

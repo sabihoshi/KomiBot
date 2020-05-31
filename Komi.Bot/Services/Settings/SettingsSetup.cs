@@ -6,8 +6,8 @@ using System.Threading;
 using Discord.Commands;
 using Discord.Commands.Builders;
 using Komi.Bot.Core.Attributes;
-using Komi.Bot.Services.Core;
 using Komi.Bot.Services.Utilities;
+using Komi.Data;
 using Komi.Data.Models.Settings;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,7 +15,7 @@ namespace Komi.Bot.Services.Settings
 {
     public static class SettingsSetup
     {
-        private static IDatabaseService? _databaseService;
+        private static KomiContext? _db;
 
         public static void RegisterSetting<T>(this CommandService commands) where T : class, IGroupSetting, new()
         {
@@ -77,18 +77,14 @@ namespace Komi.Bot.Services.Settings
             Action<PropertyInfo, TData, object[]> propertyFunc)
             where TData : class, IGroupSetting, new()
         {
-            using var db = GetDatabaseService(service).CreateDbContext();
-            var settings = db.Find<TData>(ctx.Guild.Id);
-            if (settings is null)
-            {
-                settings = new TData();
-            }
+            var db = GetDatabaseService(service);
+            var settings = db.Find<TData>(ctx.Guild.Id) ?? new TData();
             propertyFunc.Invoke(property, settings, args);
             db.Update(settings);
             db.SaveChanges();
         }
 
-        private static IDatabaseService GetDatabaseService(IServiceProvider services) =>
-            LazyInitializer.EnsureInitialized(ref _databaseService, services.GetRequiredService<IDatabaseService>);
+        private static KomiContext GetDatabaseService(IServiceProvider services) =>
+            LazyInitializer.EnsureInitialized(ref _db, services.GetRequiredService<KomiContext>);
     }
 }

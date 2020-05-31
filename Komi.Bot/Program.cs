@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -7,10 +8,13 @@ using Komi.Bot.Services.Core;
 using Komi.Bot.Services.Help;
 using Komi.Bot.Services.Image;
 using Komi.Bot.Services.Settings;
+using Komi.Data;
 using Komi.Data.Models.Core;
 using Komi.Data.Models.Moderation;
 using Komi.Data.Models.Settings;
 using MangaDexApi;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,18 +24,28 @@ namespace Komi.Bot
     {
         public static void Main(string[] args) { new Program().MainAsync().GetAwaiter().GetResult(); }
 
-        private ServiceProvider ConfigureServices() =>
+        private static ServiceProvider ConfigureServices() =>
             new ServiceCollection().AddHttpClient()
                .AddMemoryCache()
+               .AddDbContext<KomiContext>(OptionConfiguration)
+               .AddMediatR(typeof(Program))
                .AddSingleton<DiscordSocketClient>()
                .AddSingleton<CommandService>()
                .AddSingleton<CommandHandlingService>()
                .AddScoped<IFunModuleService, FunModuleService>()
-               .AddScoped<IDatabaseService, DatabaseService>()
                .AddScoped(MangaDexApiFactory.Create)
                .AddCommandHelp()
                .AddImages()
                .BuildServiceProvider();
+
+        private static void OptionConfiguration(DbContextOptionsBuilder options)
+        {
+            var configuration = new ConfigurationBuilder()
+               .AddUserSecrets<KomiContextFactory>()
+               .Build();
+
+            options.UseSqlite(configuration.GetValue<string>(nameof(KomiConfig.DbConnection)));
+        }
 
         private Task LogAsync(LogMessage message)
         {
@@ -45,6 +59,9 @@ namespace Komi.Bot
             {
                 var client = services.GetRequiredService<DiscordSocketClient>();
                 var commands = services.GetRequiredService<CommandService>();
+                var mediator = services.GetRequiredService<IMediator>();
+                var listener = new DiscordSocketListener(client, mediator);
+
                 var config = new ConfigurationBuilder()
                    .AddUserSecrets<KomiConfig>()
                    .Build();
@@ -54,6 +71,7 @@ namespace Komi.Bot
                 commands.RegisterSetting<ModerationSetting>();
 
                 // Events
+                await listener.StartAsync(new CancellationToken());
                 client.Log += LogAsync;
                 commands.Log += LogAsync;
 

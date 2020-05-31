@@ -12,6 +12,7 @@ using Komi.Bot.Core.Attributes;
 using Komi.Bot.Services.Core;
 using Komi.Bot.Services.Image;
 using Komi.Bot.Services.Utilities;
+using Komi.Data;
 using Komi.Data.Models.Discord.Guild;
 using Komi.Data.Models.Moderation;
 using Komi.Data.Models.Settings;
@@ -22,7 +23,7 @@ namespace Komi.Bot.Modules
     [Alias("Setting")]
     public class SettingsModule : ModuleBase<SocketCommandContext>
     {
-        [UsedImplicitly] public IDatabaseService DatabaseService { get; set; }
+        [UsedImplicitly] public KomiContext Db { get; set; }
 
         [UsedImplicitly] public IImageService ImageService { get; set; }
 
