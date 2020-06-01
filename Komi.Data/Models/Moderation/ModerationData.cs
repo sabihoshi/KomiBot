@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using Komi.Data.Models.Discord.Guild;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Komi.Data.Models.Moderation
 {

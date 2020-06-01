@@ -9,11 +9,9 @@ using Discord;
 using Discord.Commands;
 using JetBrains.Annotations;
 using Komi.Bot.Core.Attributes;
-using Komi.Bot.Services.Core;
 using Komi.Bot.Services.Image;
 using Komi.Bot.Services.Utilities;
 using Komi.Data;
-using Komi.Data.Models.Discord.Guild;
 using Komi.Data.Models.Moderation;
 using Komi.Data.Models.Settings;
 

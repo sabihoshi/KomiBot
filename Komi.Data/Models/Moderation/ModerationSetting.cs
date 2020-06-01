@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using Komi.Data.Models.Discord.Guild;
+﻿using Komi.Data.Models.Discord.Guild;
 using Komi.Data.Models.Settings;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Scaffolding;
 
 namespace Komi.Data.Models.Moderation
 {

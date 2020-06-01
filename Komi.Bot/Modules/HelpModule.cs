@@ -107,7 +107,7 @@ namespace Komi.Bot.Modules
 
         private async Task HelpAsync(string query, HelpDataType type)
         {
-            string sanitizedQuery = FormatUtilities.SanitizeAllMentions(query);
+            string sanitizedQuery = query.SanitizeAllMentions();
 
             if (TryGetEmbed(query, type, out var embed))
             {
@@ -195,7 +195,7 @@ namespace Komi.Bot.Modules
 
             stringBuilder.AppendLine(Format.Bold("Aliases:"));
 
-            foreach (string alias in FormatUtilities.CollapsePlurals(aliases))
+            foreach (string alias in aliases.CollapsePlurals())
                 stringBuilder.AppendLine($"• {alias}");
 
             return stringBuilder;

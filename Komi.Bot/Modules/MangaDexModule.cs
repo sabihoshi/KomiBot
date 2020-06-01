@@ -58,12 +58,14 @@ namespace Komi.Bot.Modules
             var link = _mangaDexLinkRegex.Match(url);
             if (link.Success)
             {
-                var id = int.Parse(link.Groups["id"].Value);
+                int id = int.Parse(link.Groups["id"].Value);
                 switch (link.Groups["type"].Value)
                 {
-                    case "chapter": await ChapterInfoAsync(id);
+                    case "chapter":
+                        await ChapterInfoAsync(id);
                         break;
-                    case "title": await TitleInfoAsync(id);
+                    case "title":
+                        await TitleInfoAsync(id);
                         break;
                 }
             }
@@ -76,7 +78,7 @@ namespace Komi.Bot.Modules
             var link = _chapterRegex.Match(url);
             if (link.Success)
             {
-                var id = int.Parse(link.Groups["id"].Value);
+                int id = int.Parse(link.Groups["id"].Value);
                 await ChapterInfoAsync(id);
             }
         }
@@ -88,7 +90,7 @@ namespace Komi.Bot.Modules
             var link = _titleRegex.Match(url);
             if (link.Success)
             {
-                var id = int.Parse(link.Groups["id"].Value);
+                int id = int.Parse(link.Groups["id"].Value);
                 await TitleInfoAsync(id);
             }
         }
@@ -147,7 +149,8 @@ namespace Komi.Bot.Modules
 
             var embed = new EmbedBuilder()
                .WithAuthor(title.Manga.Author)
-               .WithTitle($"{chapter.Title ?? title.Manga.Title} :flag_{title.Manga.LangFlag}: → :flag_{chapter.LangCode}:")
+               .WithTitle(
+                    $"{chapter.Title ?? title.Manga.Title} :flag_{title.Manga.LangFlag}: → :flag_{chapter.LangCode}:")
                .WithDescription(description.ToString())
                .WithThumbnailUrl($"https://mangadex.org{title.Manga.CoverUrl}");
 

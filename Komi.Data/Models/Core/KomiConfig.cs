@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Komi.Data.Models.Core
+﻿namespace Komi.Data.Models.Core
 {
     public class KomiConfig
     {

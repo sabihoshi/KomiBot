@@ -34,6 +34,7 @@ namespace Komi.Bot.Services.Core
             _commands.CommandExecuted += CommandExecutedAsync;
             _discord.MessageReceived += MessageReceivedAsync;
         }
+
         public Task CommandExecutedAsync(
             Optional<CommandInfo> command,
             ICommandContext context,
@@ -83,7 +84,8 @@ namespace Komi.Bot.Services.Core
             return _database.Groups
                       .SingleOrDefault(g => g.GuildId == guildId)
                      ?.GroupSettings.Prefixes
-                     ?.Select(x => x.Text) ?? Enumerable.Empty<string>();
+                     ?.Select(x => x.Text)
+                ?? Enumerable.Empty<string>();
         }
     }
 }

@@ -6,7 +6,6 @@ using Discord.Commands;
 using JetBrains.Annotations;
 using Komi.Bot.Core.Preconditions;
 using Komi.Bot.Core.TypeReaders;
-using Komi.Bot.Services.Core;
 using Komi.Data;
 using Komi.Data.Models.Moderation;
 

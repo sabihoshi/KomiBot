@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Newtonsoft.Json;
 
 namespace MangaDexApi.Serialization
@@ -43,13 +42,14 @@ namespace MangaDexApi.Serialization
             writer.WriteEndArray();
         }
 
-        public override IEnumerable<Source> ReadJson(JsonReader reader, Type objectType, IEnumerable<Source> existingValue, bool hasExistingValue,
+        public override IEnumerable<Source> ReadJson(JsonReader reader, Type objectType,
+            IEnumerable<Source> existingValue, bool hasExistingValue,
             JsonSerializer serializer)
         {
             var links = new Dictionary<string, string>();
             serializer.Populate(reader, links);
             return links
-                .Select(l =>
+               .Select(l =>
                 {
                     var source = SourcesJson[l.Key];
                     var ret = new Source(
