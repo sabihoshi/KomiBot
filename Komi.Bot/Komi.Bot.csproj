@@ -27,8 +27,4 @@
     <ProjectReference Include="..\MangaDexApi\MangaDexApi.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Tracking\" />
-  </ItemGroup>
-
 </Project>
