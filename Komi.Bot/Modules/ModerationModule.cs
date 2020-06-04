@@ -34,7 +34,7 @@ namespace Komi.Bot.Modules
         {
             var mod = (IGuildUser)Context.User;
             _settings = _db.Groups
-               .Single(g => g.GuildId == Context.Guild.Id)
+               .Single(g => g.GroupId == Context.Guild.Id)
                .ModerationSettings;
 
             //if (!IsModerator(_settings, mod) 
@@ -63,7 +63,7 @@ namespace Komi.Bot.Modules
         {
             var mod = (IGuildUser)Context.User;
             _settings = _db.Groups
-               .Single(g => g.GuildId == Context.Guild.Id)
+               .Single(g => g.GroupId == Context.Guild.Id)
                .ModerationSettings;
 
             //if (!IsModerator(_settings, mod) 
@@ -86,7 +86,7 @@ namespace Komi.Bot.Modules
             WarningArguments? args = null)
         {
             var group = _db.Groups
-               .Single(g => g.GuildId == Context.Guild.Id);
+               .Single(g => g.GroupId == Context.Guild.Id);
             _settings = group
                .ModerationSettings;
 

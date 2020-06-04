@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
 using Komi.Bot.Services.Core;
@@ -29,6 +30,7 @@ namespace Komi.Bot
                .AddMemoryCache()
                .AddDbContext<KomiContext>(OptionConfiguration)
                .AddMediatR(typeof(Program))
+               .AddSingleton<InteractiveService>()
                .AddSingleton<DiscordSocketClient>()
                .AddSingleton<CommandService>()
                .AddSingleton<CommandHandlingService>()

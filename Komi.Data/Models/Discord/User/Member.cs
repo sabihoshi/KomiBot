@@ -1,7 +1,18 @@
-﻿namespace Komi.Data.Models.Discord.User
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Komi.Data.Models.Discord.Guild;
+
+namespace Komi.Data.Models.Discord.User
 {
-    class Member
+    public class Member : IUser
     {
-        public ulong MemberId { get; set; }
+        [Key]
+        [ForeignKey(nameof(User))]
+        public ulong UserId { get; set; }
+
+        public User User { get; set; }
+
+        public List<GroupMember> Groups { get; set; }
     }
 }
