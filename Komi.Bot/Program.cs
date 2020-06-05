@@ -46,7 +46,7 @@ namespace Komi.Bot
                .AddUserSecrets<KomiContextFactory>()
                .Build();
 
-            options.UseSqlite(configuration.GetValue<string>(nameof(KomiConfig.DbConnection)));
+            options.UseNpgsql(configuration.GetValue<string>(nameof(KomiConfig.DbConnection)));
         }
 
         private Task LogAsync(LogMessage message)

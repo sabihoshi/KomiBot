@@ -1,9 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Komi.Data.Migrations
 {
-    public partial class TrackingModelsInitial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,7 +12,7 @@ namespace Komi.Data.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<ulong>(nullable: false),
+                    UserId = table.Column<decimal>(nullable: false),
                     Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -23,7 +24,7 @@ namespace Komi.Data.Migrations
                 name: "Member",
                 columns: table => new
                 {
-                    UserId = table.Column<ulong>(nullable: false)
+                    UserId = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,10 +41,9 @@ namespace Komi.Data.Migrations
                 name: "GroupMember",
                 columns: table => new
                 {
-                    GroupMemberId = table.Column<ulong>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    GroupId = table.Column<ulong>(nullable: false),
-                    UserId = table.Column<ulong>(nullable: false)
+                    GroupMemberId = table.Column<decimal>(nullable: false),
+                    GroupId = table.Column<decimal>(nullable: false),
+                    UserId = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,10 +60,9 @@ namespace Komi.Data.Migrations
                 name: "GroupSetting",
                 columns: table => new
                 {
-                    GroupSettingId = table.Column<ulong>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    TrackingChannel = table.Column<ulong>(nullable: false),
-                    GroupId = table.Column<ulong>(nullable: false)
+                    GroupSettingId = table.Column<decimal>(nullable: false),
+                    TrackingChannel = table.Column<decimal>(nullable: false),
+                    GroupId = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,9 +74,9 @@ namespace Komi.Data.Migrations
                 columns: table => new
                 {
                     PrefixId = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Text = table.Column<string>(nullable: false),
-                    GroupSettingId = table.Column<ulong>(nullable: true)
+                    GroupSettingId = table.Column<decimal>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -94,11 +93,10 @@ namespace Komi.Data.Migrations
                 name: "WorkTypeSetting",
                 columns: table => new
                 {
-                    WorkTypeSettingId = table.Column<ulong>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    WorkTypeSettingId = table.Column<decimal>(nullable: false),
                     WorkType = table.Column<int>(nullable: false),
                     IsEnabled = table.Column<bool>(nullable: false),
-                    GroupSettingId = table.Column<ulong>(nullable: true)
+                    GroupSettingId = table.Column<decimal>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -115,9 +113,8 @@ namespace Komi.Data.Migrations
                 name: "ModerationData",
                 columns: table => new
                 {
-                    ModerationDataId = table.Column<ulong>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    GroupId = table.Column<ulong>(nullable: false)
+                    ModerationDataId = table.Column<decimal>(nullable: false),
+                    GroupId = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -128,11 +125,10 @@ namespace Komi.Data.Migrations
                 name: "ModerationSetting",
                 columns: table => new
                 {
-                    ModerationSettingId = table.Column<ulong>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    ModerationSettingId = table.Column<decimal>(nullable: false),
                     KickAt = table.Column<int>(nullable: true),
                     BanAt = table.Column<int>(nullable: true),
-                    GroupId = table.Column<ulong>(nullable: false)
+                    GroupId = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -144,8 +140,8 @@ namespace Komi.Data.Migrations
                 columns: table => new
                 {
                     SeriesId = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    GroupId = table.Column<ulong>(nullable: true)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    GroupId = table.Column<decimal>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -156,15 +152,14 @@ namespace Komi.Data.Migrations
                 name: "WarningData",
                 columns: table => new
                 {
-                    WarningId = table.Column<ulong>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<ulong>(nullable: false),
-                    ModId = table.Column<ulong>(nullable: false),
+                    WarningId = table.Column<decimal>(nullable: false),
+                    UserId = table.Column<decimal>(nullable: false),
+                    ModId = table.Column<decimal>(nullable: false),
                     Count = table.Column<int>(nullable: false),
                     Reason = table.Column<string>(nullable: true),
                     Date = table.Column<DateTimeOffset>(nullable: false),
-                    GroupId = table.Column<ulong>(nullable: false),
-                    ModerationDataId = table.Column<ulong>(nullable: true)
+                    GroupId = table.Column<decimal>(nullable: false),
+                    ModerationDataId = table.Column<decimal>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -181,13 +176,12 @@ namespace Komi.Data.Migrations
                 name: "Works",
                 columns: table => new
                 {
-                    WorkId = table.Column<ulong>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    WorkId = table.Column<decimal>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Volume = table.Column<int>(nullable: true),
                     Chapter = table.Column<int>(nullable: true),
-                    GroupId = table.Column<ulong>(nullable: false),
+                    GroupId = table.Column<decimal>(nullable: false),
                     OverridenStatus = table.Column<int>(nullable: true),
                     SeriesId = table.Column<long>(nullable: true)
                 },
@@ -206,11 +200,10 @@ namespace Komi.Data.Migrations
                 name: "Job",
                 columns: table => new
                 {
-                    JobId = table.Column<ulong>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    JobId = table.Column<decimal>(nullable: false),
                     Type = table.Column<int>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    WorkId = table.Column<ulong>(nullable: true)
+                    WorkId = table.Column<decimal>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -227,13 +220,12 @@ namespace Komi.Data.Migrations
                 name: "Worker",
                 columns: table => new
                 {
-                    WorkerId = table.Column<ulong>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    WorkerId = table.Column<decimal>(nullable: false),
                     Status = table.Column<int>(nullable: false),
                     Started = table.Column<DateTimeOffset>(nullable: false),
                     Finished = table.Column<DateTimeOffset>(nullable: false),
-                    JobId = table.Column<ulong>(nullable: false),
-                    UserId = table.Column<ulong>(nullable: false)
+                    JobId = table.Column<decimal>(nullable: false),
+                    UserId = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -250,8 +242,8 @@ namespace Komi.Data.Migrations
                 name: "Groups",
                 columns: table => new
                 {
-                    GroupId = table.Column<ulong>(nullable: false),
-                    WorkerId = table.Column<ulong>(nullable: true)
+                    GroupId = table.Column<decimal>(nullable: false),
+                    WorkerId = table.Column<decimal>(nullable: true)
                 },
                 constraints: table =>
                 {

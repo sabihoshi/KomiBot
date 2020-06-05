@@ -5,26 +5,29 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Komi.Data.Migrations
 {
     [DbContext(typeof(KomiContext))]
-    [Migration("20200604132811_TrackingModelsInitial")]
-    partial class TrackingModelsInitial
+    [Migration("20200605101453_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.4");
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                .HasAnnotation("ProductVersion", "3.1.4")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("Komi.Data.Models.Discord.Guild.Group", b =>
                 {
-                    b.Property<ulong>("GroupId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("GroupId")
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<ulong?>("WorkerId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal?>("WorkerId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("GroupId");
 
@@ -35,15 +38,15 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Discord.Guild.GroupMember", b =>
                 {
-                    b.Property<ulong>("GroupMemberId")
+                    b.Property<decimal>("GroupMemberId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<ulong>("GroupId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("GroupId")
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("GroupMemberId");
 
@@ -56,8 +59,8 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Discord.User.Member", b =>
                 {
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("UserId");
 
@@ -66,11 +69,11 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Discord.User.User", b =>
                 {
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("UserId");
 
@@ -79,12 +82,12 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Moderation.ModerationData", b =>
                 {
-                    b.Property<ulong>("ModerationDataId")
+                    b.Property<decimal>("ModerationDataId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<ulong>("GroupId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("GroupId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("ModerationDataId");
 
@@ -96,18 +99,18 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Moderation.ModerationSetting", b =>
                 {
-                    b.Property<ulong>("ModerationSettingId")
+                    b.Property<decimal>("ModerationSettingId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<int?>("BanAt")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
-                    b.Property<ulong>("GroupId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("GroupId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<int?>("KickAt")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("ModerationSettingId");
 
@@ -119,30 +122,30 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Moderation.WarningData", b =>
                 {
-                    b.Property<ulong>("WarningId")
+                    b.Property<decimal>("WarningId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<int>("Count")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("Date")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<ulong>("GroupId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("GroupId")
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<ulong>("ModId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("ModId")
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<ulong?>("ModerationDataId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal?>("ModerationDataId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("Reason")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("WarningId");
 
@@ -155,15 +158,15 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Settings.GroupSetting", b =>
                 {
-                    b.Property<ulong>("GroupSettingId")
+                    b.Property<decimal>("GroupSettingId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<ulong>("GroupId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("GroupId")
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<ulong>("TrackingChannel")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("TrackingChannel")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("GroupSettingId");
 
@@ -177,14 +180,15 @@ namespace Komi.Data.Migrations
                 {
                     b.Property<long>("PrefixId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<ulong?>("GroupSettingId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal?>("GroupSettingId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("PrefixId");
 
@@ -195,18 +199,18 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Settings.WorkTypeSetting", b =>
                 {
-                    b.Property<ulong>("WorkTypeSettingId")
+                    b.Property<decimal>("WorkTypeSettingId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<ulong?>("GroupSettingId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal?>("GroupSettingId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<bool>("IsEnabled")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("WorkType")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("WorkTypeSettingId");
 
@@ -217,18 +221,18 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Tracking.Job", b =>
                 {
-                    b.Property<ulong>("JobId")
+                    b.Property<decimal>("JobId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
-                    b.Property<ulong?>("WorkId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal?>("WorkId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("JobId");
 
@@ -241,10 +245,11 @@ namespace Komi.Data.Migrations
                 {
                     b.Property<long>("SeriesId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<ulong?>("GroupId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal?>("GroupId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("SeriesId");
 
@@ -255,30 +260,30 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Tracking.Scanlation.Work", b =>
                 {
-                    b.Property<ulong>("WorkId")
+                    b.Property<decimal>("WorkId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<int?>("Chapter")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
-                    b.Property<ulong>("GroupId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("GroupId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<int?>("OverridenStatus")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<long?>("SeriesId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
 
                     b.Property<int?>("Volume")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("WorkId");
 
@@ -291,24 +296,24 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Tracking.Worker", b =>
                 {
-                    b.Property<ulong>("WorkerId")
+                    b.Property<decimal>("WorkerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTimeOffset>("Finished")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<ulong>("JobId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("JobId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTimeOffset>("Started")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("WorkerId");
 

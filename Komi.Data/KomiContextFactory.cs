@@ -14,7 +14,7 @@ namespace Komi.Data
                .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<KomiContext>()
-               .UseSqlite(configuration.GetValue<string>(nameof(KomiConfig.DbConnection)));
+               .UseNpgsql(configuration.GetValue<string>(nameof(KomiConfig.DbConnection)));
 
             return new KomiContext(optionsBuilder.Options);
         }
