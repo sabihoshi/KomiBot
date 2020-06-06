@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -6,6 +5,7 @@ using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
 using Komi.Bot.Services.Core;
+using Komi.Bot.Services.Core.Listeners;
 using Komi.Bot.Services.Help;
 using Komi.Bot.Services.Image;
 using Komi.Bot.Services.Settings;
@@ -18,6 +18,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Komi.Bot
 {
@@ -29,7 +30,7 @@ namespace Komi.Bot
             new ServiceCollection().AddHttpClient()
                .AddMemoryCache()
                .AddDbContext<KomiContext>(OptionConfiguration)
-               .AddMediatR(typeof(Program))
+               .AddMediatR(c => c.Using<KomiMediator>(), typeof(Program))
                .AddSingleton<InteractiveService>()
                .AddSingleton<DiscordSocketClient>()
                .AddSingleton<CommandService>()
@@ -51,7 +52,28 @@ namespace Komi.Bot
 
         private Task LogAsync(LogMessage message)
         {
-            Console.WriteLine(message.ToString());
+            switch (message.Severity)
+            {
+                case LogSeverity.Critical:
+                    Log.Fatal(message.ToString());
+                    break;
+                case LogSeverity.Error:
+                    Log.Error(message.ToString());
+                    break;
+                case LogSeverity.Warning:
+                    Log.Warning(message.ToString());
+                    break;
+                case LogSeverity.Info:
+                    Log.Information(message.ToString());
+                    break;
+                case LogSeverity.Verbose:
+                    Log.Verbose(message.ToString());
+                    break;
+                case LogSeverity.Debug:
+                    Log.Debug(message.ToString());
+                    break;
+            }
+
             return Task.CompletedTask;
         }
 
@@ -59,6 +81,11 @@ namespace Komi.Bot
         {
             using (var services = ConfigureServices())
             {
+                Log.Logger = new LoggerConfiguration()
+                   .MinimumLevel.Debug()
+                   .WriteTo.Console()
+                   .CreateLogger();
+
                 var client = services.GetRequiredService<DiscordSocketClient>();
                 var commands = services.GetRequiredService<CommandService>();
                 var mediator = services.GetRequiredService<IMediator>();
@@ -74,6 +101,7 @@ namespace Komi.Bot
 
                 // Events
                 await listener.StartAsync(new CancellationToken());
+
                 client.Log += LogAsync;
                 commands.Log += LogAsync;
 

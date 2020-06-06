@@ -10,7 +10,6 @@ using Komi.Bot.Services.Core.Messages;
 using Komi.Bot.Services.Utilities;
 using Komi.Data;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Komi.Bot.Services.Core
 {
