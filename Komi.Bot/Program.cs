@@ -29,7 +29,7 @@ namespace Komi.Bot
         private static ServiceProvider ConfigureServices() =>
             new ServiceCollection().AddHttpClient()
                .AddMemoryCache()
-               .AddDbContext<KomiContext>(OptionConfiguration)
+               .AddDbContext<KomiContext>(OptionConfiguration, ServiceLifetime.Transient)
                .AddMediatR(c => c.Using<KomiMediator>(), typeof(Program))
                .AddSingleton<InteractiveService>()
                .AddSingleton<DiscordSocketClient>()
