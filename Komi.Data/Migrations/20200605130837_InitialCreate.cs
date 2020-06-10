@@ -41,7 +41,8 @@ namespace Komi.Data.Migrations
                 name: "GroupMember",
                 columns: table => new
                 {
-                    GroupMemberId = table.Column<decimal>(nullable: false),
+                    GroupMemberId = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     GroupId = table.Column<decimal>(nullable: false),
                     UserId = table.Column<decimal>(nullable: false)
                 },
@@ -60,32 +61,31 @@ namespace Komi.Data.Migrations
                 name: "GroupSetting",
                 columns: table => new
                 {
-                    GroupSettingId = table.Column<decimal>(nullable: false),
-                    TrackingChannel = table.Column<decimal>(nullable: false),
-                    GroupId = table.Column<decimal>(nullable: false)
+                    GroupId = table.Column<decimal>(nullable: false),
+                    TrackingChannel = table.Column<decimal>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupSetting", x => x.GroupSettingId);
+                    table.PrimaryKey("PK_GroupSetting", x => x.GroupId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Prefix",
                 columns: table => new
                 {
-                    PrefixId = table.Column<long>(nullable: false)
+                    PrefixId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Text = table.Column<string>(nullable: false),
-                    GroupSettingId = table.Column<decimal>(nullable: true)
+                    GroupSettingGroupId = table.Column<decimal>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Prefix", x => x.PrefixId);
                     table.ForeignKey(
-                        name: "FK_Prefix_GroupSetting_GroupSettingId",
-                        column: x => x.GroupSettingId,
+                        name: "FK_Prefix_GroupSetting_GroupSettingGroupId",
+                        column: x => x.GroupSettingGroupId,
                         principalTable: "GroupSetting",
-                        principalColumn: "GroupSettingId",
+                        principalColumn: "GroupId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -93,19 +93,20 @@ namespace Komi.Data.Migrations
                 name: "WorkTypeSetting",
                 columns: table => new
                 {
-                    WorkTypeSettingId = table.Column<decimal>(nullable: false),
+                    WorkTypeSettingId = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     WorkType = table.Column<int>(nullable: false),
                     IsEnabled = table.Column<bool>(nullable: false),
-                    GroupSettingId = table.Column<decimal>(nullable: true)
+                    GroupSettingGroupId = table.Column<decimal>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WorkTypeSetting", x => x.WorkTypeSettingId);
                     table.ForeignKey(
-                        name: "FK_WorkTypeSetting_GroupSetting_GroupSettingId",
-                        column: x => x.GroupSettingId,
+                        name: "FK_WorkTypeSetting_GroupSetting_GroupSettingGroupId",
+                        column: x => x.GroupSettingGroupId,
                         principalTable: "GroupSetting",
-                        principalColumn: "GroupSettingId",
+                        principalColumn: "GroupId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -125,14 +126,13 @@ namespace Komi.Data.Migrations
                 name: "ModerationSetting",
                 columns: table => new
                 {
-                    ModerationSettingId = table.Column<decimal>(nullable: false),
+                    GroupId = table.Column<decimal>(nullable: false),
                     KickAt = table.Column<int>(nullable: true),
-                    BanAt = table.Column<int>(nullable: true),
-                    GroupId = table.Column<decimal>(nullable: false)
+                    BanAt = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ModerationSetting", x => x.ModerationSettingId);
+                    table.PrimaryKey("PK_ModerationSetting", x => x.GroupId);
                 });
 
             migrationBuilder.CreateTable(
@@ -272,12 +272,6 @@ namespace Komi.Data.Migrations
                 column: "WorkerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupSetting_GroupId",
-                table: "GroupSetting",
-                column: "GroupId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Job_WorkId",
                 table: "Job",
                 column: "WorkId");
@@ -289,15 +283,9 @@ namespace Komi.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ModerationSetting_GroupId",
-                table: "ModerationSetting",
-                column: "GroupId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Prefix_GroupSettingId",
+                name: "IX_Prefix_GroupSettingGroupId",
                 table: "Prefix",
-                column: "GroupSettingId");
+                column: "GroupSettingGroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Series_GroupId",
@@ -330,9 +318,9 @@ namespace Komi.Data.Migrations
                 column: "SeriesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkTypeSetting_GroupSettingId",
+                name: "IX_WorkTypeSetting_GroupSettingGroupId",
                 table: "WorkTypeSetting",
-                column: "GroupSettingId");
+                column: "GroupSettingGroupId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_GroupMember_Groups_GroupId",

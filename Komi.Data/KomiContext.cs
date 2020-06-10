@@ -15,6 +15,8 @@ namespace Komi.Data
 
         public DbSet<Work> Works { get; set; }
 
+        public DbSet<GroupMember> GroupMembers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(KomiContext).Assembly);

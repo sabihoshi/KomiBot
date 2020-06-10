@@ -22,19 +22,29 @@ namespace Komi.Data.Models.Tracking
         private const RegexOptions DefaultOptions =
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
 
+
         private static readonly IReadOnlyDictionary<WorkType, Regex> WorkTypePatterns = new Dictionary<WorkType, Regex>
         {
-            [WorkType.RawProvider] = new Regex(@"\bR(aws?|(aws?\s*)?P(roviders?)?)\b", DefaultOptions),
-            [WorkType.Translator] = new Regex(@"\bTL|Translat((ion|or|e)s?)\b", DefaultOptions),
-            [WorkType.Proofreading] = new Regex(@"\bPR|Proofread(ing|er)?s?\b", DefaultOptions),
-            [WorkType.Cleaning] = new Regex(@"\bCL|Clean(ing|er)?s?\b", DefaultOptions),
-            [WorkType.Redrawing] = new Regex(@"\bRD|Redraw((ing|er)?s?)?\b", DefaultOptions),
-            [WorkType.Typesetter] = new Regex(@"\bTS|Typeset((t(er|ing))?s?)?\b", DefaultOptions),
-            [WorkType.QualityChecker] = new Regex(@"\bQ(uality\s*)Check(ing|er)?s?\b", DefaultOptions),
-            [WorkType.Uploader] = new Regex(@"\bUP(loads?)\b", DefaultOptions)
+            [WorkType.RawProvider] = new Regex(@"\b(RP|R(aws?\s*)(P(roviders?)?)?)\b", DefaultOptions),
+            [WorkType.Translator] = new Regex(@"\b(TL|Translat((ion|or|e)s?))\b", DefaultOptions),
+            [WorkType.Proofreading] = new Regex(@"\b(PR|Proofread(ing|er)?s?)\b", DefaultOptions),
+            [WorkType.Cleaning] = new Regex(@"\b(CL|Clean(ing|er)?s?)\b", DefaultOptions),
+            [WorkType.Redrawing] = new Regex(@"\b(RD|Redraw((ing|er)?s?)?)\b", DefaultOptions),
+            [WorkType.Typesetter] = new Regex(@"\b(TS|Typeset((t(er|ing))?s?)?)\b", DefaultOptions),
+            [WorkType.QualityChecker] = new Regex(@"\b(QC|Q(uality\s*)Check(ing|er)?s?)\b", DefaultOptions),
+            [WorkType.Uploader] = new Regex(@"\bUP(load(er)?s?)?\b", DefaultOptions)
         };
 
-        private static IEnumerable<WorkType> GetWorkTypes(this string input)
+        public static readonly IReadOnlyList<WorkType> Default = new List<WorkType>
+        {
+            WorkType.RawProvider,
+            WorkType.Translator,
+            WorkType.Cleaning,
+            WorkType.Typesetter,
+            WorkType.Uploader
+        };
+
+        public static IEnumerable<WorkType> GetWorkTypes(this string input)
         {
             return WorkTypePatterns
                .Where(pair => pair.Value.IsMatch(input))

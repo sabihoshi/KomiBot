@@ -23,25 +23,20 @@ namespace Komi.Data.Models.Discord.Guild
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public ulong GroupId { get; set; }
 
-        [Required]
         public List<Series> Projects { get; set; }
 
-        [Required]
         public List<GroupMember> Members { get; set; }
 
-        [Required]
-        public GroupSetting GroupSettings { get; set; }
+        public GroupSetting GroupSettings { get; set; } = new GroupSetting();
 
-        [Required]
-        public ModerationSetting ModerationSettings { get; set; }
+        public ModerationSetting? ModerationSettings { get; set; }
 
-        [Required]
-        public ModerationData ModerationData { get; set; }
+        public ModerationData? ModerationData { get; set; }
     }
 
     public class GroupMember : IUser, IGroup
     {
-        public ulong GroupMemberId { get; set; }
+        public int GroupMemberId { get; set; }
 
         public ulong GroupId { get; set; }
 
@@ -61,16 +56,6 @@ namespace Komi.Data.Models.Discord.Guild
                .HasOne(x => x.ModerationData)
                .WithOne(x => x.Group)
                .HasForeignKey<ModerationData>(x => x.GroupId);
-
-            builder
-               .HasOne(x => x.GroupSettings)
-               .WithOne(x => x.Group)
-               .HasForeignKey<GroupSetting>(x => x.GroupId);
-
-            builder
-               .HasOne(x => x.ModerationSettings)
-               .WithOne(x => x.Group)
-               .HasForeignKey<ModerationSetting>(x => x.GroupId);
         }
     }
 }

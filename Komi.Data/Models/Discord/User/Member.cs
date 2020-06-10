@@ -9,6 +9,7 @@ namespace Komi.Data.Models.Discord.User
     {
         [Key]
         [ForeignKey(nameof(User))]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public ulong UserId { get; set; }
 
         public User User { get; set; }

@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Komi.Data.Migrations
 {
     [DbContext(typeof(KomiContext))]
-    [Migration("20200605101453_InitialCreate")]
+    [Migration("20200605130837_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,9 +38,10 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Discord.Guild.GroupMember", b =>
                 {
-                    b.Property<decimal>("GroupMemberId")
+                    b.Property<int>("GroupMemberId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("numeric(20,0)");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<decimal>("GroupId")
                         .HasColumnType("numeric(20,0)");
@@ -99,23 +100,16 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Moderation.ModerationSetting", b =>
                 {
-                    b.Property<decimal>("ModerationSettingId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<decimal>("GroupId")
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<int?>("BanAt")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("GroupId")
-                        .HasColumnType("numeric(20,0)");
-
                     b.Property<int?>("KickAt")
                         .HasColumnType("integer");
 
-                    b.HasKey("ModerationSettingId");
-
-                    b.HasIndex("GroupId")
-                        .IsUnique();
+                    b.HasKey("GroupId");
 
                     b.ToTable("ModerationSetting");
                 });
@@ -158,32 +152,26 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Settings.GroupSetting", b =>
                 {
-                    b.Property<decimal>("GroupSettingId")
+                    b.Property<decimal>("GroupId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<decimal>("GroupId")
+                    b.Property<decimal?>("TrackingChannel")
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<decimal>("TrackingChannel")
-                        .HasColumnType("numeric(20,0)");
-
-                    b.HasKey("GroupSettingId");
-
-                    b.HasIndex("GroupId")
-                        .IsUnique();
+                    b.HasKey("GroupId");
 
                     b.ToTable("GroupSetting");
                 });
 
             modelBuilder.Entity("Komi.Data.Models.Settings.Prefix", b =>
                 {
-                    b.Property<long>("PrefixId")
+                    b.Property<int>("PrefixId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<decimal?>("GroupSettingId")
+                    b.Property<decimal?>("GroupSettingGroupId")
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("Text")
@@ -192,18 +180,19 @@ namespace Komi.Data.Migrations
 
                     b.HasKey("PrefixId");
 
-                    b.HasIndex("GroupSettingId");
+                    b.HasIndex("GroupSettingGroupId");
 
                     b.ToTable("Prefix");
                 });
 
             modelBuilder.Entity("Komi.Data.Models.Settings.WorkTypeSetting", b =>
                 {
-                    b.Property<decimal>("WorkTypeSettingId")
+                    b.Property<int>("WorkTypeSettingId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("numeric(20,0)");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<decimal?>("GroupSettingId")
+                    b.Property<decimal?>("GroupSettingGroupId")
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<bool>("IsEnabled")
@@ -214,7 +203,7 @@ namespace Komi.Data.Migrations
 
                     b.HasKey("WorkTypeSettingId");
 
-                    b.HasIndex("GroupSettingId");
+                    b.HasIndex("GroupSettingGroupId");
 
                     b.ToTable("WorkTypeSetting");
                 });
@@ -364,7 +353,7 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Moderation.ModerationSetting", b =>
                 {
-                    b.HasOne("Komi.Data.Models.Discord.Guild.Group", "Group")
+                    b.HasOne("Komi.Data.Models.Discord.Guild.Group", null)
                         .WithOne("ModerationSettings")
                         .HasForeignKey("Komi.Data.Models.Moderation.ModerationSetting", "GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -386,7 +375,7 @@ namespace Komi.Data.Migrations
 
             modelBuilder.Entity("Komi.Data.Models.Settings.GroupSetting", b =>
                 {
-                    b.HasOne("Komi.Data.Models.Discord.Guild.Group", "Group")
+                    b.HasOne("Komi.Data.Models.Discord.Guild.Group", null)
                         .WithOne("GroupSettings")
                         .HasForeignKey("Komi.Data.Models.Settings.GroupSetting", "GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -397,14 +386,14 @@ namespace Komi.Data.Migrations
                 {
                     b.HasOne("Komi.Data.Models.Settings.GroupSetting", null)
                         .WithMany("Prefixes")
-                        .HasForeignKey("GroupSettingId");
+                        .HasForeignKey("GroupSettingGroupId");
                 });
 
             modelBuilder.Entity("Komi.Data.Models.Settings.WorkTypeSetting", b =>
                 {
                     b.HasOne("Komi.Data.Models.Settings.GroupSetting", null)
                         .WithMany("DefaultWorkTypes")
-                        .HasForeignKey("GroupSettingId");
+                        .HasForeignKey("GroupSettingGroupId");
                 });
 
             modelBuilder.Entity("Komi.Data.Models.Tracking.Job", b =>
