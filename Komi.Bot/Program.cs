@@ -39,6 +39,7 @@ namespace Komi.Bot
                .AddMemoryCache()
                .AddDbContext<KomiContext>(OptionConfiguration, ServiceLifetime.Transient)
                .AddMediatR(c => c.Using<KomiMediator>(), typeof(Program))
+               .AddLogging(l => l.AddSerilog(dispose: true))
                .AddSingleton<InteractiveService>()
                .AddSingleton<DiscordSocketClient>()
                .AddSingleton<CommandService>()
@@ -89,11 +90,6 @@ namespace Komi.Bot
         {
             using (var services = ConfigureServices())
             {
-                Log.Logger = new LoggerConfiguration()
-                   .MinimumLevel.Debug()
-                   .WriteTo.Console()
-                   .CreateLogger();
-
                 var client = services.GetRequiredService<DiscordSocketClient>();
                 var commands = services.GetRequiredService<CommandService>();
                 var mediator = services.GetRequiredService<IMediator>();
