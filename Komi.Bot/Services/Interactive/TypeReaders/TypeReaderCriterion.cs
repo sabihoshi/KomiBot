@@ -4,7 +4,7 @@ using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
 
-namespace Komi.Bot.Services.Interactive.Criteria
+namespace Komi.Bot.Services.Interactive.TypeReaders
 {
     public class TypeReaderCriterion : ICriterion<SocketMessage>
     {

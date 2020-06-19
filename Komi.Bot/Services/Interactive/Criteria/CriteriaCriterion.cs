@@ -8,15 +8,20 @@ namespace Komi.Bot.Services.Interactive.Criteria
 {
     public class CriteriaCriterion<T> : ICriterion<T>
     {
-        private readonly IEnumerable<ICriterion<T>> _criteria;
+        public IEnumerable<ICriterion<T>> Criteria { get; }
 
-        public CriteriaCriterion(IEnumerable<ICriterion<T>> criteria) => _criteria = criteria;
+        public CriteriaCriterion(IEnumerable<ICriterion<T>> criteria) => Criteria = criteria;
 
-        public CriteriaCriterion(params ICriterion<T>[] criteria) => _criteria = criteria;
+        public CriteriaCriterion(params ICriterion<T>[] criteria) => Criteria = criteria;
+
+        public CriteriaCriterion(IEnumerable<ICriterion<T>> criteria, params ICriterion<T>[] newCriteria) =>
+            Criteria = criteria.Concat(newCriteria);
+
+        public CriteriaCriterion<T> With(ICriterion<T> criterion) => new CriteriaCriterion<T>(Criteria, criterion);
 
         public async Task<bool> JudgeAsync(SocketCommandContext sourceContext, T parameter)
         {
-            var judges = _criteria
+            var judges = Criteria
                .Select(c => c.JudgeAsync(sourceContext, parameter));
 
             var results = await Task.WhenAll(judges);

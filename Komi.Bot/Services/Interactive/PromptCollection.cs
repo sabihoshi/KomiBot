@@ -9,11 +9,12 @@ namespace Komi.Bot.Services.Interactive
 {
     public partial class PromptCollection<T> : IPromptCriteria<SocketMessage> where T : notnull
     {
-        public PromptCollection(InteractivePromptBase context,
+        public PromptCollection(
+            InteractivePromptBase module,
             string? errorMessage = null, IServiceProvider? services = null)
         {
             ErrorMessage = errorMessage;
-            Context = context;
+            Module = module;
             Services = services;
             Criteria = new ICriterion<SocketMessage>[]
             {
@@ -34,19 +35,22 @@ namespace Komi.Bot.Services.Interactive
 
         public string? ErrorMessage { get; set; }
 
-        public InteractivePromptBase Context { get; }
+        public InteractivePromptBase Module { get; }
+
+        public SocketCommandContext Context => Module.Context;
     }
 
-    public partial class PromptOrCollection<T> where T : notnull
+    public partial class PromptOrCollection<TOptions>
+        where TOptions : notnull
     {
-        public PromptOrCollection(Prompt<T> prompt, PromptCollection<T> collection)
+        public PromptOrCollection(Prompt<TOptions> prompt, PromptCollection<TOptions> collection)
         {
             Prompt = prompt;
             Collection = collection;
         }
 
-        public Prompt<T> Prompt { get; }
+        public Prompt<TOptions> Prompt { get; }
 
-        public PromptCollection<T> Collection { get; }
+        public PromptCollection<TOptions> Collection { get; }
     }
 }

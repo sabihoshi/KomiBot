@@ -9,7 +9,8 @@ namespace Komi.Bot.Services.Interactive
 {
     public class Prompt<T> : IPromptCriteria<SocketMessage> where T : notnull
     {
-        public Prompt(T key, string question, IEnumerable<EmbedFieldBuilder>? fields, bool isRequired, int? timeout,
+        public Prompt(
+            T key, string question, IEnumerable<EmbedFieldBuilder>? fields, bool isRequired, int? timeout,
             TypeReader? typeReader = null)
         {
             Key = key;

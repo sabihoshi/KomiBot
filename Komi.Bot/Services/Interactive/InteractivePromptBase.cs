@@ -8,8 +8,10 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Komi.Bot.Services.Image;
 using Komi.Bot.Services.Interactive.Criteria;
+using Komi.Bot.Services.Interactive.TypeReaders;
 using Komi.Bot.Services.Utilities;
 using Microsoft.Extensions.Logging;
+using Optional = Komi.Bot.Services.Interactive.TypeReaders.Optional;
 
 namespace Komi.Bot.Services.Interactive
 {
@@ -19,13 +21,14 @@ namespace Komi.Bot.Services.Interactive
 
         public ILogger<InteractivePromptBase> Logger { get; set; }
 
-        internal async Task<(SocketMessage? response, IUserMessage message)> Prompt(string question,
+        internal async Task<(SocketMessage? response, IUserMessage message)> Prompt(
+            string question,
             IUserMessage? message = null, IEnumerable<EmbedFieldBuilder>? fields = null, int secondsTimeout = 30,
-            CriteriaCriterion<SocketMessage>? criterion = null)
+            CriteriaCriterion<SocketMessage>? criterion = null, bool isRequired = true)
         {
-            message = await ModifyOrSendMessage(question, message, fields);
+            message = await ModifyOrSendMessage(question, message, fields, isRequired: isRequired);
 
-            SocketMessage response;
+            SocketMessage? response;
             var timeout = TimeSpan.FromSeconds(secondsTimeout);
             if (criterion is null)
                 response = await NextMessageAsync(timeout: timeout);
@@ -34,12 +37,15 @@ namespace Komi.Bot.Services.Interactive
 
             _ = response?.DeleteAsync();
 
+            if (!isRequired && response.IsSkipped())
+                response = null;
+
             return (response, message);
         }
 
         internal async Task<IUserMessage> ModifyOrSendMessage(
             string question, IUserMessage? message = null, IEnumerable<EmbedFieldBuilder>? fields = null,
-            Color? color = null)
+            Color? color = null, bool isRequired = true)
         {
             var embed = new EmbedBuilder()
                .WithUserAsAuthor(Context.User)
@@ -47,6 +53,9 @@ namespace Komi.Bot.Services.Interactive
                .WithColor(color
                        ?? await ImageService.GetDominantColorAsync(new Uri(Context.User.GetDefiniteAvatarUrl())))
                .WithFields(fields ?? Enumerable.Empty<EmbedFieldBuilder>());
+
+            if (!isRequired)
+                embed.WithFooter($"Reply '{Optional.SkipString}' if you don't need this.");
 
             if (message == null)
                 return await ReplyAsync(embed: embed.Build());
