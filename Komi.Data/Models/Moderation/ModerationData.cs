@@ -5,7 +5,7 @@ namespace Komi.Data.Models.Moderation
 {
     public class ModerationData
     {
-        public ulong ModerationDataId { get; set; }
+        public int ModerationDataId { get; set; }
 
         public List<WarningData>? Warnings { get; set; } = new List<WarningData>();
 

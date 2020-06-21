@@ -17,7 +17,7 @@ namespace Komi.Data.Models.Tracking
 
         public Job Job { get; set; }
 
-        public ulong UserId { get; set; }
+        public ulong Id { get; set; }
 
         public List<Group> Groups { get; set; }
     }

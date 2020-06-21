@@ -2,6 +2,6 @@
 {
     public interface IUser
     {
-        ulong UserId { get; set; }
+        ulong Id { get; set; }
     }
 }

@@ -11,14 +11,18 @@ namespace Komi.Data.Models.Settings
         [Key] [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public ulong GroupId { get; set; }
 
-        public List<Prefix>? Prefixes { get; set; }
+        public List<Prefix> Prefixes { get; set; } = new List<Prefix>();
 
         public List<WorkTypeSetting> DefaultWorkTypes { get; set; } =
             WorkTypeExtensions.Default
                .Select(x => new WorkTypeSetting(x))
                .ToList();
 
-        public ulong? TrackingChannel { get; set; }
+        public ulong TrackingChannel { get; set; }
+
+        public int? KickAt { get; set; }
+
+        public int? BanAt { get; set; }
     }
 
     public class WorkTypeSetting

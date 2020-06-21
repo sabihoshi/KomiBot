@@ -8,7 +8,7 @@ namespace Komi.Data.Models.Tracking.Scanlation
 {
     public class Work
     {
-        public ulong WorkId { get; set; }
+        public long WorkId { get; set; }
 
         public string? Name { get; set; }
 

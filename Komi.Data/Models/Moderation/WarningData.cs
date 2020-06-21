@@ -6,8 +6,7 @@ namespace Komi.Data.Models.Moderation
 {
     public class WarningData
     {
-        [Key]
-        public ulong WarningId { get; set; }
+        public int WarningDataId { get; set; }
 
         public ulong UserId { get; set; }
 
@@ -18,9 +17,5 @@ namespace Komi.Data.Models.Moderation
         public string? Reason { get; set; }
 
         public DateTimeOffset Date { get; set; }
-
-        public Group Group { get; set; }
-
-        public ulong GroupId { get; set; }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Komi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Komi.Data.Migrations
 {
     [DbContext(typeof(KomiContext))]
-    partial class KomiContextModelSnapshot : ModelSnapshot
+    [Migration("20200617021615_IdsToInt")]
+    partial class IdsToInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,14 +44,24 @@ namespace Komi.Data.Migrations
                     b.Property<decimal>("GroupId")
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<long>("GroupMemberId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("GroupMemberId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GroupId");
 
                     b.ToTable("GroupMembers");
+                });
+
+            modelBuilder.Entity("Komi.Data.Models.Discord.User.Member", b =>
+                {
+                    b.Property<decimal>("Id")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Member");
                 });
 
             modelBuilder.Entity("Komi.Data.Models.Discord.User.User", b =>
@@ -304,6 +316,15 @@ namespace Komi.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Komi.Data.Models.Discord.User.Member", "Member")
+                        .WithMany("Groups")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Komi.Data.Models.Discord.User.Member", b =>
+                {
                     b.HasOne("Komi.Data.Models.Discord.User.User", "User")
                         .WithMany()
                         .HasForeignKey("Id")
