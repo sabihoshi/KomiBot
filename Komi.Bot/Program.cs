@@ -9,6 +9,7 @@ using Komi.Bot.Services.Core.Listeners;
 using Komi.Bot.Services.Help;
 using Komi.Bot.Services.Image;
 using Komi.Bot.Services.Settings;
+using Komi.Bot.Services.Tracking;
 using Komi.Data;
 using Komi.Data.Models.Core;
 using Komi.Data.Models.Moderation;
@@ -44,6 +45,7 @@ namespace Komi.Bot
                .AddSingleton<DiscordSocketClient>()
                .AddSingleton<CommandService>()
                .AddSingleton<CommandHandlingService>()
+               .AddSingleton<GroupService>()
                .AddScoped<IFunModuleService, FunModuleService>()
                .AddScoped(MangaDexApiFactory.Create)
                .AddCommandHelp()

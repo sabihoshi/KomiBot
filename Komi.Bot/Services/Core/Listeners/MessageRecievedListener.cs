@@ -11,7 +11,7 @@ using Komi.Bot.Services.Utilities;
 using Komi.Data;
 using MediatR;
 
-namespace Komi.Bot.Services.Core
+namespace Komi.Bot.Services.Core.Listeners
 {
     public class MessageRecievedListener : INotificationHandler<MessageReceivedNotification>
     {
@@ -65,7 +65,7 @@ namespace Komi.Bot.Services.Core
         {
             return _database.Groups
                       .SingleOrDefault(g => g.GroupId == guildId)
-                     ?.GroupSettings.Prefixes
+                     ?.GroupSettings?.Prefixes
                      ?.Select(x => x.Text)
                 ?? Enumerable.Empty<string>();
         }
