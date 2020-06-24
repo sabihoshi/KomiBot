@@ -17,6 +17,7 @@ namespace Komi.Data.Models.Tracking
         public static Status GetStatus(this IEnumerable<Status> statuses)
         {
             var enumerable = statuses as Status[] ?? statuses.ToArray();
+
             foreach (Status status in Enum.GetValues(typeof(Status)))
             {
                 if (enumerable.All(s => s == status))
@@ -46,6 +47,7 @@ namespace Komi.Data.Models.Tracking
                 Status.Dropped    => "Dropped-red",
                 _                 => "Unknown-lightgrey"
             };
+
             return baseUrl + statusUrl;
         }
     }

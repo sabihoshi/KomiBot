@@ -7,6 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200624095809_FixGroupMemberPrimaryKey.cs" />
+    <Compile Remove="Migrations\20200624095809_FixGroupMemberPrimaryKey.Designer.cs" />
+    <Compile Remove="Migrations\20200625110344_IdsMajorRevision.cs" />
+    <Compile Remove="Migrations\20200625110344_IdsMajorRevision.Designer.cs" />
+    <Compile Remove="Migrations\20200625112000_ResetDb.cs" />
+    <Compile Remove="Migrations\20200625112000_ResetDb.Designer.cs" />
+    <Compile Remove="Migrations\20200625112421_ResetDb.cs" />
+    <Compile Remove="Migrations\20200625112421_ResetDb.Designer.cs" />
+    <Compile Remove="Migrations\20200625112640_IdsMajorRevision.cs" />
+    <Compile Remove="Migrations\20200625112640_IdsMajorRevision.Designer.cs" />
+    <Compile Remove="Migrations\20200625114543_IdsMajorRevision.cs" />
+    <Compile Remove="Migrations\20200625114543_IdsMajorRevision.Designer.cs" />
+    <Compile Remove="Migrations\20200625115045_IdsMajorRevision.cs" />
+    <Compile Remove="Migrations\20200625115045_IdsMajorRevision.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

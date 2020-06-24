@@ -4,16 +4,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Komi.Data.Models.Moderation;
 using Komi.Data.Models.Settings;
 using Komi.Data.Models.Tracking.Scanlation;
+using Komi.Data.Models.Users;
 
-namespace Komi.Data.Models.Discord.Guild
+namespace Komi.Data.Models.Groups
 {
     public class Group
-        : IGroup
     {
         [Key]
-        [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public ulong GroupId { get; set; }
+        public ulong GuildId { get; set; }
 
         public List<Series> Projects { get; set; } = new List<Series>();
 
@@ -21,6 +20,6 @@ namespace Komi.Data.Models.Discord.Guild
 
         public GroupSetting GroupSettings { get; set; } = new GroupSetting();
 
-        public ModerationData? ModerationData { get; set; }
+        public List<Warning> Warnings { get; set; } = new List<Warning>();
     }
 }

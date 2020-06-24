@@ -1,30 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Komi.Data.Models.Discord.Guild;
-using Komi.Data.Models.Discord.User;
+using Komi.Data.Models.Groups;
+using Komi.Data.Models.Users;
 
 namespace Komi.Data.Models.Tracking.Scanlation
 {
-    public class Work
+    public class Work : IGroup
     {
-        public long WorkId { get; set; }
+        public Guid Id { get; set; }
 
         public string? Name { get; set; }
 
         public string? Description { get; set; }
 
-        public int? Volume { get; set; }
+        public double? Volume { get; set; }
 
-        public int? Chapter { get; set; }
+        public double Chapter { get; set; }
 
         public Group Group { get; set; }
-
-        [NotMapped]
-        public IEnumerable<IUser> Collaborators =>
-            Jobs
-               .SelectMany(x => x.Workers)
-               .Where(x => !x.Groups.Contains(Group));
 
         public Status? OverridenStatus { get; set; }
 

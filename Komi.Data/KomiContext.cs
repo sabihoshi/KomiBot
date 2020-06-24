@@ -1,6 +1,6 @@
-﻿using Komi.Data.Models.Discord.Guild;
-using Komi.Data.Models.Discord.User;
+﻿using Komi.Data.Models.Groups;
 using Komi.Data.Models.Tracking.Scanlation;
+using Komi.Data.Models.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Komi.Data

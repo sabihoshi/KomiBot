@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Komi.Data.Models.Discord.User
+namespace Komi.Data.Models.Users
 {
-    public class User : IUser
+    public class User
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public ulong Id { get; set; }

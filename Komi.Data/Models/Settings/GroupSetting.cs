@@ -24,20 +24,4 @@ namespace Komi.Data.Models.Settings
 
         public int? BanAt { get; set; }
     }
-
-    public class WorkTypeSetting
-    {
-        public WorkTypeSetting(WorkType workType) => WorkType = workType;
-
-        public int WorkTypeSettingId { get; set; }
-
-        public WorkType WorkType { get; set; }
-    }
-
-    public class Prefix
-    {
-        public int PrefixId { get; set; }
-
-        public string Text { get; set; }
-    }
 }

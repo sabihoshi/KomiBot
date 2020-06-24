@@ -1,4 +1,4 @@
-﻿namespace Komi.Data.Models
+﻿namespace Komi.Data.Models.Core
 {
     public class Application
     {

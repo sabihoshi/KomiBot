@@ -1,5 +1,3 @@
-using Komi.Data.Models.Discord.Guild;
-
 namespace Komi.Data.Models.Settings
 {
     public interface IGroupSetting

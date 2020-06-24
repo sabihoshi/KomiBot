@@ -22,7 +22,6 @@ namespace Komi.Data.Models.Tracking
         private const RegexOptions DefaultOptions =
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
 
-
         private static readonly IReadOnlyDictionary<WorkType, Regex> WorkTypePatterns = new Dictionary<WorkType, Regex>
         {
             [WorkType.RawProvider] = new Regex(@"\b(RP|R(aws?\s*)(P(roviders?)?)?)\b", DefaultOptions),

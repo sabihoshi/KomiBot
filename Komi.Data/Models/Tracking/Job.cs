@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Komi.Data.Models.Tracking
 {
@@ -6,7 +7,7 @@ namespace Komi.Data.Models.Tracking
     {
         public Job(WorkType type) => Type = type;
 
-        public ulong JobId { get; set; }
+        public Guid Id { get; set; }
 
         public WorkType Type { get; set; }
 

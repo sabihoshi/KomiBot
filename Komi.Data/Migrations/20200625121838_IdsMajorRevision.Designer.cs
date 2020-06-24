@@ -3,15 +3,17 @@ using System;
 using Komi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Komi.Data.Migrations
 {
     [DbContext(typeof(KomiContext))]
-    partial class KomiContextModelSnapshot : ModelSnapshot
+    [Migration("20200625121838_IdsMajorRevision")]
+    partial class IdsMajorRevision
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +26,12 @@ namespace Komi.Data.Migrations
                     b.Property<decimal>("GuildId")
                         .HasColumnType("numeric(20,0)");
 
+                    b.Property<decimal?>("WorkerId")
+                        .HasColumnType("numeric(20,0)");
+
                     b.HasKey("GuildId");
+
+                    b.HasIndex("WorkerId");
 
                     b.ToTable("Groups");
                 });
@@ -253,6 +260,13 @@ namespace Komi.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Komi.Data.Models.Groups.Group", b =>
+                {
+                    b.HasOne("Komi.Data.Models.Tracking.Worker", null)
+                        .WithMany("Groups")
+                        .HasForeignKey("WorkerId");
                 });
 
             modelBuilder.Entity("Komi.Data.Models.Moderation.Warning", b =>

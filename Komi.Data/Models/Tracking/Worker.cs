@@ -1,13 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using Komi.Data.Models.Discord.Guild;
-using Komi.Data.Models.Discord.User;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Komi.Data.Models.Users;
 
 namespace Komi.Data.Models.Tracking
 {
     public class Worker : IUser
     {
-        public ulong WorkerId { get; set; }
+        [Key]
+        [ForeignKey(nameof(User))]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public ulong Id { get; set; }
 
         public Status Status { get; set; }
 
@@ -17,8 +20,6 @@ namespace Komi.Data.Models.Tracking
 
         public Job Job { get; set; }
 
-        public ulong Id { get; set; }
-
-        public List<Group> Groups { get; set; }
+        public User User { get; set; }
     }
 }
