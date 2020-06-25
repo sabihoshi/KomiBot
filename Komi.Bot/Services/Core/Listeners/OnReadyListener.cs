@@ -5,9 +5,7 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using Komi.Bot.Services.Core.Messages;
 using Komi.Data;
-using Komi.Data.Models.Discord.Guild;
 using Komi.Data.Models.Moderation;
-using Komi.Data.Models.Settings;
 using Komi.Data.Models.Tracking.Scanlation;
 using MediatR;
 
@@ -27,31 +25,31 @@ namespace Komi.Bot.Services.Core.Listeners
         public async Task Handle(ReadyNotification notification, CancellationToken cancellationToken)
         {
             return;
-            var missingGuilds =
-                _client.Guilds.Where(guild =>
-                    _context.Groups
-                       .All(group => group.GroupId != guild.Id));
+            //var missingGuilds =
+            //    _client.Guilds.Where(guild =>
+            //        _context.Groups
+            //           .All(group => group.GuildId != guild.Id));
 
-            foreach (var guild in missingGuilds)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                    break;
+            //foreach (var guild in missingGuilds)
+            //{
+            //    if (cancellationToken.IsCancellationRequested)
+            //        break;
 
-                var moderationSettings = new ModerationSetting();
-                var groupSettings = new GroupSetting();
+            //    var moderationSettings = new ModerationSetting();
+            //    var groupSettings = new GroupSetting();
 
-                var group = new Group
-                {
-                    GroupId = guild.Id,
-                    Projects = new List<Series>(),
-                    GroupSettings = groupSettings,
-                    ModerationSettings = moderationSettings
-                };
+            //    var group = new Group
+            //    {
+            //        GuildId = guild.Id,
+            //        Projects = new List<Series>(),
+            //        GroupSettings = groupSettings,
+            //        ModerationSettings = moderationSettings
+            //    };
 
-                _context.Groups.Add(group);
-            }
+            //    _context.Groups.Add(group);
+            //}
 
-            await _context.SaveChangesAsync(cancellationToken);
+            //await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

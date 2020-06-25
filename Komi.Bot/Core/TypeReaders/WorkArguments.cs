@@ -10,8 +10,8 @@ namespace Komi.Bot.Core.TypeReaders
     {
         public string? Description { get; set; }
 
-        public int? Volume { get; set; }
+        public double? Volume { get; set; }
 
-        public int? Chapter { get; set; }
+        public double Chapter { get; set; }
     }
 }

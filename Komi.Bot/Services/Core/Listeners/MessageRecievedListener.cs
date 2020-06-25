@@ -64,9 +64,9 @@ namespace Komi.Bot.Services.Core.Listeners
         private IEnumerable<string> GetPrefix(ulong guildId)
         {
             return _database.Groups
-                      .SingleOrDefault(g => g.GroupId == guildId)
+                      .SingleOrDefault(g => g.GuildId == guildId)
                      ?.GroupSettings?.Prefixes
-                     ?.Select(x => x.Text)
+                     ?.Select(x => x.Value)
                 ?? Enumerable.Empty<string>();
         }
     }

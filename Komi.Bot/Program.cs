@@ -103,7 +103,7 @@ namespace Komi.Bot
 
                 // Custom Commands
                 commands.RegisterSetting<GroupSetting>();
-                commands.RegisterSetting<ModerationSetting>();
+                //commands.RegisterSetting<ModerationSetting>();
 
                 // Events
                 await listener.StartAsync(new CancellationToken());

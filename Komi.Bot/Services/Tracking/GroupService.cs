@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Discord.Commands;
 using Komi.Data;
-using Komi.Data.Models.Discord.Guild;
+using Komi.Data.Models.Groups;
 using Komi.Data.Models.Moderation;
 using Komi.Data.Models.Settings;
 using Komi.Data.Models.Tracking;
 using Komi.Data.Models.Tracking.Scanlation;
+using Komi.Data.Models.Users;
+using IUser = Discord.IUser;
 
 namespace Komi.Bot.Services.Tracking
 {
@@ -23,14 +24,14 @@ namespace Komi.Bot.Services.Tracking
         public bool GroupExists(ulong guildId)
         {
             return _context.Groups
-                      .SingleOrDefault(g => g.GroupId == guildId)
+                      .SingleOrDefault(g => g.GuildId == guildId)
                 != null;
         }
 
         public bool TryGetGroup(ulong guildId, [MaybeNullWhen(false)] out Group? group)
         {
             group = _context.Groups
-               .SingleOrDefault(g => g.GroupId == guildId);
+               .SingleOrDefault(g => g.GuildId == guildId);
 
             return group != null;
         }
@@ -38,16 +39,6 @@ namespace Komi.Bot.Services.Tracking
         public bool HasGroup(IUser user)
         {
             throw new NotImplementedException();
-        }
-
-        public bool IsMemberOf(IUser user, ulong guildId)
-        {
-            return _context
-                   .GroupMembers
-                   .SingleOrDefault(g =>
-                        g.GroupId == guildId
-                     && g.Id == user.Id)
-                != null;
         }
 
         public async Task CreateGroupAsync(
@@ -65,12 +56,8 @@ namespace Komi.Bot.Services.Tracking
 
             var group = new Group
             {
-                GroupId = guildId,
-                GroupSettings = settings,
-                Members = new List<GroupMember>(),
-                ModerationSettings = new ModerationSetting(),
-                ModerationData = new ModerationData(),
-                Projects = new List<Series>()
+                GuildId = guildId,
+                GroupSettings = settings
             };
 
             _context.Groups.Add(group);

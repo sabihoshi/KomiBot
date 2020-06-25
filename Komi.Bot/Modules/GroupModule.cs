@@ -70,13 +70,11 @@ namespace Komi.Bot.Modules
                        .ThatHas(Reader.Channel<ITextChannel>())
                    .GetAnswersAsync();
 
-                var trackingChannel = answers[GroupOptions.TrackingChannel].As<ITextChannel>();
-
                 await _groupService.CreateGroupAsync(
                     Context.Guild.Id,
-                    answers[GroupOptions.Name],
+                    answers[GroupOptions.Name].As<string>(),
                     answers[GroupOptions.WorkType].As<string>().GetWorkTypes(),
-                    trackingChannel.Id);
+                    answers[GroupOptions.TrackingChannel].As<ITextChannel>().Id);
 
                 Log.Information("A new group was added. Info: {0}", answers);
             }

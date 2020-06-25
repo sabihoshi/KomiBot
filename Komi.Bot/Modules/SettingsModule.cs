@@ -12,7 +12,6 @@ using Komi.Bot.Core.Attributes;
 using Komi.Bot.Services.Image;
 using Komi.Bot.Services.Utilities;
 using Komi.Data;
-using Komi.Data.Models.Moderation;
 using Komi.Data.Models.Settings;
 
 namespace Komi.Bot.Modules
@@ -73,6 +72,7 @@ namespace Komi.Bot.Modules
                 {
                     var enumerable = (property.GetValue(data) as IEnumerable)?.OfType<object>()
                                   ?? Enumerable.Empty<object>();
+
                     sb.AppendLine($"{Format.Bold(property.Name)}:");
                     sb.AppendLine("```prolog\n"
                                 + $"{string.Join("\n", enumerable)}"
@@ -91,9 +91,10 @@ namespace Komi.Bot.Modules
 
             var keys = settings switch
             {
-                Settings.Guild      => CacheExtensions.GetProperties<GroupSetting>(),
-                Settings.Moderation => CacheExtensions.GetProperties<ModerationSetting>(),
-                _                   => null
+                Settings.Guild => CacheExtensions.GetProperties<GroupSetting>(),
+
+                //Settings.Moderation => CacheExtensions.GetProperties<ModerationSetting>(),
+                _ => null
             };
 
             if (keys is null)

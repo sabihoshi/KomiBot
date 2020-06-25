@@ -22,7 +22,7 @@ namespace Komi.Bot.Services.Tracking
             {
                 //TODO: Update state of the work
                 var group = _context
-                   .Groups.SingleOrDefault(x => x.GroupId == channel.GuildId);
+                   .Groups.SingleOrDefault(x => x.GuildId == channel.GuildId);
             }
         }
     }
