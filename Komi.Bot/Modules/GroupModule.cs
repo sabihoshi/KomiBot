@@ -72,9 +72,9 @@ namespace Komi.Bot.Modules
 
                 await _groupService.CreateGroupAsync(
                     Context.Guild.Id,
-                    answers[GroupOptions.Name].As<string>(),
-                    answers[GroupOptions.WorkType].As<string>().GetWorkTypes(),
-                    answers[GroupOptions.TrackingChannel].As<ITextChannel>().Id);
+                    answers.Get<string>(GroupOptions.Name),
+                    answers.Get<string>(GroupOptions.WorkType).GetWorkTypes(),
+                    answers.Get<ITextChannel>(GroupOptions.TrackingChannel).Id);
 
                 Log.Information("A new group was added. Info: {0}", answers);
             }

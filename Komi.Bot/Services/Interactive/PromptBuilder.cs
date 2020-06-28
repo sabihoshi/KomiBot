@@ -33,7 +33,7 @@ namespace Komi.Bot.Services.Interactive
             return new PromptOrCollection<T>(prompt, this);
         }
 
-        public async Task<Dictionary<T, PromptResult>> GetAnswersAsync(bool deleteResponse = true)
+        public async Task<ResultDictionary<T>> GetAnswersAsync(bool deleteResponse = true)
         {
             var ret = new Dictionary<T, PromptResult>();
             IUserMessage? message = null;
@@ -77,7 +77,7 @@ namespace Komi.Bot.Services.Interactive
                 ret[prompt.Key] = promptResult;
             }
 
-            return ret;
+            return new ResultDictionary<T>(ret);
         }
     }
 

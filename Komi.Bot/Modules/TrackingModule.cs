@@ -87,9 +87,9 @@ namespace Komi.Bot.Modules
             var work = new Work
             {
                 Name = answers[WorkOptions.Name],
-                Description = answers.GetValueOrDefault(WorkOptions.Description, null)!,
-                Volume = answers.GetValueOrDefault(WorkOptions.Volume, null)?.As<double>(),
-                Chapter = answers[WorkOptions.Chapter].As<double>(),
+                Description = answers.GetOrDefault<string?>(WorkOptions.Description, null),
+                Volume = answers.GetOrDefault<double?>(WorkOptions.Volume, null),
+                Chapter = answers.Get<double>(WorkOptions.Chapter),
                 Group = group,
                 OverridenStatus = null,
                 Jobs = group.GroupSettings.DefaultWorkTypes
