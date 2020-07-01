@@ -8,12 +8,9 @@ using Komi.Bot.Services.Core;
 using Komi.Bot.Services.Core.Listeners;
 using Komi.Bot.Services.Help;
 using Komi.Bot.Services.Image;
-using Komi.Bot.Services.Settings;
 using Komi.Bot.Services.Tracking;
 using Komi.Data;
 using Komi.Data.Models.Core;
-using Komi.Data.Models.Moderation;
-using Komi.Data.Models.Settings;
 using MangaDexApi;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -25,15 +22,13 @@ namespace Komi.Bot
 {
     public class Program
     {
-        public Program()
-        {
+        public Program() =>
             Log.Logger = new LoggerConfiguration()
                .MinimumLevel.Debug()
                .WriteTo.Console()
                .CreateLogger();
-        }
 
-        public static void Main(string[] args) { new Program().MainAsync().GetAwaiter().GetResult(); }
+        public static async Task Main(string[] args) { await new Program().MainAsync(); }
 
         private static ServiceProvider ConfigureServices() =>
             new ServiceCollection().AddHttpClient()
@@ -102,7 +97,7 @@ namespace Komi.Bot
                    .Build();
 
                 // Custom Commands
-                commands.RegisterSetting<GroupSetting>();
+                //commands.RegisterSetting<GroupSetting>();
                 //commands.RegisterSetting<ModerationSetting>();
 
                 // Events
