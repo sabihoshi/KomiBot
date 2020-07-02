@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Discord;
-using Komi.Bot.Services.Image.ColorQuantization;
+using ColorThiefDotNet;
+using Komi.Bot.Services.Utilities;
 using Microsoft.Extensions.Caching.Memory;
+using Color = Discord.Color;
 
 namespace Komi.Bot.Services.Image
 {
@@ -28,7 +28,7 @@ namespace Komi.Bot.Services.Image
         /// </summary>
         /// <param name="imageBytes">The bytes that compose the image for which the dominant color is to be retrieved.</param>
         /// <returns>A dominant color in the provided image.</returns>
-        Color GetDominantColor(ReadOnlySpan<byte> imageBytes);
+        Color GetDominantColor(byte[] imageBytes);
     }
 
     public sealed class ImageService : IImageService
@@ -37,6 +37,7 @@ namespace Komi.Bot.Services.Image
         {
             _httpClientFactory = httpClientFactory;
             _cache = memoryCache;
+            _colorThief = new ColorThief();
         }
 
         /// <inheritdoc />
@@ -47,7 +48,7 @@ namespace Komi.Bot.Services.Image
             if (!_cache.TryGetValue(key, out Color color))
             {
                 var imageBytes = await _httpClientFactory.CreateClient().GetByteArrayAsync(location);
-                color = GetDominantColor(imageBytes.AsSpan());
+                color = GetDominantColor(imageBytes);
 
                 _cache.Set(key, color, TimeSpan.FromDays(7));
             }
@@ -56,42 +57,17 @@ namespace Komi.Bot.Services.Image
         }
 
         /// <inheritdoc />
-        public Color GetDominantColor(ReadOnlySpan<byte> imageBytes)
+        public Color GetDominantColor(byte[] imageBytes)
         {
-            var colorTree = new Octree();
+            var quantizedColor = _colorThief.GetColor(imageBytes.ToBitmap(), 8);
 
-            using var img = SixLabors.ImageSharp.Image.Load(imageBytes);
-
-            for (var x = 0; x < img.Width; x++)
-            {
-                for (var y = 0; y < img.Height; y++)
-                {
-                    var pixel = img[x, y];
-
-                    // Don't include transparent pixels.
-                    if (pixel.A > 127)
-                    {
-                        var color = System.Drawing.Color.FromArgb(pixel.A, pixel.R, pixel.G, pixel.B);
-
-                        colorTree.Add(color);
-                    }
-                }
-            }
-
-            for (var i = 0; i < 7; i++)
-                colorTree.Reduce();
-
-            var mostCommonPaletteColor = colorTree.GetPalette()
-               .OrderByDescending(x => x.Weight * x.Color.GetSaturation())
-               .FirstOrDefault()
-               .Color;
-
-            return (Color)mostCommonPaletteColor;
+            return (Color)quantizedColor.ToColor();
         }
 
         private object GetKey(Uri uri) => new { Target = "DominantColor", uri.AbsoluteUri };
 
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMemoryCache _cache;
+        private readonly ColorThief _colorThief;
     }
 }
