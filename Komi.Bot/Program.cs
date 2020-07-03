@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -17,24 +18,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using Serilog.Events;
 
 namespace Komi.Bot
 {
     public class Program
     {
-        public Program() =>
-            Log.Logger = new LoggerConfiguration()
-               .MinimumLevel.Debug()
-               .WriteTo.Console()
-               .CreateLogger();
-
-        public static async Task Main(string[] args) { await new Program().MainAsync(); }
-
         private static ServiceProvider ConfigureServices() =>
             new ServiceCollection().AddHttpClient()
                .AddMemoryCache()
                .AddDbContext<KomiContext>(OptionConfiguration, ServiceLifetime.Transient)
-               .AddMediatR(c => c.Using<KomiMediator>(), typeof(Program))
+               .AddMediatR(c => c.Using<KomiMediator>(), typeof(Program), typeof(KomiMediator))
                .AddLogging(l => l.AddSerilog(dispose: true))
                .AddSingleton<InteractiveService>()
                .AddSingleton<DiscordSocketClient>()
@@ -56,66 +50,60 @@ namespace Komi.Bot
             options.UseNpgsql(configuration.GetValue<string>(nameof(KomiConfig.DbConnection)));
         }
 
-        private Task LogAsync(LogMessage message)
+        private static Task LogAsync(LogMessage message)
         {
-            switch (message.Severity)
+            var severity = message.Severity switch
             {
-                case LogSeverity.Critical:
-                    Log.Fatal(message.ToString());
-                    break;
-                case LogSeverity.Error:
-                    Log.Error(message.ToString());
-                    break;
-                case LogSeverity.Warning:
-                    Log.Warning(message.ToString());
-                    break;
-                case LogSeverity.Info:
-                    Log.Information(message.ToString());
-                    break;
-                case LogSeverity.Verbose:
-                    Log.Verbose(message.ToString());
-                    break;
-                case LogSeverity.Debug:
-                    Log.Debug(message.ToString());
-                    break;
-            }
+                LogSeverity.Critical => LogEventLevel.Fatal,
+                LogSeverity.Error    => LogEventLevel.Error,
+                LogSeverity.Warning  => LogEventLevel.Warning,
+                LogSeverity.Info     => LogEventLevel.Information,
+                LogSeverity.Verbose  => LogEventLevel.Verbose,
+                LogSeverity.Debug    => LogEventLevel.Debug,
+                _                    => LogEventLevel.Information
+            };
+
+            Log.Write(severity, message.Exception, message.Message);
 
             return Task.CompletedTask;
         }
 
-        public async Task MainAsync()
+        public static async Task Main()
         {
-            using (var services = ConfigureServices())
-            {
-                var client = services.GetRequiredService<DiscordSocketClient>();
-                var commands = services.GetRequiredService<CommandService>();
-                var mediator = services.GetRequiredService<IMediator>();
-                var listener = new DiscordSocketListener(client, mediator);
+            Log.Logger = new LoggerConfiguration()
+               .MinimumLevel.Debug()
+               .WriteTo.Console()
+               .CreateLogger();
 
-                var config = new ConfigurationBuilder()
-                   .AddUserSecrets<KomiConfig>()
-                   .Build();
+            await using var services = ConfigureServices();
+            var client = services.GetRequiredService<DiscordSocketClient>();
+            var commands = services.GetRequiredService<CommandService>();
+            var mediator = services.GetRequiredService<IMediator>();
 
-                // Custom Commands
-                //commands.RegisterSetting<GroupSetting>();
-                //commands.RegisterSetting<ModerationSetting>();
+            var config = new ConfigurationBuilder()
+               .AddUserSecrets<KomiConfig>()
+               .Build();
 
-                // Events
-                await listener.StartAsync(new CancellationToken());
+            // Custom Commands
+            //commands.RegisterSetting<GroupSetting>();
+            //commands.RegisterSetting<ModerationSetting>();
 
-                client.Log += LogAsync;
-                commands.Log += LogAsync;
+            // Events
+            var listener = new DiscordSocketListener(client, mediator);
+            await listener.StartAsync(new CancellationToken());
 
-                // Login
-                await client.LoginAsync(TokenType.Bot, config.GetValue<string>(nameof(KomiConfig.Token)));
-                await client.StartAsync();
+            client.Log += LogAsync;
+            commands.Log += LogAsync;
 
-                // Here we initialize the logic required to register our commands.
-                await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
+            // Login
+            await client.LoginAsync(TokenType.Bot, config.GetValue<string>(nameof(KomiConfig.Token)));
+            await client.StartAsync();
 
-                // Block this task until the program is closed.
-                await Task.Delay(-1);
-            }
+            // Here we initialize the logic required to register our commands.
+            await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
+
+            // Block this task until the program is closed.
+            await Task.Delay(-1);
         }
     }
 }

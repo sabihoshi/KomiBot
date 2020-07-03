@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Komi.Data", "Komi.Data\Komi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MangaDexApi", "MangaDexApi\MangaDexApi.csproj", "{C73842A6-0CF8-44D6-9AC7-F7D229D53874}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Komi.Services", "Komi.Services\Komi.Services.csproj", "{C0575872-DD75-4231-88FA-BBF21026AB89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C73842A6-0CF8-44D6-9AC7-F7D229D53874}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C73842A6-0CF8-44D6-9AC7-F7D229D53874}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C73842A6-0CF8-44D6-9AC7-F7D229D53874}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0575872-DD75-4231-88FA-BBF21026AB89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0575872-DD75-4231-88FA-BBF21026AB89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0575872-DD75-4231-88FA-BBF21026AB89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0575872-DD75-4231-88FA-BBF21026AB89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

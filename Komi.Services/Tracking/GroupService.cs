@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord.Commands;
+using Discord;
 using Komi.Data;
 using Komi.Data.Models.Groups;
-using Komi.Data.Models.Moderation;
 using Komi.Data.Models.Settings;
 using Komi.Data.Models.Tracking;
-using Komi.Data.Models.Tracking.Scanlation;
-using Komi.Data.Models.Users;
-using IUser = Discord.IUser;
 
 namespace Komi.Bot.Services.Tracking
 {
@@ -36,10 +32,7 @@ namespace Komi.Bot.Services.Tracking
             return group != null;
         }
 
-        public bool HasGroup(IUser user)
-        {
-            throw new NotImplementedException();
-        }
+        public bool HasGroup(IUser user) => throw new NotImplementedException();
 
         public async Task CreateGroupAsync(
             ulong guildId,
@@ -50,7 +43,8 @@ namespace Komi.Bot.Services.Tracking
             var settings = new GroupSetting
             {
                 DefaultWorkTypes = (types ?? WorkTypeExtensions.Default)
-                   .Select(x => new WorkTypeSetting(x)).ToList(),
+                   .Select(x => new WorkTypeSetting(x))
+                   .ToList(),
                 TrackingChannel = trackingChannel
             };
 
@@ -63,6 +57,5 @@ namespace Komi.Bot.Services.Tracking
             _context.Groups.Add(group);
             await _context.SaveChangesAsync();
         }
-
     }
 }

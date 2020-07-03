@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Nullable>enable</Nullable>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>760a2f9d-a025-44a1-aa81-1f34bcea0b3f</UserSecretsId>
   </PropertyGroup>
 
