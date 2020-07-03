@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
-using Komi.Bot.Services.Interactive.Criteria;
+using Komi.Services.Interactive.Criteria;
 
-namespace Komi.Bot.Services.Interactive
+namespace Komi.Services.Interactive
 {
     public partial class PromptCollection<T> : IPromptCriteria<SocketMessage> where T : notnull
     {

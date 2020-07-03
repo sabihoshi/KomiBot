@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 
-namespace Komi.Bot.Services.Interactive.TypeReaders
+namespace Komi.Services.Interactive.TypeReaders
 {
     public static class Reader
     {

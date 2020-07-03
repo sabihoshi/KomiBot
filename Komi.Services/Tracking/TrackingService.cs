@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Komi.Data;
+﻿using Komi.Data;
 
-namespace Komi.Bot.Services.Tracking
+namespace Komi.Services.Tracking
 {
     public class TrackingService
     {

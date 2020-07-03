@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Komi.Bot.Core.Attributes;
+using Komi.Services.Core.Attributes;
 
-namespace Komi.Bot.Services.Utilities
+namespace Komi.Services.Utilities
 {
     public static class CacheExtensions
     {

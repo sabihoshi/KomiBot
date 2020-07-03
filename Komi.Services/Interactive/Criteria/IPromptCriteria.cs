@@ -2,7 +2,7 @@
 using Discord.Addons.Interactive;
 using Discord.Commands;
 
-namespace Komi.Bot.Services.Interactive.Criteria
+namespace Komi.Services.Interactive.Criteria
 {
     public interface IPromptCriteria<T>
     {

@@ -6,11 +6,11 @@ using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
-using Komi.Bot.Services.Interactive.Criteria;
-using Komi.Bot.Services.Interactive.TryParse;
-using Komi.Bot.Services.Interactive.TypeReaders;
+using Komi.Services.Interactive.Criteria;
+using Komi.Services.Interactive.TryParse;
+using Komi.Services.Interactive.TypeReaders;
 
-namespace Komi.Bot.Services.Interactive
+namespace Komi.Services.Interactive
 {
     public partial class PromptCollection<T> where T : notnull
     {

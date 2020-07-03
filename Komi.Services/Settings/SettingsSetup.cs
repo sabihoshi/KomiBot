@@ -5,13 +5,13 @@ using System.Reflection;
 using System.Threading;
 using Discord.Commands;
 using Discord.Commands.Builders;
-using Komi.Bot.Core.Attributes;
-using Komi.Bot.Services.Utilities;
 using Komi.Data;
 using Komi.Data.Models.Settings;
+using Komi.Services.Core.Attributes;
+using Komi.Services.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Komi.Bot.Services.Settings
+namespace Komi.Services.Settings
 {
     public static class SettingsSetup
     {

@@ -3,7 +3,7 @@ using System.IO;
 using ColorThiefDotNet;
 using Color = System.Drawing.Color;
 
-namespace Komi.Bot.Services.Utilities
+namespace Komi.Services.Utilities
 {
     public static class ImageExtensions
     {

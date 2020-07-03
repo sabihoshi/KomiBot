@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using JetBrains.Annotations;
-using Komi.Bot.Core.Attributes;
-using Komi.Bot.Services.Image;
-using Komi.Bot.Services.Utilities;
 using Komi.Data;
 using Komi.Data.Models.Settings;
+using Komi.Services.Core.Attributes;
+using Komi.Services.Image;
+using Komi.Services.Utilities;
 
 namespace Komi.Bot.Modules
 {

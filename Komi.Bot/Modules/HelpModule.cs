@@ -8,9 +8,9 @@ using Discord;
 using Discord.Commands;
 using Discord.Net;
 using JetBrains.Annotations;
-using Komi.Bot.Services.Help;
-using Komi.Bot.Services.Image;
-using Komi.Bot.Services.Utilities;
+using Komi.Services.Help;
+using Komi.Services.Image;
+using Komi.Services.Utilities;
 
 namespace Komi.Bot.Modules
 {

@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Humanizer;
-using Komi.Bot.Services.Interactive;
-using Komi.Bot.Services.Interactive.TypeReaders;
-using Komi.Bot.Services.Tracking;
 using Komi.Data.Models.Tracking;
+using Komi.Services.Interactive;
+using Komi.Services.Interactive.TypeReaders;
+using Komi.Services.Tracking;
 using Serilog;
 
 namespace Komi.Bot.Modules

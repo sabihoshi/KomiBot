@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Discord.Commands;
 
-namespace Komi.Bot.Services.Interactive
+namespace Komi.Services.Interactive
 {
     public class PromptResult
     {

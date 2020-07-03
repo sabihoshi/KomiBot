@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Komi.Bot.Services.Core.Messages;
-using Komi.Bot.Services.Utilities;
 using Komi.Data;
+using Komi.Services.Core.Messages;
+using Komi.Services.Utilities;
 using MediatR;
 
-namespace Komi.Bot.Services.Core.Listeners
+namespace Komi.Services.Core.Listeners
 {
     public class MessageRecievedListener : INotificationHandler<MessageReceivedNotification>
     {

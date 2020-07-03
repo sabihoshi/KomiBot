@@ -1,4 +1,4 @@
-﻿namespace Komi.Bot.Services.Interactive.TryParse
+﻿namespace Komi.Services.Interactive.TryParse
 {
     public delegate bool TryParseDelegate<T>(string input, out T result);
 }

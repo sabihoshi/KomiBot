@@ -5,7 +5,7 @@ using Discord.Commands;
 using Komi.Data;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Komi.Bot.Services.Tracking.Preconditions
+namespace Komi.Services.Tracking.Preconditions
 {
     public class RequireGroupExists : PreconditionAttribute
     {

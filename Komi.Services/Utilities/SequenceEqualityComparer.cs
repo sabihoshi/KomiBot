@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Komi.Bot.Services.Utilities
+namespace Komi.Services.Utilities
 {
     public class SequenceEqualityComparer<T> : IEqualityComparer<IReadOnlyCollection<T>>
     {

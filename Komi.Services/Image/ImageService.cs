@@ -2,11 +2,11 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using ColorThiefDotNet;
-using Komi.Bot.Services.Utilities;
+using Komi.Services.Utilities;
 using Microsoft.Extensions.Caching.Memory;
 using Color = Discord.Color;
 
-namespace Komi.Bot.Services.Image
+namespace Komi.Services.Image
 {
     /// <summary>
     ///     Desribes a service that performs actions related to images.

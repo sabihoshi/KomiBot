@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Discord.Commands;
-using Komi.Bot.Core.Attributes;
-using Komi.Bot.Services.Utilities;
+using Komi.Services.Core.Attributes;
+using Komi.Services.Utilities;
 using ParameterInfo = Discord.Commands.ParameterInfo;
 
-namespace Komi.Bot.Services.Help
+namespace Komi.Services.Help
 {
     public class ParameterHelpData
     {

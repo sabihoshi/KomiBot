@@ -3,13 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Komi.Bot.Core.TypeReaders;
-using Komi.Bot.Services.Interactive;
-using Komi.Bot.Services.Tracking;
-using Komi.Bot.Services.Tracking.Preconditions;
 using Komi.Data;
 using Komi.Data.Models.Tracking;
 using Komi.Data.Models.Tracking.Scanlation;
+using Komi.Services.Core.TypeReaders;
+using Komi.Services.Interactive;
+using Komi.Services.Tracking;
+using Komi.Services.Tracking.Preconditions;
 
 namespace Komi.Bot.Modules
 {

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Discord.Commands;
+﻿using Discord.Commands;
 
-namespace Komi.Bot.Core.TypeReaders
+namespace Komi.Services.Core.TypeReaders
 {
     [NamedArgumentType]
     public class WorkArguments

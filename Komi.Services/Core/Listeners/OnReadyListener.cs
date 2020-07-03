@@ -1,15 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using Komi.Bot.Services.Core.Messages;
 using Komi.Data;
-using Komi.Data.Models.Moderation;
-using Komi.Data.Models.Tracking.Scanlation;
+using Komi.Services.Core.Messages;
 using MediatR;
 
-namespace Komi.Bot.Services.Core.Listeners
+namespace Komi.Services.Core.Listeners
 {
     public class OnReadyListener : INotificationHandler<ReadyNotification>
     {

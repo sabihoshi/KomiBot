@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using Humanizer;
 using Humanizer.Localisation;
 
-namespace Komi.Bot.Services.Utilities
+namespace Komi.Services.Utilities
 {
     public static class FormatUtilities
     {

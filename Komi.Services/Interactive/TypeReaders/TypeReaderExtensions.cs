@@ -1,8 +1,8 @@
 ﻿using System;
 using Discord.Commands;
-using Komi.Bot.Services.Interactive.TryParse;
+using Komi.Services.Interactive.TryParse;
 
-namespace Komi.Bot.Services.Interactive.TypeReaders
+namespace Komi.Services.Interactive.TypeReaders
 {
     public static class TypeReaderExtensions
     {

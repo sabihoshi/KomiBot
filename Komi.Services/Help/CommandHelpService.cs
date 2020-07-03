@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Discord.Commands;
-using Komi.Bot.Core.Attributes;
+using Komi.Services.Core.Attributes;
 
-namespace Komi.Bot.Services.Help
+namespace Komi.Services.Help
 {
     /// <summary>
     ///     Provides functionality to retrieve command help information.

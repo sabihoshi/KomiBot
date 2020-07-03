@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Komi.Bot.Core.Attributes
+namespace Komi.Services.Core.Attributes
 {
     /// <summary>
     ///     Hides the module or command from display

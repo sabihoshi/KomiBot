@@ -3,7 +3,7 @@ using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
 
-namespace Komi.Bot.Services.Interactive.TryParse
+namespace Komi.Services.Interactive.TryParse
 {
     public class TryParseCriterion<T> : ICriterion<SocketMessage>
     {

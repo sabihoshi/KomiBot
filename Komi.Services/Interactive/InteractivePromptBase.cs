@@ -6,14 +6,14 @@ using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
-using Komi.Bot.Services.Image;
-using Komi.Bot.Services.Interactive.Criteria;
-using Komi.Bot.Services.Interactive.TypeReaders;
-using Komi.Bot.Services.Utilities;
+using Komi.Services.Image;
+using Komi.Services.Interactive.Criteria;
+using Komi.Services.Interactive.TypeReaders;
+using Komi.Services.Utilities;
 using Microsoft.Extensions.Logging;
-using Optional = Komi.Bot.Services.Interactive.TypeReaders.Optional;
+using Optional = Komi.Services.Interactive.TypeReaders.Optional;
 
-namespace Komi.Bot.Services.Interactive
+namespace Komi.Services.Interactive
 {
     public class InteractivePromptBase : InteractiveBase<SocketCommandContext>
     {

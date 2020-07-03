@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Discord;
 
-namespace Komi.Bot.Services.Utilities
+namespace Komi.Services.Utilities
 {
     public static class UserExtensions
     {

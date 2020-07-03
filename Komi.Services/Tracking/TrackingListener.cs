@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
-using Komi.Bot.Services.Core.Messages;
 using Komi.Data;
+using Komi.Services.Core.Messages;
 using MediatR;
 
-namespace Komi.Bot.Services.Tracking
+namespace Komi.Services.Tracking
 {
     public class TrackingListener : INotificationHandler<ReactionAddedNotification>
     {

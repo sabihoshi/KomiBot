@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Komi.Bot.Services.Core;
-using Komi.Bot.Services.Utilities;
+using Komi.Services.Core;
+using Komi.Services.Utilities;
 
 namespace Komi.Bot.Modules
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using Discord.Commands;
 
-namespace Komi.Bot.Services.Help
+namespace Komi.Services.Help
 {
     public class CommandHelpData
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Komi.Bot.Services.Image
+namespace Komi.Services.Image
 {
     public static class ImageSetup
     {

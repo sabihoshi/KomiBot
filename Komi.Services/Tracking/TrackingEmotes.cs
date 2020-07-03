@@ -3,7 +3,7 @@ using System.Linq;
 using Discord;
 using Komi.Data.Models.Tracking;
 
-namespace Komi.Bot.Services.Tracking
+namespace Komi.Services.Tracking
 {
     public static class TrackingEmotes
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Komi.Bot.Services.Utilities
+namespace Komi.Services.Utilities
 {
     public static class EnumerableExtensions
     {

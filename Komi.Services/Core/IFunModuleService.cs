@@ -1,4 +1,4 @@
-﻿namespace Komi.Bot.Services.Core
+﻿namespace Komi.Services.Core
 {
     public interface IFunModuleService
     {

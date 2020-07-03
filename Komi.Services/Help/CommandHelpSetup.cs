@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Komi.Bot.Services.Help
+namespace Komi.Services.Help
 {
     /// <summary>
     ///     Contains extension methods for configuration the CommandHelp feature

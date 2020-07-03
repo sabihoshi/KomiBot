@@ -9,7 +9,7 @@ using Komi.Data.Models.Groups;
 using Komi.Data.Models.Settings;
 using Komi.Data.Models.Tracking;
 
-namespace Komi.Bot.Services.Tracking
+namespace Komi.Services.Tracking
 {
     public class GroupService
     {

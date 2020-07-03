@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Komi.Bot.Services.Core.Messages;
+using Komi.Services.Core.Messages;
 using MediatR;
 
-namespace Komi.Bot.Services.Core
+namespace Komi.Services.Core
 {
     /// <summary>
     ///     Listens for events from an <see cref="IDiscordSocketClient" /> and dispatches them to the rest of the application,

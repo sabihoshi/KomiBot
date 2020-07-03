@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Komi.Bot.Services.Help
+namespace Komi.Services.Help
 {
     /// <summary>
     ///     Indicates tags to use during help searches to increase the hit rate of the module.

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Serilog;
 
-namespace Komi.Bot.Services.Core.Listeners
+namespace Komi.Services.Core.Listeners
 {
     public class KomiMediator : Mediator
     {

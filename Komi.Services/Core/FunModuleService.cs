@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Komi.Bot.Services.Core
+namespace Komi.Services.Core
 {
     public class FunModuleService : IFunModuleService
     {

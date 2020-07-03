@@ -3,7 +3,7 @@ using Discord;
 using Discord.WebSocket;
 using MediatR;
 
-namespace Komi.Bot.Services.Core.Messages
+namespace Komi.Services.Core.Messages
 {
     /// <summary>
     ///     Describes an application-wide notification that occurs when <see cref="IBaseSocketClient.ReactionRemoved" /> is

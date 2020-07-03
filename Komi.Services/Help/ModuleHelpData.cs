@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Discord.Commands;
 using Humanizer;
-using Komi.Bot.Core.Attributes;
+using Komi.Services.Core.Attributes;
 
-namespace Komi.Bot.Services.Help
+namespace Komi.Services.Help
 {
     public class ModuleHelpData
     {

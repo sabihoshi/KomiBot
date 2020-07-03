@@ -1,7 +1,7 @@
 ﻿using System;
 using Discord.WebSocket;
 
-namespace Komi.Bot.Services.Interactive.Funcs
+namespace Komi.Services.Interactive.Funcs
 {
     public static class FuncCriterionExtensions
     {

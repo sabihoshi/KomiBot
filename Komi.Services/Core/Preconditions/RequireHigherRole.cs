@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 
-namespace Komi.Bot.Core.Preconditions
+namespace Komi.Services.Core.Preconditions
 {
     public class RequireHigherRole : ParameterPreconditionAttribute
     {

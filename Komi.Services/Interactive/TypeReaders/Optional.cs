@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 
-namespace Komi.Bot.Services.Interactive.TypeReaders
+namespace Komi.Services.Interactive.TypeReaders
 {
     public static class Optional
     {

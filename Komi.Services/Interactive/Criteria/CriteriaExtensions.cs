@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
-using Komi.Bot.Services.Interactive.TryParse;
-using Komi.Bot.Services.Interactive.TypeReaders;
+using Komi.Services.Interactive.TryParse;
+using Komi.Services.Interactive.TypeReaders;
 
-namespace Komi.Bot.Services.Interactive.Criteria
+namespace Komi.Services.Interactive.Criteria
 {
     public static class CriteriaExtensions
     {

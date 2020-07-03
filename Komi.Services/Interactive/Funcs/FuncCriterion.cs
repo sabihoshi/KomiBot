@@ -4,7 +4,7 @@ using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
 
-namespace Komi.Bot.Services.Interactive.Funcs
+namespace Komi.Services.Interactive.Funcs
 {
     public class FuncCriterion : ICriterion<SocketMessage>
     {
