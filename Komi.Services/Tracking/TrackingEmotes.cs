@@ -58,8 +58,7 @@ namespace Komi.Services.Tracking
                 "<:CLred:717670620569272351>")
         };
 
-        public static Dictionary<WorkType, WorkStatusEmote> EmoteDictionary =>
-            Emotes.ToDictionary(x => x.Type, x => x);
+        public static Dictionary<WorkType, WorkStatusEmote> EmoteDictionary => Emotes.ToDictionary(x => x.Type, x => x);
 
         public static Emote GetEmote(WorkType type, WorkStatusEmote.StatusColor color) =>
             EmoteDictionary[type].Emotes[color];

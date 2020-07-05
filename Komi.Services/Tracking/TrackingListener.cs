@@ -14,7 +14,7 @@ namespace Komi.Services.Tracking
 
         public async Task Handle(ReactionAddedNotification notification, CancellationToken cancellationToken)
         {
-            if(notification.Channel is ITextChannel channel)
+            if (notification.Channel is ITextChannel channel)
             {
                 //TODO: Update state of the work
                 var group = _context

@@ -11,7 +11,8 @@ namespace Komi.Services.Core.Listeners
     {
         public KomiMediator(ServiceFactory serviceFactory) : base(serviceFactory) { }
 
-        protected override async Task PublishCore(IEnumerable<Func<INotification, CancellationToken, Task>> handlers,
+        protected override async Task PublishCore(
+            IEnumerable<Func<INotification, CancellationToken, Task>> handlers,
             INotification notification, CancellationToken cancellationToken)
         {
             try

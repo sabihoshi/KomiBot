@@ -39,7 +39,7 @@ namespace Komi.Data.Models.Tracking
         public static string GetImage(this Status status)
         {
             var baseUrl = "https://img.shields.io/badge/Status-";
-            var statusUrl = status switch
+            string statusUrl = status switch
             {
                 Status.Unknown    => "Unknown-lightgrey",
                 Status.InProgress => "In_Progress-yellow",

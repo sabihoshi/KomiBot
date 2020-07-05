@@ -14,7 +14,8 @@ namespace Komi.Bot.Modules
         [Command("hug")]
         [Summary("Hug a user or Komi!")]
         [RequireContext(ContextType.Guild)]
-        public Task HugAsync([Optional] [Summary("The user to hug")]
+        public Task HugAsync(
+            [Optional] [Summary("The user to hug")]
             IGuildUser user)
         {
             if (user is null)
@@ -29,7 +30,8 @@ namespace Komi.Bot.Modules
         [Alias("headpat")]
         [Summary("Pat a user or Komi!")]
         [RequireContext(ContextType.Guild)]
-        public Task PatAsync([Optional] [Summary("The user to pat")]
+        public Task PatAsync(
+            [Optional] [Summary("The user to pat")]
             IGuildUser user)
         {
             if (user is null)
@@ -42,7 +44,8 @@ namespace Komi.Bot.Modules
 
         [Command("kiss")]
         [Summary("Kiss a user or Komi~")]
-        public Task KissAsync([Optional] [Summary("The user to kiss")]
+        public Task KissAsync(
+            [Optional] [Summary("The user to kiss")]
             IGuildUser user)
         {
             if (user is null)

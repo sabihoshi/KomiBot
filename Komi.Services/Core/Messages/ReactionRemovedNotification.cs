@@ -18,7 +18,8 @@ namespace Komi.Services.Core.Messages
         /// <param name="channel">The value to use for <see cref="Channel" />.</param>
         /// <param name="reaction">The value to use for <see cref="Reaction" />.</param>
         /// <exception cref="ArgumentNullException">Throws for <paramref name="channel" /> and <paramref name="reaction" />.</exception>
-        public ReactionRemovedNotification(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel,
+        public ReactionRemovedNotification(
+            Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel,
             SocketReaction reaction)
         {
             Message = message;

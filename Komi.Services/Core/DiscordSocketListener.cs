@@ -120,7 +120,8 @@ namespace Komi.Services.Core
             return Task.CompletedTask;
         }
 
-        private Task OnMessageUpdatedAsync(Cacheable<IMessage, ulong> oldMessage, SocketMessage newMessage,
+        private Task OnMessageUpdatedAsync(
+            Cacheable<IMessage, ulong> oldMessage, SocketMessage newMessage,
             ISocketMessageChannel channel)
         {
             MessageDispatcher.Publish(new MessageUpdatedNotification(oldMessage, newMessage, channel));
@@ -128,7 +129,8 @@ namespace Komi.Services.Core
             return Task.CompletedTask;
         }
 
-        private Task OnReactionAddedAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel,
+        private Task OnReactionAddedAsync(
+            Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel,
             SocketReaction reaction)
         {
             MessageDispatcher.Publish(new ReactionAddedNotification(message, channel, reaction));
@@ -136,7 +138,8 @@ namespace Komi.Services.Core
             return Task.CompletedTask;
         }
 
-        private Task OnReactionRemovedAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel,
+        private Task OnReactionRemovedAsync(
+            Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel,
             SocketReaction reaction)
         {
             MessageDispatcher.Publish(new ReactionRemovedNotification(message, channel, reaction));

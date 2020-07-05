@@ -20,7 +20,6 @@ namespace Komi.Services.Core.Listeners
 
         public async Task Handle(ReadyNotification notification, CancellationToken cancellationToken)
         {
-            return;
             //var missingGuilds =
             //    _client.Guilds.Where(guild =>
             //        _context.Groups

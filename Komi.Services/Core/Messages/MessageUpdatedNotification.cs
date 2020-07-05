@@ -21,7 +21,8 @@ namespace Komi.Services.Core.Messages
         ///     Throws for <paramref name="oldMessage" />, <paramref name="newMessage" />, and
         ///     <paramref name="channel" />.
         /// </exception>
-        public MessageUpdatedNotification(Cacheable<IMessage, ulong>? oldMessage, SocketMessage newMessage,
+        public MessageUpdatedNotification(
+            Cacheable<IMessage, ulong>? oldMessage, SocketMessage newMessage,
             ISocketMessageChannel channel)
         {
             OldMessage = oldMessage ?? throw new ArgumentNullException(nameof(oldMessage));

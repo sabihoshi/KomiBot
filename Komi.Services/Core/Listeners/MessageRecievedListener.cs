@@ -21,7 +21,8 @@ namespace Komi.Services.Core.Listeners
         private readonly Cache<ulong, IEnumerable<string>> _prefixCache;
         private readonly KomiContext _database;
 
-        public MessageRecievedListener(CommandService commands, DiscordSocketClient discord, IServiceProvider services,
+        public MessageRecievedListener(
+            CommandService commands, DiscordSocketClient discord, IServiceProvider services,
             KomiContext database)
         {
             _commands = commands;

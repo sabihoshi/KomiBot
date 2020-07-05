@@ -9,7 +9,8 @@ namespace Komi.Services.Utilities
                .WithAuthor(user.GetFullUsername(),
                     user.GetDefiniteAvatarUrl());
 
-        public static EmbedBuilder WithUserAsAuthor(this EmbedBuilder builder, IGuildUser user,
+        public static EmbedBuilder WithUserAsAuthor(
+            this EmbedBuilder builder, IGuildUser user,
             bool withNickname = true)
         {
             var nickname = withNickname ? $" ({user.Nickname})" : string.Empty;

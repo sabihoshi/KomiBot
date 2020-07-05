@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -87,7 +86,7 @@ namespace Komi.Bot.Modules
             var work = new Work
             {
                 Name = answers[WorkOptions.Name],
-                Description = answers.GetOrDefault<string?>(WorkOptions.Description, null),
+                Description = answers.GetOrDefault<string?>(WorkOptions.Description),
                 Volume = answers.GetOrDefault<double?>(WorkOptions.Volume, null),
                 Chapter = answers.Get<double>(WorkOptions.Chapter),
                 Group = group,

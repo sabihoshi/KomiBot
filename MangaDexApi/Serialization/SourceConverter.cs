@@ -42,7 +42,8 @@ namespace MangaDexApi.Serialization
             writer.WriteEndArray();
         }
 
-        public override IEnumerable<Source> ReadJson(JsonReader reader, Type objectType,
+        public override IEnumerable<Source> ReadJson(
+            JsonReader reader, Type objectType,
             IEnumerable<Source> existingValue, bool hasExistingValue,
             JsonSerializer serializer)
         {

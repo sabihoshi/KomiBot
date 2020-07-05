@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Komi.Data.Models.Groups;
-using Komi.Data.Models.Users;
 
 namespace Komi.Data.Models.Tracking.Scanlation
 {

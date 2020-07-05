@@ -26,7 +26,7 @@ namespace Komi.Services.Interactive.Criteria
 
         public static ICriterion<T> AsCriterion<T>(this TypeReader reader, IServiceProvider? services = null)
             where T : SocketMessage =>
-            (ICriterion<T>)reader.AsCriterion(services);
+            reader.AsCriterion(services);
 
         public static CriteriaCriterion<T> AsCriterion<T>(this IEnumerable<ICriterion<T>> criteria) =>
             new CriteriaCriterion<T>(criteria);
